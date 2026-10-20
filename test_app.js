@@ -93,7 +93,7 @@ const { chromium } = require(pwPath);
   await page.click('#confirm-date-btn');
   await page.waitForTimeout(500);
   const voucherFeedback = await page.$eval('#date-voucher-feedback', el => el.textContent);
-  console.log('✓ Voucher feedback message:', voucherFeedback.includes('Anh đã nhận được tín hiệu'));
+  console.log('✓ Voucher feedback message:', voucherFeedback.includes('nhận được tín hiệu'));
 
   // Thử đổi sang hoạt động khác
   await page.evaluate(() => document.getElementById('re-select-date-btn')?.click());

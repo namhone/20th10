@@ -22,8 +22,8 @@ export class LettersManager {
   constructor(options = {}) {
     this.userConfig = {
       recipientName: options.recipientName || "Huyền Trân",
-      senderName: "Chiếc bot của em",
-      signature: "Anh người yêu ngốc nghếch ♡",
+      senderName: "Cậu bạn 17 tuổi của Trân",
+      signature: "Cậu bạn 17 tuổi của Huyền Trân ♡",
       customNote: ""
     };
 
@@ -318,6 +318,12 @@ export class LettersManager {
         const p = document.createElement('div');
         p.className = 'font-display text-base sm:text-lg text-brand-800 leading-relaxed text-center py-2 sm:py-4 bg-brand-50/40 rounded-2xl border border-brand-100/60 my-2';
         p.innerHTML = item.lines.map(line => `<div class="py-0.5">${line}</div>`).join('');
+        if (item.author) {
+          const authDiv = document.createElement('div');
+          authDiv.className = 'text-xs text-brand-600 font-semibold italic mt-3 pt-2 border-t border-brand-200/60 text-center';
+          authDiv.textContent = `— ${item.author}`;
+          p.appendChild(authDiv);
+        }
         bodyEl.appendChild(p);
       } else {
         const p = document.createElement('p');

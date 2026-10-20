@@ -11,11 +11,12 @@ export class TributeManager {
   constructor() {
     this.recipientName = 'Huyền Trân';
     this.healthPills = [
-      "Hôm nay Huyền Trân nhớ uống đủ 2 lít nước ấm và đừng bỏ bữa nhé! Anh lo cho cái bụng nhỏ của em lắm đó. ♡",
-      "Dù bài vở hay công việc có bận đến mấy, trước 23h nhớ gác lại để đi ngủ sớm nha cô bé. Ngủ đủ giấc da mới đẹp và người mới khỏe được!",
-      "Hôm nay nếu nghe mỏi mắt hay nặng vai, em hãy vươn vai một cái thật sâu, nhắm mắt lại 5 phút nha. Có anh luôn ở đây chúc em khỏe mạnh nè.",
-      "Chúc Huyền Trân có một ngày thật nhiều năng lượng tích cực, ăn ngon miệng, cười tươi và luôn mạnh khỏe hơn mỗi ngày!",
-      "Mỗi sáng thức dậy hãy mỉm cười một cái thật xinh nhé. Mong mọi điều tốt lành và sự khỏe khoắn nhất luôn bao bọc lấy em."
+      "🌡️ [Liều hạ sốt & dưỡng sức]: Nếu hôm nay nghe người hâm hấp nóng hay mệt mỏi, Trân nhớ đo nhiệt độ, uống nhiều nước ấm và đắp chăn nằm nghỉ nhé. Đừng ráng ngồi học khi đang sốt, tớ lo cho cậu lắm đó! ♡",
+      "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
+      "🛡️ [Liều lá chắn bình yên]: Mấy trò đùa lố lăng, vô duyên của đám con trai ở trường không đáng để Trân bận tâm một giây nào. Tớ luôn đứng về phía cậu và bảo vệ nụ cười của cậu!",
+      "🍲 [Liều ấm bụng]: Dù mệt mỏi hay đắng miệng đến đâu, Trân cũng nhớ ăn chút cháo ấm hoặc một chén súp nhé. Cái bụng nhỏ phải có năng lượng thì cơ thể mới mau khỏe được nè.",
+      "🌙 [Liều ngủ ngoan không âu lo]: Gác lại sách vở bài tập thôi nào cô bé 17 tuổi. Đêm nay hãy thả lỏng bờ vai, nhắm mắt lại và ngủ một giấc thật êm. Mọi muộn phiền cứ để tớ gánh thay cậu.",
+      "🧋 [Liều sạc pin ngọt ngào]: Gửi cho Trân một ly trà sữa ngọt ngào qua tâm trí! Cố lên nhé, rồi tớ sẽ sớm dắt cậu đi date ngoài đời thực để bù đắp hết những ngày mệt mỏi này nha."
     ];
   }
 
@@ -51,8 +52,8 @@ export class TributeManager {
 
     dateFeedback.innerHTML = `
       <div class="bg-brand-50 border border-brand-200 rounded-2xl p-4 text-center mt-3 text-xs sm:text-sm text-brand-800 font-medium">
-        💌 <strong>Anh đã nhận được tín hiệu của ${this.recipientName} rồi nè!</strong><br>
-        Hẹn em một ngày sớm nhất: <em>"${activity}"</em> nhé. Anh nhất định sẽ chuẩn bị thật chu đáo! ♡
+        💌 <strong>Tớ đã nhận được tín hiệu của ${this.recipientName} rồi nè!</strong><br>
+        Hẹn cậu một ngày sớm nhất: <em>"${activity}"</em> nhé. Tớ nhất định sẽ chuẩn bị thật chu đáo! ♡
         <div class="mt-2.5">
           <button id="re-select-date-btn" class="px-3 py-1 rounded-full bg-white hover:bg-brand-100 text-brand-600 border border-brand-200 text-xs font-semibold transition-colors">
             🔄 Chọn lại hoạt động khác
@@ -187,7 +188,7 @@ export class TributeManager {
           savedReplies.push({ message: msg, time: new Date().toISOString() });
           localStorage.setItem('hopqua_replies', JSON.stringify(savedReplies));
 
-          replyFeedback.textContent = "Đã lưu lời nhắn yêu thương của em! Anh sẽ đọc thật kỹ! ♡";
+          replyFeedback.textContent = "Đã lưu lời nhắn của Trân rồi nè! Tớ sẽ đọc thật kỹ! ♡";
           replyInput.value = '';
           audioPlayer.playChime();
           spawnFloatingHearts(window.innerWidth / 2, window.innerHeight / 2, 12);
@@ -203,7 +204,7 @@ export class TributeManager {
               time: new Date().toISOString()
             })
           }).then(res => res.json()).then(() => {
-            replyFeedback.textContent = "Lời nhắn của em đã được gửi tận tay anh rồi! Cảm ơn em nhiều lắm ♡";
+            replyFeedback.textContent = "Lời nhắn của Trân đã được gửi tận tay tớ rồi! Cảm ơn cậu nhiều lắm ♡";
             replyInput.value = '';
             audioPlayer.playChime();
             spawnFloatingHearts(window.innerWidth / 2, window.innerHeight / 2, 12);

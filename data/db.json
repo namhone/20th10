@@ -47,21 +47,32 @@
       "rawInput": "Huyền Trân ❤️",
       "verifiedAt": "2026-10-20T13:58:44.885Z",
       "ip": "::ffff:127.0.0.1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-20T14:12:02.290Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T14:12:48.949Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
-    "openedCount": 2,
+    "openedCount": 1,
     "userConfig": {
       "recipientName": "Huyền Trân",
-      "senderName": "Chiếc bot của em",
-      "signature": "Anh người yêu ngốc nghếch ♡",
+      "senderName": "Cậu bạn 17 tuổi của Trân",
+      "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
     "openedIds": [
-      "poem-1",
-      "poem-2"
+      "poem-1"
     ],
-    "updatedAt": "2026-10-20T13:58:57.134Z"
+    "updatedAt": "2026-10-20T14:12:56.950Z"
   },
   "dateVouchers": [
     {
@@ -93,6 +104,16 @@
       "recipient": "Huyền Trân",
       "activity": "Cùng đi dạo ngắm hoàng hôn và trò chuyện",
       "timestamp": "2026-10-20T13:58:52.416Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T14:12:13.795Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T14:13:01.517Z"
     }
   ],
   "messages": [
@@ -149,6 +170,26 @@
       "sender": "Huyền Trân",
       "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
       "time": "2026-10-20T13:58:53.872Z"
+    },
+    {
+      "id": 1792505533352,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🛡️ [Liều lá chắn bình yên]: Mấy trò đùa lố lăng, vô duyên của đám con trai ở trường không đáng để Trân bận tâm một giây nào. Tớ luôn đứng về phía cậu và bảo vệ nụ cười của cậu!",
+      "time": "2026-10-20T14:12:13.341Z"
+    },
+    {
+      "id": 1792505535286,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-20T14:12:15.285Z"
+    },
+    {
+      "id": 1792505581081,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🧋 [Liều sạc pin ngọt ngào]: Gửi cho Trân một ly trà sữa ngọt ngào qua tâm trí! Cố lên nhé, rồi tớ sẽ sớm dắt cậu đi date ngoài đời thực để bù đắp hết những ngày mệt mỏi này nha.",
+      "time": "2026-10-20T14:13:01.080Z"
     }
   ]
 }

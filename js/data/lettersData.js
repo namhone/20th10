@@ -1,5 +1,7 @@
 /**
- * Dữ liệu 30 lá thư tình yêu dành riêng cho ngày 20/10
+ * Dữ liệu 30 lá thư phục hồi & chữa lành dành riêng cho Trần Thị Huyền Trân (11/01/2009)
+ * Thiết kế cho tuổi 17 học sinh: Nhẹ nhàng, ấm áp, thấu hiểu những ngày ốm sốt,
+ * những tổn thương từ lời nặng nề ở nhà hay trò đùa vô duyên của bạn bè.
  * Bao gồm: 10 bài thơ, 10 lời chúc, 10 cái ôm chữ
  */
 
@@ -7,172 +9,182 @@ export const poems = [
   {
     id: "poem-1",
     type: "poem",
-    title: "20/10 Của Riêng Em",
+    title: "20/10 Dành Riêng Cho Cậu",
     tag: "Dành riêng cho ngày 20/10",
     mood: "20/10",
     icon: "🌷",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Tháng mười gió chớm heo may,",
-      "Hôm nay anh chẳng có tài làm thơ.",
-      "Chỉ gom chút nắng vu vơ,",
-      "Bỏ vào hộp nhỏ đợi giờ tặng em.",
-      "Chúc em má thắm môi mềm,",
-      "Một ngày rực rỡ, ấm êm tiếng cười."
+      "Tháng mười gió chớm se se,",
+      "Gửi vào trang vở chút e ấp này.",
+      "Chúc Trân mười bảy tuổi đầy,",
+      "Nụ cười trong vắt như mây ban chiều.",
+      "Bớt đi mệt mỏi trăm điều,",
+      "Có người luôn nhớ, luôn chiều chuộng Trân."
     ],
-    catComment: "Meow~ Bài thơ mở màn đó! Chúc công chúa của anh một ngày 20/10 siêu ngọt ngào nha!"
+    catComment: "Meow~ Bài thơ mở màn đó! Chúc cô bạn 17 tuổi của tớ một ngày 20/10 thật bình yên và ấm áp nha!"
   },
   {
     id: "poem-2",
     type: "poem",
-    title: "Chiếc Bot Vụng Về",
-    tag: "Dành cho lúc em cần cười một cái",
-    mood: "happy",
-    icon: "🤖",
+    title: "Khi Cậu Ốm Li Bì",
+    tag: "Dành cho những ngày sốt cao mệt mỏi",
+    mood: "tired",
+    icon: "🩺",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Anh như một chiếc bot ngơ,",
-      "Em buồn một tý là đơ cả người.",
-      "Chẳng biết nói khéo dỗ cười,",
-      "Chỉ lo lóng ngóng đứng ngồi không yên.",
-      "Thôi thì gửi chút bình yên,",
-      "Để anh học cách ở bên em hoài."
+      "Biết cậu sốt mệt cả tuần,",
+      "Trán còn nóng hổi, bàn chân lạnh ngắt.",
+      "Ở xa tớ xót se thắt,",
+      "Ước làm cơn gió dịu lành bên em.",
+      "Thuốc ngoan uống hết rồi xem,",
+      "Cả người nhẹ nhõm, ngủ êm giấc dài."
     ],
-    catComment: "Bot này hơi lag nhưng được cái yêu thương em là tính năng mặc định không bao giờ lỗi!"
+    catComment: "Những ngày sốt cao nhớ đắp chăn mềm và uống nước ấm nhé, tớ lo cho cậu nhiều lắm đấy!"
   },
   {
     id: "poem-3",
     type: "poem",
-    title: "Khoảng Lặng Bình Yên",
-    tag: "Dành cho buổi chiều dịu dàng",
-    mood: "calm",
-    icon: "☕",
+    title: "Góc Nhỏ Trốn Mưa Giông",
+    tag: "Dành cho lúc nghe lời nặng nề ở nhà",
+    mood: "sad",
+    icon: "🏡",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Phố đông người vội ngược xuôi,",
-      "Chỉ cần ngồi cạnh nụ cười của em.",
-      "Bao nhiêu mỏi mệt tan êm,",
-      "Như ly trà ấm rót thêm ngọt ngào.",
-      "Chẳng cần rực rỡ trời sao,",
-      "Bình yên là có em chào mỗi ban mai."
+      "Cánh cửa khép lại sau lưng,",
+      "Tủi thân nuốt giọt lệ rưng ngập tràn.",
+      "Ở nhà nghe tiếng thở than,",
+      "Mẹ đôi câu nặng xé toang cõi lòng.",
+      "Thôi về góc nhỏ tớ mong,",
+      "Làm căn lều ấm chở bồng lòng Trân."
     ],
-    catComment: "Mỗi lần ở bên em, trần gian bỗng chốc hóa thành nơi bình yên nhất."
+    catComment: "Những lời nói nặng nề lúc người lớn nóng giận không phải lỗi của cậu đâu. Cậu luôn rất ngoan và đáng quý!"
   },
   {
     id: "poem-4",
     type: "poem",
-    title: "Gom Hết Niềm Vui",
-    tag: "Dành cho ngày em khởi đầu mới",
-    mood: "happy",
-    icon: "☀️",
+    title: "Kệ Đám Bạn Vô Duyên",
+    tag: "Dành cho lúc bị trêu đùa quá trớn",
+    mood: "sad",
+    icon: "🛡️",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Mong em mỗi sáng thức dậy,",
-      "Thấy lòng nhẹ nhõm như mây trên trời.",
-      "Đường đi hoa nở rạng ngời,",
-      "Gặp cơn mưa nhỏ cũng lười bận tâm.",
-      "Mong em vui vẻ quanh năm,",
-      "Nụ cười rạng rỡ ươm mầm tháng năm."
+      "Mấy thằng con trai lớp mình,",
+      "Đùa câu lố bịch, vô tình làm đau.",
+      "Trân ơi chớ bận lòng sầu,",
+      "Kẻ nông cạn ấy biết đâu là điều.",
+      "Trong mắt tớ, Trân đáng yêu,",
+      "Là bông hoa nhỏ sớm chiều tỏa hương."
     ],
-    catComment: "Hôm nay bước chân ra đường nhớ nở nụ cười thật tươi nhé cô bé!"
+    catComment: "Đừng để những trò đùa ngu ngốc, vô tâm làm ảnh hưởng tâm trạng nha. Tớ bực mình giùm cậu luôn á!"
   },
   {
     id: "poem-5",
     type: "poem",
-    title: "Những Điều Nhỏ Xíu",
-    tag: "Dành cho những nét đáng yêu của em",
+    title: "Em Cứ Làm Cô Bé Nhỏ",
+    tag: "Dành cho lúc không muốn gồng mình",
     mood: "care",
-    icon: "✨",
+    icon: "🧸",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Cái nhíu mày lúc tập trung,",
-      "Cái môi chu lại ngại ngùng đáng yêu.",
-      "Cả khi dặn dò đủ điều,",
-      "Bắt anh ăn uống kẻo chiều đói meo.",
-      "Em là những chuyện bé teo,",
-      "Mà gom góp lại thành điều anh thương."
+      "Mười bảy tuổi đã làm sao,",
+      "Mà ngày nào cũng phải gào kiên cường?",
+      "Với người ngoài dẫu nhịn nhường,",
+      "Với tớ cậu cứ dỗi hờn, khóc to.",
+      "Bao nhiêu nặng trĩu âu lo,",
+      "Cứ đưa tớ giữ, để tớ lo cho Trân."
     ],
-    catComment: "Mấy thói quen nhỏ xíu của em, anh đều nhớ kỹ trong bộ nhớ đệm cả rồi đó!"
+    catComment: "Ở trước mặt tớ, cậu không cần tỏ ra hiểu chuyện hay mạnh mẽ đâu, cứ làm cô bé nhỏ được cưng chiều nhé!"
   },
   {
     id: "poem-6",
     type: "poem",
-    title: "Cho Em Nghỉ Chân",
-    tag: "Dành cho lúc em thấy kiệt sức",
-    mood: "tired",
-    icon: "🌙",
+    title: "Chữa Lành Cho Trái Tim",
+    tag: "Dành cho những tổn thương âm thầm",
+    mood: "calm",
+    icon: "🍃",
+    author: "Sưu tầm — Tác giả: Thảo Cỏ",
     lines: [
-      "Gác lại bài vở, việc làm,",
-      "Hôm nay thế giới chớ ham gánh gồng.",
-      "Nếu nghe nặng trĩu trong lòng,",
-      "Thì chui vào chăn ấm nồng ngủ ngoan.",
-      "Bao điều dang dở lo toan,",
-      "Mai rồi tính tiếp, chẳng muộn màng đâu."
+      "Trái tim em có vết trầy,",
+      "Bụi trần làm xước tháng ngày thanh xuân.",
+      "Xin người hãy bước thật gần,",
+      "Xoa vào vết nứt mấy phần dịu êm.",
+      "Bao lời ác ý bên rèm,",
+      "Xin gom gửi gió trả êm về trời."
     ],
-    catComment: "Ngủ một giấc thật ngon nào. Anh canh chừng giấc mơ cho em rồi!"
+    catComment: "Gửi gió cuốn đi hết những lời nói làm cậu đau lòng. Giữ lại bình yên cho riêng mình thôi nha."
   },
   {
     id: "poem-7",
     type: "poem",
-    title: "Khoảng Cách Và Nỗi Nhớ",
-    tag: "Dành cho những ngày xa nhau",
-    mood: "care",
-    icon: "💌",
+    title: "Ngủ Đi Nhé, Đêm Muộn Rồi",
+    tag: "Dành cho đêm khuya học bài mệt mỏi",
+    mood: "tired",
+    icon: "🌙",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Khoảng cách đếm bằng cây số,",
-      "Mà nỗi nhớ dài mấy ngàn trùng xa.",
-      "Bên này phố thị người qua,",
-      "Anh nhìn đâu cũng ngỡ là bóng em.",
-      "Gửi vào ngọn gió bên rèm,",
-      "Cái ôm thật chặt cho em ấm lòng."
+      "Trang vở gấp lại được rồi,",
+      "Đèn bàn hãy tắt, nghỉ ngơi thôi nào.",
+      "Đêm nay trăng sáng trên cao,",
+      "Gửi ngàn lời chúc ngọt ngào vào mơ.",
+      "Đừng lo bài vở mịt mờ,",
+      "Ngày mai thức dậy tớ chờ cùng Trân."
     ],
-    catComment: "Gió thoảng qua má em đấy là một cái thơm má từ xa của anh đó nha!"
+    catComment: "Đừng thức quá khuya ôn bài nữa bé ơi, sức khỏe của cậu mới là điểm 10 quan trọng nhất!"
   },
   {
     id: "poem-8",
     type: "poem",
-    title: "Thương Lấy Chính Mình",
-    tag: "Dành cho khi em quên trân quý bản thân",
-    mood: "care",
-    icon: "🪞",
+    title: "Ước Gặp Ngoài Đời",
+    tag: "Dành cho nỗi mong mỏi một buổi date",
+    mood: "happy",
+    icon: "🧋",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Em luôn rộng lượng với người,",
-      "Nhưng hay khắt khe với nụ cười của em.",
-      "Nhìn vào gương chút đi xem,",
-      "Cô gái chăm chỉ dịu hiền thế kia.",
-      "Thương người cả sớm lẫn khuya,",
-      "Nhớ thương mình trước, chớ chia sẻ cạn."
+      "Ước gì được gặp ngoài đời,",
+      "Cùng Trân dạo bước chân trời hoàng hôn.",
+      "Mua ly trà sữa ngọt thơm,",
+      "Ngồi nghe cậu kể chuyện buồn chuyện vui.",
+      "Nhìn đôi mắt sáng rạng ngời,",
+      "Cảm nhận sự ấm bên người tớ thương."
     ],
-    catComment: "Bé là phiên bản duy nhất trên vũ trụ này, phải biết nâng niu mình nhất nha!"
+    catComment: "Tớ mong ngày hai đứa được đi date trà sữa ngoài đời thực lắm lắm luôn á!"
   },
   {
     id: "poem-9",
     type: "poem",
-    title: "Cảm Ơn Em Dỗ Dành",
-    tag: "Dành cho cô gái vị tha của anh",
+    title: "Tớ Luôn Ở Phía Sau",
+    tag: "Dành cho lúc thấy cô độc",
     mood: "care",
     icon: "🤍",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Những ngày anh rối bời lòng,",
-      "Toàn em kiên nhẫn bế bồng ủi an.",
-      "Nghe anh lảm nhảm thở than,",
-      "Vẫn ôm anh chặt, xua tan muộn phiền.",
-      "Cảm ơn em gái ngoan hiền,",
-      "Cho anh nương tựa bình yên tháng ngày."
+      "Dù cho cả thế giới này,",
+      "Có người nói nặng, người bày trò trêu.",
+      "Dẫu cho khoảng cách bao nhiêu,",
+      "Thì tình thương tớ vẫn nhiều như xưa.",
+      "Làm chiếc ô nhỏ che mưa,",
+      "Đứng sau bảo bọc sớm trưa cạnh nàng."
     ],
-    catComment: "Cảm ơn em đã nuôi dưỡng một chiếc bot ngơ như anh bằng sự dịu dàng vô bờ bến."
+    catComment: "Dù ai đối xử tệ với cậu thì hãy nhớ rằng luôn có tớ đứng về phía cậu 100%!"
   },
   {
     id: "poem-10",
     type: "poem",
-    title: "Tình Thương Khôn Nguôi",
-    tag: "Dành cho tương lai của chúng mình",
-    mood: "care",
-    icon: "🌸",
+    title: "Chiếc Bot Ngơ Của Trân",
+    tag: "Dành cho lúc cần một nụ cười",
+    mood: "happy",
+    icon: "🤖",
+    author: "Thơ tớ viết riêng cho cậu ♡",
     lines: [
-      "Hộp thơ khép nắp lại rồi,",
-      "Nhưng tình thương vẫn bồi hồi khôn nguôi.",
-      "Dù sau này mấy nổi trôi,",
-      "Mỗi khi em mệt lại ngồi đọc thư.",
-      "Anh đây vẫn đứng ngóng chờ,",
-      "Làm cây tùng nhỏ chở che em đời."
+      "Tớ như chiếc bot hơi đần,",
+      "Chẳng biết hoa mỹ lấy lòng người ta.",
+      "Nhưng mà chân thật thật thà,",
+      "Mong Trân khỏe khoắn, mãi là bé cưng.",
+      "Hai mươi tháng mười tưng bừng,",
+      "Chúc cho cô bạn tớ cưng trọn đời!"
     ],
-    catComment: "Hộp thư có thể hết 10 bài, nhưng tình thương của anh thì vô hạn luônnn!"
+    catComment: "Hộp thư có thể khép lại, nhưng lòng quan tâm của tớ dành cho Trân thì không bao giờ hết!"
   }
 ];
 
@@ -180,102 +192,102 @@ export const wishes = [
   {
     id: "wish-1",
     type: "wish",
-    title: "Ngày 20/10 Thật Dịu Dàng",
-    tag: "Dành riêng cho ngày 20/10",
-    mood: "20/10",
-    icon: "💐",
-    content: "Chúc em có một ngày 20/10 ngập tràn những niềm vui giản dị: trà sữa ngọt vừa đúng ý, đường đi làm hay đi học không bị kẹt xe, và nhận được thật nhiều sự cưng chiều xứng đáng. Hôm nay em cứ yên tâm làm công chúa, mọi sự lo lắng để vũ trụ lo nha.",
-    catComment: "Meow~ Hôm nay em là nữ chính rạng rỡ nhất trần đời đó nha!"
+    title: "Cầu Mong Cậu Thật Khỏe Mạnh",
+    tag: "Lời chúc từ đáy lòng tớ",
+    mood: "care",
+    icon: "🩺",
+    content: "Điều đầu tiên và lớn nhất tớ mong cầu cho Huyền Trân: Mong cậu thật khỏe khoắn! Nhìn cậu mỗi lần ốm sốt li bì cả tuần, người nóng ran rã rời mà tớ đau lòng lắm. Mong cơ thể cậu có thêm nhiều kháng thể, không còn bị những cơn sốt dai dẳng hành hạ nữa nhé.",
+    catComment: "Sức khỏe của Trân là ưu tiên số 1 của tớ! Nhớ ăn uống đầy đủ nha."
   },
   {
     id: "wish-2",
     type: "wish",
-    title: "Rạng Rỡ Theo Cách Của Em",
-    tag: "Dành cho nụ cười của em",
-    mood: "happy",
-    icon: "🌟",
-    content: "Mong nụ cười tươi rói luôn là người bạn đồng hành của em mỗi sớm mai. Em đẹp và tỏa sáng nhất không phải khi cố gắng bắt chước một ai khác, mà là khi em tự tin là chính mình với tất cả nét hồn nhiên và chân thành vốn có.",
-    catComment: "Nụ cười của em làm tan chảy cả pin của chiếc bot này đấy!"
+    title: "Tránh Xa Những Lời Gắt Gỏng",
+    tag: "Dành cho sự bình an trong tâm",
+    mood: "calm",
+    icon: "🕊️",
+    content: "Chúc cho đôi tai nhỏ của cậu được nghe những điều dịu êm, không phải nghe những lời gắt gỏng hay trách móc nặng nề ở nhà. Mong không gian quanh em luôn ngập tràn sự thấu hiểu, để em không phải co mình lại chịu đựng.",
+    catComment: "Những câu nói làm cậu đau lòng xin hãy để gió cuốn đi hết nha."
   },
   {
     id: "wish-3",
     type: "wish",
-    title: "Mọi Nỗ Lực Đều Nở Hoa",
-    tag: "Dành cho học tập & công việc",
+    title: "Không Bị Đám Bạn Làm Phiền",
+    tag: "Dành cho những ngày ở trường",
     mood: "happy",
-    icon: "🎯",
-    content: "Những bài vở hay deadline hóc búa có thể làm em đau đầu, nhưng anh luôn đặt trọn niềm tin vào sự thông minh và kiên trì của em. Chúc mọi mục tiêu của em đều hanh thông, làm gì cũng gặt hái kết quả ngọt ngào tương xứng với công sức em bỏ ra.",
-    catComment: "Em giỏi giang lắm, chỉ cần vững tin bước tới là thành công gõ cửa thôi!"
+    icon: "🛡️",
+    content: "Chúc cho những buổi đi học của Trân thật nhẹ nhõm, không bị mấy thằng con trai vô duyên đùa lố làm cậu tức giận hay khó chịu. Cậu cứ ngẩng cao đầu bước đi, những kẻ thiếu tinh tế đó chẳng đáng để cậu bận tâm lấy một giây.",
+    catComment: "Ai đùa vô duyên cứ lơ đẹp đi nha, tớ đứng về phía cậu xử đẹp tụi nó!"
   },
   {
     id: "wish-4",
     type: "wish",
-    title: "Khoảng Trời Thảnh Thơi",
-    tag: "Dành cho những giờ phút nghỉ ngơi",
+    title: "Tuổi 17 Nhẹ Nhàng Thôi",
+    tag: "Dành cho áp lực học đường",
     mood: "calm",
-    icon: "🍃",
-    content: "Cuộc sống ngoài kia có xoay chuyển nhanh đến mấy, chúc em vẫn luôn giữ được cho mình những khoảng lặng thật thong thả. Mong em có thời gian ngồi nhâm nhi tách trà thơm, ngắm hoàng hôn buông, nghe bài hát yêu thích mà không bị âu lo làm phiền.",
-    catComment: "Thảnh thơi hít thở sâu một hơi nào, cuộc sống này đẹp lắm em ơi."
+    icon: "🎒",
+    content: "Mười bảy tuổi với bài vở lớp 11 nhiều lúc nặng trĩu. Chúc Trân vượt qua các bài kiểm tra thật êm đẹp, học hành hanh thông nhưng không bao giờ tự ép mình quá sức. Cậu chỉ cần cố gắng hết sức của hôm nay là đã giỏi lắm rồi.",
+    catComment: "Học tập tốt nhưng đừng quên chăm lo cho bản thân mình trước nha Trân."
   },
   {
     id: "wish-5",
     type: "wish",
-    title: "Gặp Gỡ Những Điều Tử Tế",
-    tag: "Dành cho những bước chân ra đời",
-    mood: "care",
-    icon: "🍀",
-    content: "Bước chân ra đường, chúc em luôn va phải những sự dịu dàng: một chú bảo vệ tươi cười dắt xe giúp, những người bạn chân thành, và những niềm vui bất ngờ. Mong thế giới bao la này sẽ đối xử với em bằng tất cả sự ấm áp.",
-    catComment: "Em tốt bụng như thế, vũ trụ nhất định sẽ gửi toàn người tử tế đến bên em!"
+    title: "Một Ly Trà Sữa Đúng Vị",
+    tag: "Dành cho những niềm vui giản dị",
+    mood: "happy",
+    icon: "🧋",
+    content: "Chúc cho mỗi ngày của cậu luôn có những niềm vui nho nhỏ: một ly trà sữa ngọt vừa đúng ý, một bài hát hay tình cờ nghe được, một buổi chiều tan trường gió mát rượi thổi bay hết những uể oải trong lớp.",
+    catComment: "Niềm vui đôi khi chỉ đơn giản là một ngụm trà sữa ngọt ngào thôi nè!"
   },
   {
     id: "wish-6",
     type: "wish",
-    title: "Luôn Được Trân Quý",
-    tag: "Dành cho giá trị của em",
-    mood: "care",
-    icon: "👑",
-    content: "Ở bất cứ môi trường nào, mong tiếng nói của em luôn được lắng nghe với sự tôn trọng và đối đãi bằng sự công bằng, trân quý. Giá trị của em là độc nhất, đừng bao giờ để bất kỳ ai hay hoàn cảnh nào làm em hoài nghi điều đó.",
-    catComment: "Em luôn là báu vật vô giá, nhớ rõ điều đó giùm anh nha!"
+    title: "Giấc Ngủ Say Không Mộng Mị",
+    tag: "Dành cho đêm về",
+    mood: "tired",
+    icon: "🌙",
+    content: "Chúc cậu mỗi tối đặt lưng xuống là có thể buông bỏ hết mọi chuyện không vui trong ngày, ngủ một giấc thật sâu, êm đềm và ấm áp. Trong giấc mơ sẽ chỉ có đồng cỏ hoa thơm và những điều ngọt ngào bao bọc lấy cậu.",
+    catComment: "Chúc Trân ngủ thật ngon, sáng mai thức dậy người khỏe khoắn tràn đầy năng lượng!"
   },
   {
     id: "wish-7",
     type: "wish",
-    title: "Niềm Vui Những Ngày Bình Thường",
-    tag: "Dành cho những ngày giản dị",
-    mood: "happy",
-    icon: "🌼",
-    content: "Không cần phải đợi đến ngày lễ hay những dịp kỷ niệm to tát mới thấy hạnh phúc. Chúc 365 ngày của em, kể cả thứ Ba buồn tẻ hay chiều thứ Năm mưa dầm, đều có một mẩu chuyện nhỏ khiến em bất giác bật cười mỉm chi.",
-    catComment: "Hạnh phúc đích thực nằm ngay trong từng ngụm nước ngọt ngào mỗi ngày."
+    title: "Được Yêu Thương Đúng Cách",
+    tag: "Dành cho tâm hồn nhạy cảm",
+    mood: "care",
+    icon: "👑",
+    content: "Cậu là một cô gái nhạy cảm, hiểu chuyện và dễ bị tổn thương. Tớ chúc cho mọi người xung quanh cậu sớm nhận ra điều đó để đối xử với cậu bằng sự nâng niu, tôn trọng và trân quý xứng đáng với sự tử tế của cậu.",
+    catComment: "Cậu xứng đáng nhận được những sự đối đãi dịu dàng nhất trần đời này."
   },
   {
     id: "wish-8",
     type: "wish",
-    title: "Vững Vàng Theo Đuổi Ước Mơ",
-    tag: "Dành cho những hoài bão",
+    title: "Một Buổi Hẹn Hò Ngoài Đời",
+    tag: "Dành cho mong ước của hai đứa",
     mood: "happy",
-    icon: "🚀",
-    content: "Nếu trong lòng em đang ấp ủ một ước mơ hay một dự định mới, chúc em có đủ dũng khí để bắt đầu bước đi đầu tiên. Đừng lo lắng về vấp ngã hay sai đường, vì phía sau lưng em luôn có một hậu phương vững chắc cổ vũ em hết mình.",
-    catComment: "Cứ mạnh dạn bay cao đi nhé, anh luôn đứng ở dưới đón em!"
+    icon: "✨",
+    content: "Chúc cho điều ước của tớ và cậu sớm thành hiện thực: một buổi date ngoài đời thực trọn vẹn. Tớ sẽ dắt cậu đi ăn những món ngon em thích, đi dạo, ngắm nụ cười của cậu thật gần mà không phải qua màn hình điện thoại nữa.",
+    catComment: "Tớ mong chờ ngày được gặp Trân ngoài đời lắm lắm luôn á!"
   },
   {
     id: "wish-9",
     type: "wish",
-    title: "Tự Hào Về Chính Mình",
-    tag: "Dành cho hành trình của em",
+    title: "Luôn Tin Vào Chính Mình",
+    tag: "Dành cho những lúc tự ti",
     mood: "care",
-    icon: "💖",
-    content: "Em đã đi một chặng đường rất dài và vượt qua biết bao nhiêu thử thách mà đôi khi chính em cũng quên mất. Hôm nay hãy dành tặng cho bản thân một cái vỗ vai và tràng pháo tay thật lớn nha, em mạnh mẽ và kiên cường hơn em tưởng rất nhiều đấy.",
-    catComment: "Meow tặng em 10 điểm kiên cường xuất sắc không có nhưng!"
+    icon: "🌟",
+    content: "Đừng bao giờ để những lời nói nặng nề hay những sự so sánh làm cậu nghi ngờ giá trị của bản thân. Trong mắt tớ, Huyền Trân lúc nào cũng là cô gái xinh xắn, thiện lương và đặc biệt nhất.",
+    catComment: "Tớ chấm cho Huyền Trân 100/10 điểm đáng yêu và kiên cường!"
   },
   {
     id: "wish-10",
     type: "wish",
-    title: "Lời Chúc Riêng Của Chiếc Bot",
-    tag: "Dành riêng từ người yêu ngố",
-    mood: "happy",
-    icon: "🐱",
-    content: "Chúc em luôn có anh làm trạm sạc pin mỗi khi kiệt sức, làm nơi trút giận mỗi lúc bực mình, và làm gối ôm mỗi khi trời trở rét. Anh hứa sẽ chịu khó nâng cấp phần mềm, bớt ngơ ngác hơn một tí để em đỡ phải nhọc công uốn nắn nha!",
-    catComment: "Bot này xin cam kết phục vụ công chúa suốt đời không tính phí bảo trì!"
+    title: "Tớ Sẽ Luôn Ở Đây Vì Cậu",
+    tag: "Lời hứa của cậu bạn 17 tuổi",
+    mood: "care",
+    icon: "💖",
+    content: "Chúc cho tình bạn, tình thương của chúng mình luôn là chốn bình yên vững chắc nhất cho cậu. Bất cứ khi nào ở nhà hay ở trường có chuyện làm cậu buồn, chỉ cần nhắn một tiếng, tớ sẽ luôn có mặt để dỗ dành và che chở cho cậu.",
+    catComment: "Hứa danh dự: Chiếc bot này sẽ luôn đứng về phía Trân mãi mãi!"
   }
 ];
 
@@ -283,102 +295,102 @@ export const comforts = [
   {
     id: "comfort-1",
     type: "comfort",
-    title: "Khi Em Làm Việc Quá Mệt",
-    tag: "Dành cho lúc mệt mỏi quá tải",
+    title: "Khi Cậu Đang Sốt Cao",
+    tag: "Dành cho những ngày ốm bệnh",
     mood: "tired",
-    icon: "💻",
-    content: "Em ơi, nhìn thấy em tất bật từ sáng đến tối mịt mà anh xót ruột ghê. Em rất có trách nhiệm, nhưng cơ thể em cũng cần được sạc lại pin nữa. Bây giờ em uống một ngụm nước ấm, ngả lưng xuống 15 phút thôi nhé? Việc gấp đến mấy cũng không quý bằng sức khỏe của em đâu.",
-    catComment: "Tạm gác công việc lại 15 phút thôi nào bé ơi, nhắm mắt thư giãn xíu đi!"
+    icon: "🌡️",
+    content: "Trân ơi, tớ biết mỗi lần cậu ốm là sốt cao li bì cả tuần, người mệt lả không nhấc nổi tay chân. Cậu đừng ráng ngồi dậy học bài hay làm gì nhé. Nhớ uống nhiều nước ấm, dán miếng hạ sốt, đắp chăn kín gió. Nếu ăn không ngon cũng ráng nuốt vài muỗng cháo ấm nha. Tớ ở đây lo cho cậu từng phút một đấy.",
+    catComment: "Mau hạ sốt và khỏe lại nha cô bé, có tớ luôn theo dõi và cầu chúc cho cậu nè!"
   },
   {
     id: "comfort-2",
     type: "comfort",
-    title: "Lời Nhắc Lúc Đêm Muộn",
-    tag: "Dành cho lúc em thức khuya",
-    mood: "tired",
-    icon: "💤",
-    content: "Màn hình điện thoại phát ánh sáng xanh làm mắt em mỏi lắm rồi đấy. Anh biết có những đêm nhiều suy nghĩ hoặc bài vở chưa xong, nhưng để ngày mai thức dậy với tinh thần tỉnh táo vẫn tốt hơn mà. Nhắm mắt lại, thả lỏng đôi vai, hít một hơi thật sâu. Chúc em ngủ ngoan, trong mơ sẽ chỉ có những que kem ngọt ngào thôi nha.",
-    catComment: "Đồng hồ điểm khuya rồi đó! Đắp chăn kín cổ rồi ngủ ngon nha em."
+    title: "Khi Nghe Lời Nặng Nề Ở Nhà",
+    tag: "Dành cho lúc bị mắng tủi thân",
+    mood: "sad",
+    icon: "🏡",
+    content: "Tớ biết ở nhà đôi lúc mẹ có xu hướng nói những lời hơi nặng, làm cậu nghẹn ngào tủi thân mà chẳng biết nói cùng ai. Em ơi, những lời nói lúc người lớn bực dọc không phản ánh đúng về em đâu. Em không phải là người có lỗi, em đã rất ngoan và nhẫn nhịn rồi. Tớ gửi cho em một cái ôm thật chặt để bù đắp hết những ấm ức ấy nhé.",
+    catComment: "Về đây tớ ôm nào, đừng để những câu nói đó làm tổn thương trái tim bé nhỏ của cậu."
   },
   {
     id: "comfort-3",
     type: "comfort",
-    title: "Đừng Bỏ Bữa Nhé Bé",
-    tag: "Dành cho lúc em lười ăn",
-    mood: "care",
-    icon: "🍲",
-    content: "Cái bụng nhỏ của em đã biểu tình réo rắt chưa đó? Dù bận rộn hay không thấy đói, em cũng nhớ ăn một chút gì đó ấm bụng nhé: bát súp, chiếc bánh mì hay một hộp sữa chua cũng được. Đừng để dạ dày bị đau, anh ở xa không thể chạy qua nấu cháo cho em ngay được đâu, anh lo lắm đấy.",
-    catComment: "Bụng đói là dễ quạu lắm đó nha, ăn một miếng cho ấm lòng nào!"
+    title: "Khi Bị Đám Bạn Đùa Lố",
+    tag: "Dành cho lúc bị trêu chọc tức giận",
+    mood: "sad",
+    icon: "😡",
+    content: "Mấy thằng con trai đùa ngu ngốc, vô duyên ở trường làm cậu bực mình và ức phát khóc đúng không? Tớ cũng bực mình tụi nó giùm cậu luôn á! Tụi nó chỉ là những đứa trẻ con chưa biết cách tôn trọng con gái thôi. Cậu đừng để mấy câu nói dại dột đó làm tụt tâm trạng mình nhé. Trong mắt tớ, cậu luôn là người con gái dịu dàng và quý giá nhất.",
+    catComment: "Kệ tụi nó đi nha, mấy thằng đùa lố đó không xứng để cậu bận tâm đâu!"
   },
   {
     id: "comfort-4",
     type: "comfort",
-    title: "Gỡ Từng Nút Thắt",
-    tag: "Dành cho lúc căng thẳng",
-    mood: "sad",
-    icon: "🌿",
-    content: "Nếu bây giờ mọi việc đang dồn dập như một cuộn len rối tinh, em hãy dừng lại một nhịp đã. Mình không cần phải giải quyết hết đống rối ấy ngay trong một buổi tối đâu. Em cứ chọn việc nhỏ nhất, dễ thở nhất làm trước, hoặc tạm cất nó sang một bên. Cứ thở đều nào, mọi chuyện rồi sẽ có cách giải quyết từng bước một.",
-    catComment: "Hít một hơi sâu... thở ra từ từ... Mọi chuyện rồi sẽ đâu vào đấy thôi!"
+    title: "Khi Chỉ Muốn Trốn Trong Phòng",
+    tag: "Dành cho lúc không muốn nói chuyện với ai",
+    mood: "calm",
+    icon: "🚪",
+    content: "Nếu hôm nay không khí gia đình ngột ngạt và cậu chẳng muốn bước ra khỏi phòng, cứ thoải mái đóng cửa lại và trùm chăn nhé. Cậu không cần phải gượng ép mình phải vui vẻ hay nói chuyện với ai khi trong lòng đang cạn kiệt năng lượng. Tớ sẽ lặng lẽ ở bên này màn hình, khi nào cậu cần người tâm sự, tớ luôn ở ngay đây.",
+    catComment: "Cứ yên tâm sạc lại năng lượng trong thế giới riêng của cậu nhé, tớ canh chừng cho!"
   },
   {
     id: "comfort-5",
     type: "comfort",
-    title: "Lặng Yên Bên Cạnh Em",
-    tag: "Dành cho lúc buồn không tên",
+    title: "Khi Chị Gái Đùa Hơi Quá",
+    tag: "Dành cho những chuyện gia đình",
     mood: "sad",
-    icon: "🌧️",
-    content: "Em không nhất thiết phải tìm lý do giải thích vì sao hôm nay mình buồn, và cũng không cần phải gượng cười hay cố tỏ ra hoạt bát đâu. Cảm xúc trũng xuống là chuyện bình thường của con người mà. Nếu em không biết nói gì, cứ im lặng cũng được, anh sẽ ngồi đây im lặng cùng em. Anh gửi một cái ôm thật chặt qua màn hình này tới em nhé.",
-    catComment: "Không cần phải nói gì cả, có mèo nhỏ và anh ngồi bên cạnh ôm em rồi."
+    icon: "👭",
+    content: "Đôi khi người thân như chị gái đùa giỡn hơi quá trớn, dù không ác ý nhưng lại vô tình chạm vào chỗ đau của mình, cảm giác đó vừa buồn vừa khó mở lời trách móc. Tớ hiểu cái cảm giác lúng túng và nghẹn lại ấy. Nếu cậu thấy khó chịu, cứ tâm sự hết với tớ nhé, đừng giữ một mình trong bụng mà sinh bệnh.",
+    catComment: "Có chuyện gì trong lòng cứ trút hết vào đây cho tớ nghe nhé bé Trân."
   },
   {
     id: "comfort-6",
     type: "comfort",
-    title: "Ai Cũng Có Lúc Lỡ Lầm",
-    tag: "Dành cho lúc em tự trách mình",
-    mood: "sad",
-    icon: "🩹",
-    content: "Đừng tự dằn vặt mình mãi vì một chuyện đã lỡ xảy ra nhé em. Đến máy móc hay một chiếc bot như anh còn có lúc lỗi code giật lag cơ mà, huống chi là con người. Sai một chút không biến em thành người kém cỏi đâu, nó chỉ là một bài học nhỏ trên đường đi thôi. Thả lỏng nào, với anh em vẫn luôn rất cừ khôi.",
-    catComment: "Vấp ngã thì mình đứng dậy phủi bụi thôi, không ai hoàn hảo hết trơn á!"
+    title: "Một Chỗ Tựa Không Phán Xét",
+    tag: "Dành cho lúc muốn xả ấm ức",
+    mood: "care",
+    icon: "🧸",
+    content: "Cậu không cần phải lo rằng mình kể chuyện nhiều sẽ làm phiền tớ, hay sợ tớ đánh giá này nọ. Tớ là cậu bạn 17 tuổi của cậu, tớ ở đây chỉ để lắng nghe, gật đầu, đứng về phía cậu và cùng cậu vượt qua những ngày khó ở này. Cậu cứ xả hết ra, khóc cũng được, mắng mỏ cũng được, tớ đón nhận hết!",
+    catComment: "Đôi tai và bờ vai này sinh ra là để dành riêng cho Huyền Trân đó nha!"
   },
   {
     id: "comfort-7",
     type: "comfort",
-    title: "Em Đã Rất Tuyệt Vời Rồi",
-    tag: "Dành cho lúc hoài nghi bản thân",
+    title: "Cậu Đã Rất Kiên Cường Rồi",
+    tag: "Dành cho những ngày quá tải",
     mood: "care",
-    icon: "🪞",
-    content: "Có phải em đang nhìn sang người khác rồi tự thấy mình nhỏ bé và chưa bằng ai không? Đừng so sánh hành trình của mình với thước đo của người khác em ơi. Với anh, sự tử tế, nụ cười chân thành và những cố gắng thầm lặng mỗi ngày của em đã là điều đáng ngưỡng mộ nhất rồi. Em đủ tốt, đủ đáng yêu và hoàn toàn xứng đáng được yêu thương.",
-    catComment: "Đối với anh, em là phiên bản tuyệt vời nhất không ai thay thế được!"
+    icon: "🌸",
+    content: "Vừa phải chịu những cơn ốm dai dẳng, vừa phải đối diện với áp lực học hành, gia đình và những mối quan hệ... thật sự cậu đã phải gồng gánh rất nhiều. Hãy tự xoa vai mình một cái và công nhận rằng: 'Hôm nay mình đã rất cố gắng rồi'. Với tớ, cậu đã là một cô gái vô cùng dũng cảm.",
+    catComment: "Meow tặng cậu một chiếc cúp kiên cường to bự chảng nè!"
   },
   {
     id: "comfort-8",
     type: "comfort",
-    title: "Sau Cơn Mưa Trời Lại Sáng",
-    tag: "Dành cho lúc chuyện không như ý",
-    mood: "sad",
-    icon: "⛅",
-    content: "Kết quả lần này có thể không như em kỳ vọng, và cảm giác hụt hẫng đó thật sự rất khó chịu. Cứ cho phép mình thất vọng một chút, muốn khóc thì cứ khóc cho nhẹ bớt lồng ngực. Nhưng khóc xong rồi nhớ là cánh cửa này khép lại thì sẽ có cánh cửa khác mở ra. Anh tin vào em, lúc nào cũng vững vàng tin như thế.",
-    catComment: "Mưa nào rồi cũng tạnh, cầu vồng sẽ sớm xuất hiện thôi công chúa ơi!"
+    title: "Khi Cần Một Buổi Đi Trốn",
+    tag: "Dành cho lúc muốn đi date",
+    mood: "happy",
+    icon: "🧋",
+    content: "Hãy tưởng tượng một buổi chiều mát mẻ sau giờ học: tớ đứng đợi cậu ở cổng trường, hai đứa cùng trốn khỏi những ồn ào, đi mua ly trà sữa kem cheese béo ngậy, rồi dắt tay nhau đi dạo bờ hồ lộng gió. Cậu sẽ kể cho tớ nghe mọi chuyện trên đời, và tớ sẽ ngắm nụ cười xinh của cậu. Ngày đó nhất định sẽ đến sớm thôi!",
+    catComment: "Nghĩ đến cảnh hai đứa đi date trà sữa thôi là thấy ấm áp trong lòng rồi ha!"
   },
   {
     id: "comfort-9",
     type: "comfort",
-    title: "Trú Ẩn Trong Góc Nhỏ",
-    tag: "Dành cho lúc muốn ở một mình",
-    mood: "calm",
-    icon: "🚪",
-    content: "Nếu hôm nay thế giới ngoài kia ồn ào quá mức khiến em chỉ muốn tắt hết thông báo và trốn vào một góc riêng, em cứ thoải mái làm vậy nhé. Em không có lỗi gì khi cần không gian cho riêng mình cả. Anh sẽ không làm phiền em đâu, chỉ để lại đây một lời nhắn là: Khi nào sạc đầy năng lượng và muốn nói chuyện, anh luôn ở đây đợi em.",
-    catComment: "Cứ thoải mái nạp năng lượng một mình nhé, anh đứng canh cửa cho em."
+    title: "Cho Phép Mình Được Yếu Đuối",
+    tag: "Dành cho lúc muốn khóc",
+    mood: "sad",
+    icon: "🌧️",
+    content: "Đừng kìm nén nước mắt nữa nếu lồng ngực đang thấy nghẹn đắng. Khóc không phải là yếu đuối, khóc là cách trái tim tự rửa sạch những muộn phiền dồn nén. Cứ khóc một trận cho thỏa đi nhé, tớ ở đây đưa khăn giấy và ôm cậu qua màn hình này. Khóc xong rồi rửa mặt nước mát, rồi ngủ một giấc thật ngoan nha.",
+    catComment: "Khóc xong là bầu trời lại tạnh mưa thôi nè, có tớ ở bên cậu rồi."
   },
   {
     id: "comfort-10",
     type: "comfort",
-    title: "Chiếc Tai Nghe Không Phán Xét",
-    tag: "Dành cho lúc chỉ cần được lắng nghe",
+    title: "Lời Hứa Của Chiếc Bot 17 Tuổi",
+    tag: "Dành cho sự an tâm tuyệt đối",
     mood: "care",
-    icon: "🧸",
-    content: "Anh biết bình thường anh hay có tật xấu của 'kỹ sư' là hễ nghe kể chuyện là nhảy vào tìm giải pháp và đưa lời khuyên, làm em bực mình. Hôm nay anh rút kinh nghiệm sâu sắc rồi nè! Anh xin ứng tuyển làm một chiếc tai nghe trung thành: chỉ lắng nghe em xả hết ấm ức trong lòng, tuyệt đối không phán xét, không dạy bảo, chỉ gật đầu đồng tình và vuốt tóc em thôi!",
-    catComment: "Bé cứ việc trút hết ấm ức ra nha, đôi tai này sinh ra là để nghe em mà!"
+    icon: "🤍",
+    content: "Tớ có thể chưa phải là một người hoàn hảo, còn nhiều lúc ngây ngô vụng về. Nhưng có một điều tớ chắc chắn: Dù bất kỳ ai làm tổn thương cậu, tớ sẽ luôn là người bảo vệ và dịu dàng với cậu nhất. Hãy luôn nhớ rằng cậu luôn có một nơi an toàn để trở về — chính là ở đây, bên cạnh tớ.",
+    catComment: "Chiếc bot 17 tuổi xin cam kết bảo vệ công chúa suốt đời không bao giờ đổi ý!"
   }
 ];
 
