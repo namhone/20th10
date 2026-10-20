@@ -59,20 +59,60 @@
       "rawInput": "huyền trân",
       "verifiedAt": "2026-10-20T14:12:48.949Z",
       "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-20T14:58:02.977Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T18:15:23.005Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-20T18:16:20.324Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T18:16:52.047Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T18:19:16.504Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T18:19:23.683Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T18:21:13.925Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
-    "openedCount": 1,
+    "openedCount": 0,
     "userConfig": {
       "recipientName": "Huyền Trân",
       "senderName": "Cậu bạn 17 tuổi của Trân",
       "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
-    "openedIds": [
-      "poem-1"
-    ],
-    "updatedAt": "2026-10-20T14:12:56.950Z"
+    "openedIds": [],
+    "updatedAt": "2026-10-20T18:21:14.567Z"
   },
   "dateVouchers": [
     {
@@ -114,6 +154,16 @@
       "recipient": "Huyền Trân",
       "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
       "timestamp": "2026-10-20T14:13:01.517Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T18:15:32.831Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T18:16:26.402Z"
     }
   ],
   "messages": [
@@ -190,6 +240,26 @@
       "sender": "Huyền Trân",
       "detail": "🧋 [Liều sạc pin ngọt ngào]: Gửi cho Trân một ly trà sữa ngọt ngào qua tâm trí! Cố lên nhé, rồi tớ sẽ sớm dắt cậu đi date ngoài đời thực để bù đắp hết những ngày mệt mỏi này nha.",
       "time": "2026-10-20T14:13:01.080Z"
+    },
+    {
+      "id": 1792520132415,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🍲 [Liều ấm bụng]: Dù mệt mỏi hay đắng miệng đến đâu, Trân cũng nhớ ăn chút cháo ấm hoặc một chén súp nhé. Cái bụng nhỏ phải có năng lượng thì cơ thể mới mau khỏe được nè.",
+      "time": "2026-10-20T18:15:32.412Z"
+    },
+    {
+      "id": 1792520185932,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🌙 [Liều ngủ ngoan không âu lo]: Gác lại sách vở bài tập thôi nào cô bé 17 tuổi. Đêm nay hãy thả lỏng bờ vai, nhắm mắt lại và ngủ một giấc thật êm. Mọi muộn phiền cứ để tớ gánh thay cậu.",
+      "time": "2026-10-20T18:16:25.931Z"
+    },
+    {
+      "id": 1792520187527,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-20T18:16:27.526Z"
     }
   ]
 }

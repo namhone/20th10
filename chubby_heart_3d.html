@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>3D Chubby Heart • Creative Coding WebGL Particle System</title>
+  <meta name="description" content="Hiệu ứng đồ họa 3D trái tim hạt múp míp (Chubby Heart 3D) tương tác cao cấp với Three.js, WebGL Shader và nhịp tim sinh học thực tế.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Three.js r128 & OrbitControls via CDN (Standalone, CORS-friendly, file:// ready) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    :root {
+      --bg-color: #030007;
+      --card-bg: rgba(18, 9, 28, 0.75);
+      --card-border: rgba(255, 60, 130, 0.25);
+      --accent-pink: #ff2a7a;
+      --accent-purple: #9d4edd;
+      --accent-crimson: #ff0040;
+      --text-main: #fbf0fc;
+      --text-muted: #a894ba;
+      --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-color);
+      font-family: var(--font-ui);
+      color: var(--text-main);
+      position: relative;
+    }
+
+    /* Canvas 3D Viewport */
+    #webgl-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    #webgl-canvas:active {
+      cursor: grabbing;
+    }
+
+    /* Ambient Background Radial Vignette */
+    .ambient-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 50%, rgba(130, 15, 75, 0.22) 0%, rgba(28, 6, 40, 0.48) 45%, #030007 85%);
+      transition: opacity 0.5s ease;
+    }
+
+    /* Dynamic back-glow pulse in background */
+    .bg-pulse-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 58vw;
+      height: 58vw;
+      max-width: 580px;
+      max-height: 580px;
+      background: radial-gradient(circle, rgba(255, 20, 85, 0.2) 0%, rgba(140, 20, 120, 0.08) 42%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(55px);
+      opacity: 0.65;
+      transition: transform 0.08s ease-out, opacity 0.12s ease-out;
+    }
+
+    /* UI Overlay Layer */
+    .ui-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    /* Header */
+    .header {
+      pointer-events: auto;
+      max-width: 480px;
+      animation: fadeInDown 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      background: rgba(255, 42, 122, 0.14);
+      border: 1px solid rgba(255, 42, 122, 0.35);
+      color: #ff7da4;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 8px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: var(--accent-crimson);
+      box-shadow: 0 0 8px var(--accent-crimson);
+      animation: pulseDot 1.2s infinite ease-in-out;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #ffffff 25%, #ff8ab2 65%, #d88aff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Bottom Interactive HUD */
+    .bottom-hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Interaction Hint Tooltip */
+    .interaction-hint {
+      pointer-events: auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 10px 18px;
+      border-radius: 100px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      font-size: 12.5px;
+      color: var(--text-main);
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+    }
+
+    .hint-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 42, 122, 0.2);
+      color: var(--accent-pink);
+    }
+
+    /* Control Panel Glass Card */
+    .control-panel {
+      pointer-events: auto;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 18px 20px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      display: flex;
+      flex-direction: column;
+      gap: 13px;
+      width: 320px;
+      animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s both;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ff94ba;
+    }
+
+    .stat-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: rgba(0, 0, 0, 0.35);
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Form Rows */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label-group {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .control-val {
+      font-family: var(--font-mono);
+      color: #ffd1e3;
+      font-weight: 600;
+    }
+
+    /* Buttons & Presets */
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .btn-preset {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      padding: 7px 0;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-ui);
+    }
+
+    .btn-preset:hover {
+      background: rgba(255, 42, 122, 0.2);
+      border-color: rgba(255, 42, 122, 0.4);
+      color: #fff;
+    }
+
+    .btn-preset.active {
+      background: linear-gradient(135deg, rgba(255, 42, 122, 0.45), rgba(157, 78, 221, 0.45));
+      border-color: var(--accent-pink);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(255, 42, 122, 0.35);
+    }
+
+    /* Action Buttons Row */
+    .actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .btn-action {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-main);
+      padding: 8px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-ui);
+    }
+
+    .btn-action:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-action.toggle-active {
+      background: rgba(255, 42, 122, 0.25);
+      border-color: var(--accent-pink);
+      color: #ffd6e6;
+    }
+
+    /* Range Slider */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      outline: none;
+      margin: 6px 0;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #ff5294;
+      cursor: pointer;
+      box-shadow: 0 0 8px #ff2a7a;
+      transition: transform 0.15s ease;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.25);
+    }
+
+    /* Mobile Quick Controls */
+    .btn-toggle-ui {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      pointer-events: auto;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+      z-index: 20;
+    }
+
+    .btn-toggle-ui:hover {
+      background: rgba(255, 42, 122, 0.3);
+      transform: scale(1.05);
+    }
+
+    /* Animations */
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 0.8; }
+      50% { transform: scale(1.5); opacity: 1; box-shadow: 0 0 12px var(--accent-pink); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive Queries */
+    @media (max-width: 768px) {
+      .ui-layer {
+        padding: 16px;
+      }
+      h1 {
+        font-size: 21px;
+      }
+      .subtitle {
+        font-size: 11.5px;
+      }
+      .bottom-hud {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        gap: 12px;
+      }
+      .control-panel {
+        width: 100%;
+        max-width: none;
+        padding: 14px 16px;
+        gap: 10px;
+      }
+      .interaction-hint {
+        align-self: center;
+        font-size: 11px;
+        padding: 8px 14px;
+      }
+      .btn-toggle-ui {
+        top: 16px;
+        right: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient background glow layers -->
+  <div class="ambient-background"></div>
+  <div class="bg-pulse-glow" id="bgGlow"></div>
+
+  <!-- WebGL Render Canvas -->
+  <canvas id="webgl-canvas"></canvas>
+
+  <!-- Toggle Fullscreen UI Button -->
+  <button class="btn-toggle-ui" id="btnToggleUI" title="Ẩn/Hiện Bảng điều khiển">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+    </svg>
+  </button>
+
+  <!-- Interactive UI Overlay -->
+  <div class="ui-layer" id="uiLayer">
+    <!-- Header -->
+    <header class="header">
+      <div class="badge">
+        <span class="badge-dot"></span>
+        Chubby Parametric Solid Heart • WebGL 3D
+      </div>
+      <h1>3D Chubby Heart</h1>
+      <p class="subtitle">Khối hạt trái tim 3D căng múp, phát quang sinh học với nhịp đập Lub-Dub thực tế & ma trận phân bố thể tích dày dặn.</p>
+    </header>
+
+    <!-- Bottom HUD Area -->
+    <div class="bottom-hud">
+      <!-- Interaction Tooltip -->
+      <div class="interaction-hint" id="hintBox">
+        <span class="hint-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </span>
+        <span>Kéo để xoay 360° • Lăn chuột để Zoom • <b>Chạm vào tim</b> để kích nhịp đập</span>
+      </div>
+
+      <!-- Glassmorphic Control Card -->
+      <div class="control-panel" id="controlPanel">
+        <div class="panel-header">
+          <span class="panel-title">Điều Khiển Trực Quan</span>
+          <span class="stat-badge" id="particleCountLabel">24,500 Hạt</span>
+        </div>
+
+        <!-- Heartbeat Rhythm Presets -->
+        <div class="control-row">
+          <div class="control-label-group">
+            <span>Nhịp Tim Sinh Học</span>
+            <span class="control-val" id="bpmDisplay">65 BPM</span>
+          </div>
+          <div class="button-group">
+            <button class="btn-preset active" data-bpm="65" id="btnCalm">Thư Thái</button>
+            <button class="btn-preset" data-bpm="82" id="btnRomance">Rung Động</button>
+            <button class="btn-preset" data-bpm="105" id="btnPassionate">Rộn Ràng</button>
+          </div>
+        </div>
+
+        <!-- Glow Intensity Slider -->
+        <div class="control-row">
+          <div class="control-label-group">
+            <span>Độ Sáng Phát Quang (Glow)</span>
+            <span class="control-val" id="glowDisplay">1.25x</span>
+          </div>
+          <input type="range" id="glowSlider" min="0.5" max="2.2" step="0.05" value="1.25">
+        </div>
+
+        <!-- Functional Actions -->
+        <div class="actions-row">
+          <button class="btn-action toggle-active" id="btnAutoRotate">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+            </svg>
+            Tự Xoay
+          </button>
+          <button class="btn-action" id="btnPulseThrill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+            Nhịp Đập Mạnh
+          </button>
+          <button class="btn-action" id="btnResetView" title="Góc nhìn chính diện">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><polygon points="12 8 8 12 12 16 12 8"/>
+            </svg>
+            Góc Nhìn
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WebGL Creative Coding Logic -->
+  <script>
+    /**
+     * =========================================================================
+     * CHUBBY HEART 3D PARTICLE SYSTEM - COMPLETE ARCHITECTURE
+     * =========================================================================
+     * 1. Hình học Cơ sở Giải tích (Analytical Chubby Heart Surface):
+     *    - Sử dụng hàm tham số 3D trơn nhẵn liên tục S(theta, phi) với tính đối xứng tuyệt đối qua trục X và Z.
+     *    - Hai múi tim phía trên tròn căng đầy đặn, chuyển tiếp tự nhiên vào rãnh giữa mềm mại.
+     *    - Rãnh giữa mềm mại, tự nhiên ở đỉnh, không bị khoét nhọn hay gắt.
+     *    - Phần đáy thuôn gọn thành một chóp tim tròn trịa tự nhiên, không bị nhọn hoắt hay kéo dài bất thường.
+     *    - Chiều sâu trục Z dày tròn múp míp (Chubby Volume), căng mọng từ mọi góc nhìn 360 độ.
+     * 2. Phân bố Hạt Thực tế (Physical Surface & Core Sampling):
+     *    - 15,000 hạt Vỏ (Shell - 68%): Lấy mẫu diện tích đều đặn trực tiếp trên bề mặt 3D thực tế,
+     *      đảm bảo mật độ đồng nhất, đường viền sắc nét, không có lỗ hổng hay khoảng rỗng.
+     *    - 7,000 hạt Lõi (Core - 32%): Lấy mẫu thể tích co về trục thẳng đứng trung tâm (Vertical Spine),
+     *      giúp mọi lát cắt ngang từ đỉnh xuống đáy đều đặc thịt, phát quang ấm áp từ tâm.
+     *    - 2,500 hạt Bụi sao (Ambient Stardust): Xoay lượn tự do trong không gian 3D.
+     * 3. Nhịp tim Sinh học Đồng bộ (Proportion-Preserving Biological Heartbeat):
+     *    - Mô phỏng nhịp Lub-Dub thực tế với 2 xung co bóp tâm thất và tâm nhĩ.
+     *    - Co giãn đồng bộ toàn khối, bảo toàn nguyên vẹn tỷ lệ và silhouette của hai múi tim khi đập.
+     * 4. Shaders & Additive Blending Cân bằng:
+     *    - Gradient màu sắc 3D: Đỏ tươi Ruby (lõi) -> Hồng cánh sen (thân) -> Tím huỳnh quang (viền/đỉnh).
+     *    - Alpha falloff tinh tế giúp tích tụ ánh sáng quang học rực rỡ mà không bị cháy trắng.
+     * =========================================================================
+     */
+
+    // --- CẤU HÌNH THÔNG SỐ (PARAMETERS) ---
+    const CONFIG = {
+      shellParticles: 15000,     // Số lượng hạt lớp vỏ bề mặt
+      coreParticles: 7000,       // Số lượng hạt lớp ruột lõi
+      stardustParticles: 2500,   // Bụi sao bay lượn xung quanh
+      bpm: 65,                   // Nhịp tim mặc định (nhịp/phút)
+      glowMultiplier: 1.25,      // Cường độ phát quang cân bằng
+      heartScale: 1.24,          // Tỷ lệ phóng đại tổng thể cân đối viewport
+      autoRotateSpeed: 0.85      // Tốc độ tự động xoay
+    };
+
+    // --- BIẾN TRẠNG THÁI TOÀN CỤC ---
+    let scene, camera, renderer, controls;
+    let heartPointsMesh, stardustPointsMesh;
+    let heartMaterial, stardustMaterial;
+    let clock = new THREE.Clock();
+    let currentBPM = CONFIG.bpm;
+    let targetBPM = CONFIG.bpm;
+    let extraExcitement = 0.0;   // Xung kích hoạt khi người dùng click
+    let bgGlowElement = document.getElementById('bgGlow');
+
+    // --- SHADER GLSL CHO KHỐI TRÁI TIM CHUBBY ---
+    const HeartShader = {
+      vertexShader: `
+        uniform float uTime;
+        uniform float uBPM;
+        uniform float uExcitement;
+        uniform float uGlow;
+        uniform float uPixelRatio;
+
+        attribute vec3 aBaseColor;
+        attribute float aLayerType; // 0.0 = core, 1.0 = shell
+        attribute float aBaseSize;
+
+        varying vec3 vColor;
+        varying float vPulse;
+        varying float vLayer;
+
+        // Mô phỏng chu kỳ nhịp tim sinh học Lub-Dub (2 pha co bóp thực tế)
+        float computeHeartbeat(float phase) {
+          // Pha 1: Co bóp tâm thất cực mạnh (Systole 1 - "Lub")
+          float p1 = phase - 0.06;
+          float b1 = exp(-(p1 * p1) / 0.0032);
+
+          // Pha 2: Co bóp phụ đóng van (Systole 2 - "Dub")
+          float p2 = phase - 0.23;
+          float b2 = 0.45 * exp(-(p2 * p2) / 0.0042);
+
+          // Nhả chậm đàn hồi (Elastic relaxation)
+          float p3 = phase - 0.13;
+          float recoil = -0.08 * exp(-(p3 * p3) / 0.0028);
+
+          return max(0.0, b1 + b2 + recoil);
+        }
+
+        void main() {
+          vLayer = aLayerType;
+          
+          float period = 60.0 / uBPM;
+          float globalPhase = mod(uTime, period) / period;
+          
+          // Nhịp đập đồng bộ bảo toàn hình dạng silhouette
+          float beat = computeHeartbeat(globalPhase);
+          beat += uExcitement * 0.75; // Xung kích hoạt tức thì khi click/chạm
+
+          vPulse = beat;
+
+          // Co giãn đồng bộ giữ nguyên tỷ lệ hình học giữa hai múi tim
+          float pulseScale = 1.0 + beat * 0.095;
+
+          // Nhịp thở tĩnh tại rất khẽ (đồng bộ, không làm méo viền)
+          float breath = sin(uTime * 1.6) * 0.012;
+          
+          vec3 deformedPos = position * (pulseScale + breath);
+
+          // Chuyển sang không gian camera
+          vec4 mvPosition = modelViewMatrix * vec4(deformedPos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          // Kích thước hạt theo cự ly phối cảnh
+          float pSize = aBaseSize * (1.0 + beat * 0.28) * uGlow;
+          gl_PointSize = pSize * (270.0 / -mvPosition.z) * uPixelRatio;
+
+          // Màu sắc hạt: Tăng độ rực sáng khi tim đập (không làm mất màu gradient)
+          vec3 pulseHighlight = vec3(1.0, 0.45, 0.75);
+          vColor = mix(aBaseColor, pulseHighlight, beat * (aLayerType < 0.5 ? 0.35 : 0.22));
+        }
+      `,
+      fragmentShader: `
+        uniform float uGlow;
+        varying vec3 vColor;
+        varying float vPulse;
+        varying float vLayer;
+
+        void main() {
+          // Tính bán kính từ tâm hạt (gl_PointCoord: [0, 1])
+          vec2 coord = gl_PointCoord - vec2(0.5);
+          float dist = length(coord);
+
+          // Cắt bỏ phần ngoài rìa tròn
+          if (dist > 0.5) {
+            discard;
+          }
+
+          // Hiệu ứng phát sáng mờ viền mềm mại (Smooth radial falloff)
+          float alpha = smoothstep(0.5, 0.06, dist);
+          alpha = pow(alpha, 1.35);
+
+          // Điểm sáng nhẹ ở lõi hạt (tâm hạt rất nhỏ dist < 0.12)
+          float centerSpecular = pow(clamp(1.0 - dist * 4.2, 0.0, 1.0), 3.0);
+          
+          vec3 finalColor = vColor;
+          finalColor += vec3(1.0, 0.90, 0.96) * centerSpecular * (0.45 + vPulse * 0.35);
+          finalColor *= (uGlow + vPulse * 0.35);
+
+          // Cân bằng quang học: Vỏ rõ nét, lõi tạo chiều sâu không làm đục bề mặt
+          float baseAlpha = (vLayer > 0.5) ? 0.45 : 0.26;
+          gl_FragColor = vec4(finalColor, alpha * (baseAlpha + vPulse * 0.14));
+        }
+      `
+    };
+
+    // --- SHADER GLSL CHO BỤI SAO BAY BỔNG (AMBIENT STARDUST) ---
+    const StardustShader = {
+      vertexShader: `
+        uniform float uTime;
+        uniform float uPixelRatio;
+        uniform float uGlow;
+
+        attribute vec3 aColor;
+        attribute float aSize;
+        attribute float aOrbitSpeed;
+        attribute float aPhase;
+
+        varying vec3 vColor;
+
+        void main() {
+          vColor = aColor;
+
+          // Chuyển động xoáy lượn nhẹ nhàng xung quanh trái tim
+          vec3 pos = position;
+          float angle = uTime * aOrbitSpeed * 0.22 + aPhase;
+          
+          float cosA = cos(angle);
+          float sinA = sin(angle);
+          float nx = pos.x * cosA - pos.z * sinA;
+          float nz = pos.x * sinA + pos.z * cosA;
+          pos.x = nx;
+          pos.z = nz;
+
+          // Lượn sóng nhẹ nhàng trục Y
+          pos.y += sin(uTime * 0.75 + aPhase) * 0.12;
+
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+
+          // Nhấp nháy nhẹ (twinkling)
+          float twinkle = sin(uTime * 2.2 + aPhase * 6.28) * 0.35 + 0.65;
+          gl_PointSize = aSize * twinkle * (240.0 / -mvPosition.z) * uPixelRatio * uGlow;
+        }
+      `,
+      fragmentShader: `
+        varying vec3 vColor;
+
+        void main() {
+          vec2 coord = gl_PointCoord - vec2(0.5);
+          float dist = length(coord);
+          if (dist > 0.5) discard;
+
+          float alpha = smoothstep(0.5, 0.08, dist);
+          alpha = pow(alpha, 1.6);
+
+          gl_FragColor = vec4(vColor * 1.15, alpha * 0.6);
+        }
+      `
+    };
+
+    // --- KHỞI TẠO THREE.JS VÀ SCENE ---
+    function init() {
+      const canvas = document.getElementById('webgl-canvas');
+
+      // 1. Tạo Scene
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x030007, 0.05);
+
+      // 2. Camera phối cảnh 3D
+      camera = new THREE.PerspectiveCamera(
+        45,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        100
+      );
+      camera.position.set(0, 0.25, 4.6);
+
+      // 3. WebGL Renderer tối ưu hiệu năng
+      renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: "high-performance"
+      });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0)); // Giới hạn 2.0 để mượt trên retina
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+
+      // 4. OrbitControls điều khiển góc nhìn tương tác
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.06;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = CONFIG.autoRotateSpeed;
+      controls.enableZoom = true;
+      controls.minDistance = 2.0;
+      controls.maxDistance = 8.5;
+      controls.target.set(0, 0.02, 0);
+
+      // 5. Khởi tạo hình học hạt Trái tim và Bụi sao
+      createChubbyHeartMesh();
+      createStardustMesh();
+
+      // 6. Gán sự kiện UI & Tương tác
+      setupEventListeners();
+
+      // 7. Bắt đầu Vòng lặp Render (Animation Loop)
+      animate();
+    }
+
+    /**
+     * HÀM TOÁN HỌC TÍNH TỌA ĐỘ BỀ MẶT TRÁI TIM 3D CHUBBY
+     * Tham số: theta in [0, PI], phi in [-PI, PI]
+     * Đảm bảo tính liên tục C-infinity, đối xứng tuyệt đối qua trục X và Z
+     */
+    function evaluateHeartSurface(theta, phi) {
+      let sinT = Math.sin(theta);
+      let cosT = Math.cos(theta);
+      let sinP = Math.sin(phi);
+      let cosP = Math.cos(phi);
+
+      // Chiều ngang X
+      let x = sinT * sinP;
+
+      // Độ cong nâng hai múi tim (Smooth Lobe Elevation):
+      // Nâng đều đặn hai múi trái và phải, hạ mềm mại ở rãnh giữa
+      let upperWeight = Math.max(0.0, cosT + 0.25);
+      let lobeLift = 0.44 * Math.pow(Math.abs(sinP), 1.2) * Math.pow(sinT, 0.7) * Math.pow(upperWeight, 1.1);
+      let y = cosT * 1.05 + lobeLift - 0.08;
+
+      // Chiều sâu Z: tạo độ dày căng múp (Chubby Volume)
+      let z = sinT * cosP * 0.75;
+
+      // Rãnh khuyết ở đỉnh trên (chỉ tác động vùng đỉnh cosT > 0.2)
+      if (cosT > 0.2) {
+        let pinch = 0.18 * Math.exp(-Math.pow(sinP / 0.32, 2)) * Math.pow((cosT - 0.2) / 0.8, 1.2);
+        z *= (1.0 - pinch);
+      }
+
+      // Độ đầy đặn phần thân trên (Upper Fullness) - tinh chỉnh thu hẹp chiều ngang ~6.5% để thon gọn, tự nhiên
+      let fullness = 1.0 + 0.22 * Math.max(0.0, cosT);
+      x *= 1.215 * fullness;
+      z *= (1.0 + 0.12 * Math.max(0.0, cosT));
+
+      // Vuốt thon mượt mà về chóp đáy (Smooth Lower Body Taper)
+      if (cosT < 0.0) {
+        let t = -cosT; // 0 ở xích đạo, 1 ở chóp đáy
+        let taper = 1.0 - 0.72 * Math.pow(t, 1.35);
+        x *= Math.max(0.02, taper);
+        z *= Math.max(0.02, taper);
+      }
+
+      return { x, y, z };
+    }
+
+    /**
+     * THUẬT TOÁN SINH HẠT TRÁI TIM THỂ TÍCH (SHELL & CORE SAMPLING)
+     * - Tách biệt độc lập: 15,000 hạt Vỏ + 7,000 hạt Lõi.
+     * - Lớp lõi co về trục thẳng đứng trung tâm (Vertical Spine) giúp đặc thịt 100%.
+     * - Lấy mẫu diện tích đều đặn (Area Uniform Sampling).
+     * - Gradient màu sắc 3D nghệ thuật: Đỏ Ruby -> Hồng cánh sen -> Tím huỳnh quang.
+     */
+    function createChubbyHeartMesh() {
+      const shellCount = CONFIG.shellParticles;
+      const coreCount = CONFIG.coreParticles;
+      const totalCount = shellCount + coreCount;
+
+      const positions = new Float32Array(totalCount * 3);
+      const colors = new Float32Array(totalCount * 3);
+      const layerTypes = new Float32Array(totalCount);
+      const baseSizes = new Float32Array(totalCount);
+
+      const scale = CONFIG.heartScale;
+
+      // Bảng màu nghệ thuật độ bão hòa cao (Rich Saturated Chromatic Palette)
+      const colorCrimson  = new THREE.Color('#ff0a36'); // Đỏ tươi ruby ấm nồng
+      const colorHotPink  = new THREE.Color('#ff2282'); // Hồng cánh sen rực rỡ
+      const colorRosePink = new THREE.Color('#ff4d9e'); // Hồng phấn dạ quang
+      const colorPurple   = new THREE.Color('#8518cf'); // Tím huỳnh quang kiêu sa
+      const colorDeepDark = new THREE.Color('#480970'); // Tím thẫm huyền bí
+
+      let pIdx = 0;
+
+      // --- 1. SINH LỚP VỎ BỀ MẶT (SHELL PARTICLES - 15,000 HẠT) ---
+      for (let i = 0; i < shellCount; i++) {
+        // Lấy mẫu diện tích đồng đều trên mặt cầu tham số
+        let u = Math.random();
+        let theta = Math.acos(1.0 - 2.0 * u);
+        let phi = (Math.random() * 2.0 - 1.0) * Math.PI;
+
+        let pt = evaluateHeartSurface(theta, phi);
+
+        // Tạo độ dày vỏ siêu mỏng (nhung mịn tự nhiên)
+        let shellJitter = 1.0 - Math.random() * 0.025;
+        let px = pt.x * scale * shellJitter;
+        let py = pt.y * scale * shellJitter;
+        let pz = pt.z * scale * shellJitter;
+
+        let idx = pIdx * 3;
+        positions[idx]     = px;
+        positions[idx + 1] = py;
+        positions[idx + 2] = pz;
+
+        layerTypes[pIdx] = 1.0; // Shell
+        baseSizes[pIdx] = 0.040 + Math.random() * 0.024;
+
+        // Gradient màu sắc 3D lớp vỏ
+        let normY = THREE.MathUtils.clamp((pt.y + 1.25) / 2.5, 0.0, 1.0);
+        let dist = Math.sqrt(px * px + py * py + pz * pz);
+        let normR = THREE.MathUtils.clamp(dist / (1.5 * scale), 0.0, 1.0);
+        let pColor = new THREE.Color();
+
+        if (normY < 0.28) {
+          // Vùng chóp nhọn phía đáy: Tím thẫm -> Đỏ ruby
+          let t = normY / 0.28;
+          pColor.copy(colorDeepDark).lerp(colorCrimson, t);
+        } else if (normY < 0.72) {
+          // Vùng thân và hai múi tim: Hồng cánh sen -> Hồng phấn
+          let t = (normY - 0.28) / 0.44;
+          pColor.copy(colorHotPink).lerp(colorRosePink, t);
+        } else {
+          // Vùng đỉnh hai tai tim: Hồng phấn -> Tím huỳnh quang
+          let t = (normY - 0.72) / 0.28;
+          pColor.copy(colorRosePink).lerp(colorPurple, t);
+        }
+
+        if (normR > 0.65) {
+          pColor.lerp(colorPurple, (normR - 0.65) * 1.2);
+        }
+
+        colors[idx]     = pColor.r;
+        colors[idx + 1] = pColor.g;
+        colors[idx + 2] = pColor.b;
+
+        pIdx++;
+      }
+
+      // --- 2. SINH LỚP LÕI THỂ TÍCH BÊN TRONG (VOLUMETRIC CORE - 7,000 HẠT) ---
+      // Co về trục xương sống thẳng đứng (X=0, Z=0) để lấp đầy thể tích ở mọi độ cao Y
+      for (let i = 0; i < coreCount; i++) {
+        let u = Math.random();
+        let theta = Math.acos(1.0 - 2.0 * u);
+        let phi = (Math.random() * 2.0 - 1.0) * Math.PI;
+
+        let pt = evaluateHeartSurface(theta, phi);
+
+        // Hệ số thể tích r nằm gọn trong ruột [0, 0.88]
+        let r = Math.pow(Math.random(), 0.5) * 0.88;
+
+        let px = pt.x * scale * r;
+        let py = pt.y * scale * (0.97 + (Math.random() - 0.5) * 0.06);
+        let pz = pt.z * scale * r;
+
+        let idx = pIdx * 3;
+        positions[idx]     = px;
+        positions[idx + 1] = py;
+        positions[idx + 2] = pz;
+
+        layerTypes[pIdx] = 0.0; // Core
+        baseSizes[pIdx] = 0.035 + Math.random() * 0.026;
+
+        // Màu lõi: Đỏ ruby ấm áp phát quang từ trong tim
+        let normY = THREE.MathUtils.clamp((pt.y + 1.25) / 2.5, 0.0, 1.0);
+        let pColor = new THREE.Color();
+        pColor.copy(colorCrimson).lerp(colorHotPink, normY * 0.5 + r * 0.5);
+
+        colors[idx]     = pColor.r;
+        colors[idx + 1] = pColor.g;
+        colors[idx + 2] = pColor.b;
+
+        pIdx++;
+      }
+
+      // Đóng gói vào BufferGeometry tối ưu GPU
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('aBaseColor', new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute('aLayerType', new THREE.BufferAttribute(layerTypes, 1));
+      geometry.setAttribute('aBaseSize', new THREE.BufferAttribute(baseSizes, 1));
+
+      // Shader Material với Additive Blending
+      heartMaterial = new THREE.ShaderMaterial({
+        vertexShader: HeartShader.vertexShader,
+        fragmentShader: HeartShader.fragmentShader,
+        uniforms: {
+          uTime: { value: 0.0 },
+          uBPM: { value: currentBPM },
+          uExcitement: { value: 0.0 },
+          uGlow: { value: CONFIG.glowMultiplier },
+          uPixelRatio: { value: Math.min(window.devicePixelRatio, 2.0) }
+        },
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+
+      heartPointsMesh = new THREE.Points(geometry, heartMaterial);
+      scene.add(heartPointsMesh);
+    }
+
+    /**
+     * BỤI SAO BAY BỔNG XUNG QUANH (AMBIENT STARDUST)
+     * Tạo không gian trường sao lung linh bao quanh trái tim
+     */
+    function createStardustMesh() {
+      const count = CONFIG.stardustParticles;
+      const positions = new Float32Array(count * 3);
+      const colors = new Float32Array(count * 3);
+      const sizes = new Float32Array(count);
+      const orbitSpeeds = new Float32Array(count);
+      const phases = new Float32Array(count);
+
+      const colorPink = new THREE.Color('#ff6ba7');
+      const colorPurple = new THREE.Color('#b5179e');
+      const colorViolet = new THREE.Color('#7209b7');
+
+      for (let i = 0; i < count; i++) {
+        let radius = 1.6 + Math.pow(Math.random(), 1.5) * 2.7;
+        let theta = Math.random() * Math.PI * 2;
+        let phi = (Math.random() - 0.5) * Math.PI;
+
+        positions[i * 3]     = radius * Math.cos(phi) * Math.sin(theta);
+        positions[i * 3 + 1] = radius * Math.sin(phi) * 1.1 + 0.08;
+        positions[i * 3 + 2] = radius * Math.cos(phi) * Math.cos(theta);
+
+        let mixedColor = colorPink.clone().lerp(
+          Math.random() > 0.5 ? colorPurple : colorViolet,
+          Math.random()
+        );
+
+        colors[i * 3]     = mixedColor.r;
+        colors[i * 3 + 1] = mixedColor.g;
+        colors[i * 3 + 2] = mixedColor.b;
+
+        sizes[i] = 0.026 + Math.random() * 0.034;
+        orbitSpeeds[i] = (Math.random() * 0.6 + 0.4) * (Math.random() > 0.5 ? 1 : -1);
+        phases[i] = Math.random() * Math.PI * 2;
+      }
+
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+      geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+      geometry.setAttribute('aOrbitSpeed', new THREE.BufferAttribute(orbitSpeeds, 1));
+      geometry.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
+
+      stardustMaterial = new THREE.ShaderMaterial({
+        vertexShader: StardustShader.vertexShader,
+        fragmentShader: StardustShader.fragmentShader,
+        uniforms: {
+          uTime: { value: 0.0 },
+          uPixelRatio: { value: Math.min(window.devicePixelRatio, 2.0) },
+          uGlow: { value: CONFIG.glowMultiplier }
+        },
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      });
+
+      stardustPointsMesh = new THREE.Points(geometry, stardustMaterial);
+      scene.add(stardustPointsMesh);
+    }
+
+    /**
+     * THIẾT LẬP CÁC SỰ KIỆN TƯƠNG TÁC
+     */
+    function setupEventListeners() {
+      // 1. Tự thích ứng kích thước cửa sổ (Responsive Resize)
+      window.addEventListener('resize', onWindowResize, false);
+
+      // 2. Tương tác chạm / click vào trái tim để kích hoạt nhịp rộn ràng
+      const canvas = document.getElementById('webgl-canvas');
+      canvas.addEventListener('pointerdown', (e) => {
+        triggerHeartThrill();
+      });
+
+      // 3. Nút chuyển đổi Preset Nhịp Tim
+      const bpmButtons = [
+        { btn: document.getElementById('btnCalm'), bpm: 65 },
+        { btn: document.getElementById('btnRomance'), bpm: 82 },
+        { btn: document.getElementById('btnPassionate'), bpm: 105 }
+      ];
+
+      bpmButtons.forEach(item => {
+        item.btn.addEventListener('click', (e) => {
+          bpmButtons.forEach(b => b.btn.classList.remove('active'));
+          item.btn.classList.add('active');
+          targetBPM = item.bpm;
+          document.getElementById('bpmDisplay').innerText = `${item.bpm} BPM`;
+          triggerHeartThrill();
+        });
+      });
+
+      // 4. Thanh trượt chỉnh độ sáng phát quang
+      const glowSlider = document.getElementById('glowSlider');
+      const glowDisplay = document.getElementById('glowDisplay');
+      glowSlider.addEventListener('input', (e) => {
+        const val = parseFloat(e.target.value);
+        CONFIG.glowMultiplier = val;
+        glowDisplay.innerText = `${val.toFixed(2)}x`;
+        if (heartMaterial) heartMaterial.uniforms.uGlow.value = val;
+        if (stardustMaterial) stardustMaterial.uniforms.uGlow.value = val;
+      });
+
+      // 5. Nút bật / tắt Tự động xoay
+      const btnAutoRotate = document.getElementById('btnAutoRotate');
+      btnAutoRotate.addEventListener('click', () => {
+        controls.autoRotate = !controls.autoRotate;
+        btnAutoRotate.classList.toggle('toggle-active', controls.autoRotate);
+      });
+
+      // 6. Nút kích nhịp đập mạnh tức thì
+      document.getElementById('btnPulseThrill').addEventListener('click', () => {
+        triggerHeartThrill();
+      });
+
+      // 7. Nút Reset về góc nhìn mặc định
+      document.getElementById('btnResetView').addEventListener('click', () => {
+        controls.reset();
+        camera.position.set(0, 0.25, 4.6);
+        controls.target.set(0, 0.02, 0);
+      });
+
+      // 8. Nút ẩn / hiện toàn bộ UI Overlay
+      const btnToggleUI = document.getElementById('btnToggleUI');
+      const uiLayer = document.getElementById('uiLayer');
+      let uiVisible = true;
+      btnToggleUI.addEventListener('click', () => {
+        uiVisible = !uiVisible;
+        uiLayer.style.display = uiVisible ? 'flex' : 'none';
+        btnToggleUI.style.opacity = uiVisible ? '1' : '0.5';
+      });
+    }
+
+    /**
+     * KÍCH HOẠT NHỊP ĐẬP RỘN RÀNG (EXCITED HEART THRILL)
+     */
+    function triggerHeartThrill() {
+      extraExcitement = 1.0;
+      if (bgGlowElement) {
+        bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.3)';
+        bgGlowElement.style.opacity = '0.95';
+        setTimeout(() => {
+          bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.0)';
+          bgGlowElement.style.opacity = '0.65';
+        }, 320);
+      }
+    }
+
+    /**
+     * XỬ LÝ THAY ĐỔI KÍCH THƯỚC CỬA SỔ
+     */
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2.0));
+
+      let pRatio = Math.min(window.devicePixelRatio, 2.0);
+      if (heartMaterial) heartMaterial.uniforms.uPixelRatio.value = pRatio;
+      if (stardustMaterial) stardustMaterial.uniforms.uPixelRatio.value = pRatio;
+    }
+
+    /**
+     * VÒNG LẶP HOẠT HỌA RENDER (ANIMATION LOOP)
+     */
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const elapsedTime = clock.getElapsedTime();
+
+      // Mượt hóa chuyển đổi nhịp tim BPM (Smooth BPM transition)
+      currentBPM += (targetBPM - currentBPM) * 0.08;
+
+      // Giảm dần xung kích hoạt click
+      extraExcitement *= 0.92;
+      if (extraExcitement < 0.001) extraExcitement = 0.0;
+
+      // Cập nhật Uniforms cho Shaders
+      if (heartMaterial) {
+        heartMaterial.uniforms.uTime.value = elapsedTime;
+        heartMaterial.uniforms.uBPM.value = currentBPM;
+        heartMaterial.uniforms.uExcitement.value = extraExcitement;
+      }
+
+      if (stardustMaterial) {
+        stardustMaterial.uniforms.uTime.value = elapsedTime;
+      }
+
+      // Cập nhật hiệu ứng đèn nền nhấp nháy theo nhịp tim sinh học
+      if (bgGlowElement) {
+        let period = 60.0 / currentBPM;
+        let phase = (elapsedTime % period) / period;
+        let b1 = Math.exp(-Math.pow(phase - 0.06, 2) / 0.0045);
+        let b2 = 0.45 * Math.exp(-Math.pow(phase - 0.23, 2) / 0.0055);
+        let pulseVal = Math.max(0.0, b1 + b2) + extraExcitement * 0.5;
+
+        let scaleVal = 1.0 + pulseVal * 0.12;
+        let opacityVal = 0.55 + pulseVal * 0.35;
+        bgGlowElement.style.transform = `translate(-50%, -50%) scale(${scaleVal})`;
+        bgGlowElement.style.opacity = opacityVal;
+      }
+
+      // Cập nhật OrbitControls (bao gồm damping và auto-rotate)
+      controls.update();
+
+      // Render Frame
+      renderer.render(scene, camera);
+    }
+
+    // Khởi chạy ứng dụng khi DOM tải xong
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

@@ -1,8 +1,241 @@
 /**
- * Module Trái Tim 3D Điểm Hạt (Three.js 3D Pulsing Particle Heart)
- * Nền đen, tương tác xoay 3D (OrbitControls), nhịp đập chân thực, phát sáng
+ * =========================================================================
+ * CHUBBY HEART 3D PARTICLE SYSTEM (MODULE js/modules/heart3d.js)
+ * Ported directly from chubby_heart_3d.html
+ * =========================================================================
+ * 1. Hình học Cơ sở Giải tích (Analytical Chubby Heart Surface):
+ *    - Sử dụng hàm tham số 3D trơn nhẵn liên tục S(theta, phi) với tính đối xứng qua trục X và Z.
+ *    - Hai múi tim phía trên tròn căng đầy đặn, rãnh giữa mềm mại tự nhiên.
+ *    - Chóp đáy thuôn gọn thành hình trái tim tròn mọng (Chubby / Puffy Balloon 3D).
+ * 2. Phân bố Hạt Thực tế (Physical Surface & Core Sampling):
+ *    - 15,000 hạt Vỏ (Shell - 68%): Lấy mẫu diện tích đều đặn trực tiếp trên bề mặt 3D thực tế.
+ *    - 7,000 hạt Lõi (Core - 32%): Lấy mẫu thể tích co về trục thẳng đứng trung tâm (Vertical Spine).
+ *    - 2,500 hạt Bụi sao (Ambient Stardust): Xoáy lượn lung linh trong không gian 3D.
+ * 3. Nhịp tim Sinh học Đồng bộ (Proportion-Preserving Biological Heartbeat):
+ *    - Mô phỏng nhịp Lub-Dub thực tế với 2 pha co bóp tâm thất và tâm nhĩ.
+ *    - Tương tác chạm/click kích hoạt nhịp rộn ràng (Heart Thrill) và pháo hoa rực rỡ.
+ * 4. Shaders & Additive Blending Cân bằng:
+ *    - Gradient màu sắc 3D: Đỏ tươi Ruby -> Hồng cánh sen -> Tím huỳnh quang.
+ *    - Tự động bù đắp Point Scale để hạt giữ độ căng mọng đồng nhất trên cả Mobile & Desktop.
+ * =========================================================================
  */
 
+// --- CẤU HÌNH THÔNG SỐ (PARAMETERS) ---
+export const HEART_CONFIG = {
+  shellParticles: 15000,     // Số lượng hạt lớp vỏ bề mặt
+  coreParticles: 7000,       // Số lượng hạt lớp ruột lõi
+  stardustParticles: 2500,   // Bụi sao bay lượn xung quanh
+  bpm: 65,                   // Nhịp tim mặc định (nhịp/phút)
+  glowMultiplier: 1.30,      // Cường độ phát quang cân bằng
+  heartScale: 1.18,          // Tỷ lệ phóng đại tổng thể cân đối viewport giữa header và footer
+  autoRotateSpeed: 0.85      // Tốc độ tự động xoay
+};
+
+// --- SHADER GLSL CHO KHỐI TRÁI TIM CHUBBY ---
+const HeartShader = {
+  vertexShader: `
+    uniform float uTime;
+    uniform float uBPM;
+    uniform float uExcitement;
+    uniform float uGlow;
+    uniform float uPixelRatio;
+    uniform float uPointScale;
+
+    attribute vec3 aBaseColor;
+    attribute float aLayerType; // 0.0 = core, 1.0 = shell
+    attribute float aBaseSize;
+
+    varying vec3 vColor;
+    varying float vPulse;
+    varying float vLayer;
+
+    // Mô phỏng chu kỳ nhịp tim sinh học Lub-Dub (2 pha co bóp thực tế)
+    float computeHeartbeat(float phase) {
+      // Pha 1: Co bóp tâm thất cực mạnh (Systole 1 - "Lub")
+      float p1 = phase - 0.06;
+      float b1 = exp(-(p1 * p1) / 0.0032);
+
+      // Pha 2: Co bóp phụ đóng van (Systole 2 - "Dub")
+      float p2 = phase - 0.23;
+      float b2 = 0.45 * exp(-(p2 * p2) / 0.0042);
+
+      // Nhả chậm đàn hồi (Elastic relaxation)
+      float p3 = phase - 0.13;
+      float recoil = -0.08 * exp(-(p3 * p3) / 0.0028);
+
+      return max(0.0, b1 + b2 + recoil);
+    }
+
+    void main() {
+      vLayer = aLayerType;
+      
+      float period = 60.0 / uBPM;
+      float globalPhase = mod(uTime, period) / period;
+      
+      // Nhịp đập đồng bộ bảo toàn hình dạng silhouette
+      float beat = computeHeartbeat(globalPhase);
+      beat += uExcitement * 0.75; // Xung kích hoạt tức thì khi click/chạm
+
+      vPulse = beat;
+
+      // Co giãn đồng bộ giữ nguyên tỷ lệ hình học giữa hai múi tim
+      float pulseScale = 1.0 + beat * 0.095;
+
+      // Nhịp thở tĩnh tại rất khẽ (đồng bộ, không làm méo viền)
+      float breath = sin(uTime * 1.6) * 0.012;
+      
+      vec3 deformedPos = position * (pulseScale + breath);
+
+      // Chuyển sang không gian camera
+      vec4 mvPosition = modelViewMatrix * vec4(deformedPos, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      // Kích thước hạt theo cự ly phối cảnh kèm uPointScale giữ độ dày đồng nhất
+      float pSize = aBaseSize * (1.0 + beat * 0.28) * uGlow;
+      gl_PointSize = pSize * (280.0 / -mvPosition.z) * uPointScale * uPixelRatio;
+
+      // Màu sắc hạt: Tăng độ rực sáng khi tim đập
+      vec3 pulseHighlight = vec3(1.0, 0.45, 0.75);
+      vColor = mix(aBaseColor, pulseHighlight, beat * (aLayerType < 0.5 ? 0.35 : 0.22));
+    }
+  `,
+  fragmentShader: `
+    uniform float uGlow;
+    varying vec3 vColor;
+    varying float vPulse;
+    varying float vLayer;
+
+    void main() {
+      // Tính bán kính từ tâm hạt (gl_PointCoord: [0, 1])
+      vec2 coord = gl_PointCoord - vec2(0.5);
+      float dist = length(coord);
+
+      // Cắt bỏ phần ngoài rìa tròn
+      if (dist > 0.5) {
+        discard;
+      }
+
+      // Hiệu ứng phát sáng mờ viền mềm mại (Smooth radial falloff)
+      float alpha = smoothstep(0.5, 0.06, dist);
+      alpha = pow(alpha, 1.35);
+
+      // Điểm sáng nhẹ ở lõi hạt
+      float centerSpecular = pow(clamp(1.0 - dist * 4.2, 0.0, 1.0), 3.0);
+      
+      vec3 finalColor = vColor;
+      finalColor += vec3(1.0, 0.90, 0.96) * centerSpecular * (0.45 + vPulse * 0.35);
+      finalColor *= (uGlow + vPulse * 0.35);
+
+      // Cân bằng quang học: Vỏ rõ nét, lõi tạo chiều sâu không làm đục bề mặt
+      float baseAlpha = (vLayer > 0.5) ? 0.55 : 0.35;
+      gl_FragColor = vec4(finalColor, alpha * (baseAlpha + vPulse * 0.16));
+    }
+  `
+};
+
+// --- SHADER GLSL CHO BỤI SAO BAY BỔNG (AMBIENT STARDUST) ---
+const StardustShader = {
+  vertexShader: `
+    uniform float uTime;
+    uniform float uPixelRatio;
+    uniform float uGlow;
+    uniform float uPointScale;
+
+    attribute vec3 aColor;
+    attribute float aSize;
+    attribute float aOrbitSpeed;
+    attribute float aPhase;
+
+    varying vec3 vColor;
+
+    void main() {
+      vColor = aColor;
+
+      // Chuyển động xoáy lượn nhẹ nhàng xung quanh trái tim
+      vec3 pos = position;
+      float angle = uTime * aOrbitSpeed * 0.22 + aPhase;
+      
+      float cosA = cos(angle);
+      float sinA = sin(angle);
+      float nx = pos.x * cosA - pos.z * sinA;
+      float nz = pos.x * sinA + pos.z * cosA;
+      pos.x = nx;
+      pos.z = nz;
+
+      // Lượn sóng nhẹ nhàng trục Y
+      pos.y += sin(uTime * 0.75 + aPhase) * 0.12;
+
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      gl_Position = projectionMatrix * mvPosition;
+
+      // Nhấp nháy nhẹ (twinkling)
+      float twinkle = sin(uTime * 2.2 + aPhase * 6.28) * 0.35 + 0.65;
+      gl_PointSize = aSize * twinkle * (250.0 / -mvPosition.z) * uPointScale * uPixelRatio * uGlow;
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vColor;
+
+    void main() {
+      vec2 coord = gl_PointCoord - vec2(0.5);
+      float dist = length(coord);
+      if (dist > 0.5) discard;
+
+      float alpha = smoothstep(0.5, 0.08, dist);
+      alpha = pow(alpha, 1.6);
+
+      gl_FragColor = vec4(vColor * 1.15, alpha * 0.6);
+    }
+  `
+};
+
+/**
+ * HÀM TOÁN HỌC TÍNH TỌA ĐỘ BỀ MẶT TRÁI TIM 3D CHUBBY
+ * Tham số: theta in [0, PI], phi in [-PI, PI]
+ * Đảm bảo tính liên tục C-infinity, đối xứng tuyệt đối qua trục X và Z
+ */
+export function evaluateHeartSurface(theta, phi) {
+  const sinT = Math.sin(theta);
+  const cosT = Math.cos(theta);
+  const sinP = Math.sin(phi);
+  const cosP = Math.cos(phi);
+
+  // Chiều ngang X
+  let x = sinT * sinP;
+
+  // Độ cong nâng hai múi tim (Smooth Lobe Elevation):
+  const upperWeight = Math.max(0.0, cosT + 0.25);
+  const lobeLift = 0.44 * Math.pow(Math.abs(sinP), 1.2) * Math.pow(sinT, 0.7) * Math.pow(upperWeight, 1.1);
+  const y = cosT * 1.05 + lobeLift - 0.08;
+
+  // Chiều sâu Z: tạo độ dày căng múp (Chubby Volume)
+  let z = sinT * cosP * 0.75;
+
+  // Rãnh khuyết ở đỉnh trên (chỉ tác động vùng đỉnh cosT > 0.2)
+  if (cosT > 0.2) {
+    const pinch = 0.18 * Math.exp(-Math.pow(sinP / 0.32, 2)) * Math.pow((cosT - 0.2) / 0.8, 1.2);
+    z *= (1.0 - pinch);
+  }
+
+  // Độ đầy đặn phần thân trên (Upper Fullness) - thon gọn, tự nhiên
+  const fullness = 1.0 + 0.22 * Math.max(0.0, cosT);
+  x *= 1.215 * fullness;
+  z *= (1.0 + 0.12 * Math.max(0.0, cosT));
+
+  // Vuốt thon mượt mà về chóp đáy (Smooth Lower Body Taper)
+  if (cosT < 0.0) {
+    const t = -cosT; // 0 ở xích đạo, 1 ở chóp đáy
+    const taper = 1.0 - 0.72 * Math.pow(t, 1.35);
+    x *= Math.max(0.02, taper);
+    z *= Math.max(0.02, taper);
+  }
+
+  return { x, y, z };
+}
+
+/**
+ * Trình Quản lý & Kết xuất Trái Tim 3D Điểm Hạt (Three.js Chubby 3D Particle Heart)
+ */
 export class Heart3DViewer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
@@ -10,301 +243,393 @@ export class Heart3DViewer {
     this.camera = null;
     this.renderer = null;
     this.controls = null;
-    this.heartParticles = null;
-    this.starParticles = null;
+    this.clock = null;
+
+    this.heartPointsMesh = null;
+    this.stardustPointsMesh = null;
+    this.heartMaterial = null;
+    this.stardustMaterial = null;
+
+    this.bgGlowElement = null;
+    this.currentBPM = HEART_CONFIG.bpm;
+    this.targetBPM = HEART_CONFIG.bpm;
+    this.extraExcitement = 0.0;
+    this.pointScale = 1.0;
+
     this.animationFrameId = null;
     this.isInitialized = false;
     this.isActive = false;
 
-    this.basePositions = [];
-    this.particleCount = 5200;
-    this.time = 0;
-    this.beatScale = 1;
+    this._onResizeBound = this.onWindowResize.bind(this);
+    this._onPointerDownBound = this.onPointerDown.bind(this);
   }
 
   init() {
     if (this.isInitialized || !this.container) return;
 
-    // 1. Scene
+    this.clock = new THREE.Clock();
+    this.bgGlowElement = document.getElementById('heart-bg-glow');
+
+    // 1. Khởi tạo Scene
     this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x05050a, 0.002);
+    this.scene.fog = new THREE.FogExp2(0x030007, 0.04);
 
-    // 2. Camera (Tự động canh góc chuẩn tỷ lệ cho cả điện thoại màn hình dọc và máy tính)
+    // 2. Camera phối cảnh 3D với auto-framing responsive cho mobile và desktop
     const width = this.container.clientWidth || window.innerWidth;
-    const height = this.container.clientHeight || (window.innerHeight - 64);
+    const height = this.container.clientHeight || (window.innerHeight - 56);
     const aspect = Math.max(0.1, width / Math.max(1, height));
-    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
-    const cameraDist = aspect < 1 ? Math.max(50, Math.round(38 / (0.8284 * aspect))) : 42;
-    this.camera.position.set(0, 2.5, cameraDist);
 
-    // 3. Renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+
+    // Tính cự ly và độ bù điểm sáng tối ưu:
+    const defaultDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
+    this.pointScale = defaultDist / 4.8;
+
+    // Căn chỉnh trục Y hạ xuống nhẹ để tim nằm chính xác giữa tiêu đề trên và nút bấm dưới
+    const targetY = aspect < 1 ? -0.15 : -0.25;
+    this.camera.position.set(0, 0.0, defaultDist);
+
+    // 3. WebGL Renderer tối ưu hiệu năng
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
     this.renderer.setSize(width, Math.max(1, height));
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    this.renderer.setClearColor(0x050508, 1);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.0));
+    if (THREE.ACESFilmicToneMapping) {
+      this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      this.renderer.toneMappingExposure = 1.05;
+    }
+    this.renderer.setClearColor(0x030007, 1);
+
+    // Xóa bỏ nội dung cũ (nếu có) và thêm canvas mới
+    while (this.container.firstChild) {
+      this.container.removeChild(this.container.firstChild);
+    }
     this.container.appendChild(this.renderer.domElement);
 
-    // 4. OrbitControls
+    // 4. OrbitControls điều khiển góc nhìn tương tác
     if (window.THREE && window.THREE.OrbitControls) {
       this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
       this.controls.enableDamping = true;
-      this.controls.dampingFactor = 0.05;
-      this.controls.rotateSpeed = 0.7;
-      this.controls.minDistance = 15;
-      this.controls.maxDistance = 90;
-      this.controls.enablePan = true;
+      this.controls.dampingFactor = 0.06;
       this.controls.autoRotate = true;
-      this.controls.autoRotateSpeed = 0.8;
+      this.controls.autoRotateSpeed = HEART_CONFIG.autoRotateSpeed;
+      this.controls.enableZoom = true;
+      this.controls.minDistance = 2.0;
+      this.controls.maxDistance = Math.max(14.0, defaultDist * 1.7);
+      this.controls.target.set(0, targetY, 0);
     }
 
-    // 5. Build Heart Geometry & Dust
-    this.createHeartParticleCloud();
-    this.createStarlightDust();
+    // 5. Khởi tạo hình học hạt Trái tim và Bụi sao
+    this.createChubbyHeartMesh();
+    this.createStardustMesh();
 
-    // 6. Handle Resize & Click
-    window.addEventListener('resize', this.onWindowResize.bind(this));
-    this.container.addEventListener('click', this.onHeartClick.bind(this));
+    // 6. Gán sự kiện tương tác
+    window.addEventListener('resize', this._onResizeBound, false);
+    this.container.addEventListener('pointerdown', this._onPointerDownBound, false);
+
+    // Gán nút preset BPM nếu có trên giao diện
+    this.setupBpmButtons();
 
     this.isInitialized = true;
     this.isActive = true;
     this.animate();
   }
 
-  createHeartParticleCloud() {
-    const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(this.particleCount * 3);
-    const colors = new Float32Array(this.particleCount * 3);
-    const sizes = new Float32Array(this.particleCount);
+  createChubbyHeartMesh() {
+    const shellCount = HEART_CONFIG.shellParticles;
+    const coreCount = HEART_CONFIG.coreParticles;
+    const totalCount = shellCount + coreCount;
 
-    this.basePositions = [];
+    const positions = new Float32Array(totalCount * 3);
+    const colors = new Float32Array(totalCount * 3);
+    const layerTypes = new Float32Array(totalCount);
+    const baseSizes = new Float32Array(totalCount);
 
-    // Bảng màu bóng bay trái tim căng mọng (Puffy / Chubby 3D Balloon Heart)
-    const colorDeep = new THREE.Color(0xff1853);   // Đỏ hồng nhung sâu thẳm
-    const colorRose = new THREE.Color(0xff336f);   // Hồng quả mọng tươi tắn
-    const colorPastel = new THREE.Color(0xff7597); // Hồng phấn cánh hoa
-    const colorSoft = new THREE.Color(0xffb8cb);   // Hồng phớt kẹo ngọt
-    const colorGloss = new THREE.Color(0xffffff);  // Ánh sáng trắng phản quang bóng bay
-    const colorGold = new THREE.Color(0xffdf88);   // Ánh vàng lung linh
+    const scale = HEART_CONFIG.heartScale;
 
-    // Hướng ánh sáng phản quang bóng bay (Gloss specular reflection)
-    const lightDir = new THREE.Vector3(0.35, 0.65, 0.68).normalize();
+    // Bảng màu nghệ thuật độ bão hòa cao (Rich Saturated Chromatic Palette)
+    const colorCrimson  = new THREE.Color('#ff0a36'); // Đỏ tươi ruby ấm nồng
+    const colorHotPink  = new THREE.Color('#ff2282'); // Hồng cánh sen rực rỡ
+    const colorRosePink = new THREE.Color('#ff4d9e'); // Hồng phấn dạ quang
+    const colorPurple   = new THREE.Color('#8518cf'); // Tím huỳnh quang kiêu sa
+    const colorDeepDark = new THREE.Color('#480970'); // Tím thẫm huyền bí
 
-    // Thuật toán lấy mẫu bề mặt thể tích bóng bay trái tim 3D (Taubin Balloon Implicit Manifold)
-    // a = x^2 + 1.25*z^2 + y^2 - 1
-    // F(x, y, z) = a^3 - x^2 * y^3 - 0.1125 * z^2 * y^3 <= 0
-    // Hệ số z^2 = 1.25 giúp độ sâu (Z) phồng căng tròn đều như quả bóng bay từ mọi hướng
-    let count = 0;
-    let attempts = 0;
+    let pIdx = 0;
 
-    const surfaceQuota = Math.floor(this.particleCount * 0.82);
-    let surfaceCount = 0;
-    let innerCount = 0;
+    // --- 1. SINH LỚP VỎ BỀ MẶT (SHELL PARTICLES - 15,000 HẠT) ---
+    for (let i = 0; i < shellCount; i++) {
+      const u = Math.random();
+      const theta = Math.acos(1.0 - 2.0 * u);
+      const phi = (Math.random() * 2.0 - 1.0) * Math.PI;
 
-    const scaleFactor = 13.8;
+      const pt = evaluateHeartSurface(theta, phi);
 
-    while (count < this.particleCount && attempts < 500000) {
-      attempts++;
-      const x = (Math.random() - 0.5) * 2.8;
-      const y = (Math.random() - 0.5) * 2.8;
-      const z = (Math.random() - 0.5) * 2.8;
+      // Tạo độ dày vỏ siêu mỏng nhung mịn tự nhiên
+      const shellJitter = 1.0 - Math.random() * 0.025;
+      const px = pt.x * scale * shellJitter;
+      const py = pt.y * scale * shellJitter;
+      const pz = pt.z * scale * shellJitter;
 
-      const a = x * x + 1.25 * z * z + y * y - 1;
-      const val = a * a * a - x * x * y * y * y - 0.1125 * z * z * y * y * y;
+      const idx = pIdx * 3;
+      positions[idx]     = px;
+      positions[idx + 1] = py;
+      positions[idx + 2] = pz;
 
-      if (val <= 0.02) {
-        let isSurface = false;
-        if (val >= -0.16 && surfaceCount < surfaceQuota) {
-          isSurface = true;
-          surfaceCount++;
-        } else if (innerCount < (this.particleCount - surfaceQuota)) {
-          isSurface = false;
-          innerCount++;
-        } else if (surfaceCount < surfaceQuota) {
-          isSurface = true;
-          surfaceCount++;
-        } else {
-          continue;
-        }
+      layerTypes[pIdx] = 1.0; // Shell
+      baseSizes[pIdx] = 0.046 + Math.random() * 0.026;
 
-        // Tọa độ thực tế phóng to đều 3 chiều
-        const posX = x * scaleFactor;
-        const posY = (y + 0.15) * scaleFactor;
-        const posZ = z * scaleFactor;
+      // Gradient màu sắc 3D lớp vỏ
+      const normY = THREE.MathUtils.clamp((pt.y + 1.25) / 2.5, 0.0, 1.0);
+      const dist = Math.sqrt(px * px + py * py + pz * pz);
+      const normR = THREE.MathUtils.clamp(dist / (1.5 * scale), 0.0, 1.0);
+      const pColor = new THREE.Color();
 
-        positions[count * 3] = posX;
-        positions[count * 3 + 1] = posY;
-        positions[count * 3 + 2] = posZ;
-
-        this.basePositions.push({
-          x: posX,
-          y: posY,
-          z: posZ,
-          unitX: x,
-          unitY: y,
-          unitZ: z,
-          isSurface: isSurface,
-          randomOffset: Math.random() * Math.PI * 2
-        });
-
-        // Tính vector pháp tuyến để tạo hiệu ứng bóng phản chiếu (Gloss Specular Highlight)
-        const aSqr = a * a;
-        const ySqr = y * y;
-        const yCube = ySqr * y;
-
-        const nx = 6 * x * aSqr - 2 * x * yCube;
-        const ny = 6 * y * aSqr - 3 * x * x * ySqr - 0.3375 * z * z * ySqr;
-        const nz = 7.5 * z * aSqr - 0.225 * z * yCube;
-        const len = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
-
-        const normVec = new THREE.Vector3(nx / len, ny / len, nz / len);
-        const spec = Math.max(0, normVec.dot(lightDir));
-
-        // Phối màu cho từng hạt
-        let c = colorDeep.clone();
-        const normHeight = (y + 1.1) / 2.3; // từ đáy (0) đến đỉnh tai trái tim (1)
-
-        if (normHeight > 0.55) {
-          c.lerp(colorRose, (normHeight - 0.55) * 2.2);
-        } else {
-          c.lerp(colorPastel, 0.4);
-        }
-
-        // Hiệu ứng vỏ bóng bay căng bóng (Glossy Balloon Highlight)
-        if (isSurface && spec > 0.58) {
-          const glossFactor = Math.pow((spec - 0.58) / 0.42, 1.8);
-          c.lerp(colorGloss, glossFactor * 0.95);
-        } else if (isSurface && spec > 0.4) {
-          c.lerp(colorGold, (spec - 0.4) * 0.5);
-        }
-
-        if (!isSurface) {
-          // Lớp bụi tinh thể bên trong lõi phát sáng ấm áp
-          c.lerp(colorSoft, 0.6);
-        }
-
-        colors[count * 3] = c.r;
-        colors[count * 3 + 1] = c.g;
-        colors[count * 3 + 2] = c.b;
-
-        // Kích thước hạt
-        if (isSurface && spec > 0.6) {
-          sizes[count] = Math.random() * 1.5 + 2.2; // Điểm phản quang to lấp lánh
-        } else if (isSurface) {
-          sizes[count] = Math.random() * 1.4 + 1.6; // Hạt vỏ bóng
-        } else {
-          sizes[count] = Math.random() * 0.9 + 1.1; // Bụi lõi
-        }
-
-        count++;
+      if (normY < 0.28) {
+        // Vùng chóp nhọn phía đáy: Tím thẫm -> Đỏ ruby
+        const t = normY / 0.28;
+        pColor.copy(colorDeepDark).lerp(colorCrimson, t);
+      } else if (normY < 0.72) {
+        // Vùng thân và hai múi tim: Hồng cánh sen -> Hồng phấn
+        const t = (normY - 0.28) / 0.44;
+        pColor.copy(colorHotPink).lerp(colorRosePink, t);
+      } else {
+        // Vùng đỉnh hai tai tim: Hồng phấn -> Tím huỳnh quang
+        const t = (normY - 0.72) / 0.28;
+        pColor.copy(colorRosePink).lerp(colorPurple, t);
       }
+
+      if (normR > 0.65) {
+        pColor.lerp(colorPurple, (normR - 0.65) * 1.2);
+      }
+
+      colors[idx]     = pColor.r;
+      colors[idx + 1] = pColor.g;
+      colors[idx + 2] = pColor.b;
+
+      pIdx++;
     }
 
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+    // --- 2. SINH LỚP LÕI THỂ TÍCH BÊN TRONG (VOLUMETRIC CORE - 7,000 HẠT) ---
+    for (let i = 0; i < coreCount; i++) {
+      const u = Math.random();
+      const theta = Math.acos(1.0 - 2.0 * u);
+      const phi = (Math.random() * 2.0 - 1.0) * Math.PI;
 
-    const particleTexture = this.generateParticleTexture();
+      const pt = evaluateHeartSurface(theta, phi);
 
-    const material = new THREE.PointsMaterial({
-      size: 1.75,
-      map: particleTexture,
-      transparent: true,
-      vertexColors: true,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
-      opacity: 0.94
-    });
+      // Hệ số thể tích r nằm gọn trong ruột [0, 0.88]
+      const r = Math.pow(Math.random(), 0.5) * 0.88;
 
-    this.heartParticles = new THREE.Points(geometry, material);
-    this.scene.add(this.heartParticles);
-  }
+      const px = pt.x * scale * r;
+      const py = pt.y * scale * (0.97 + (Math.random() - 0.5) * 0.06);
+      const pz = pt.z * scale * r;
 
-  createStarlightDust() {
-    const starCount = 800;
+      const idx = pIdx * 3;
+      positions[idx]     = px;
+      positions[idx + 1] = py;
+      positions[idx + 2] = pz;
+
+      layerTypes[pIdx] = 0.0; // Core
+      baseSizes[pIdx] = 0.040 + Math.random() * 0.028;
+
+      // Màu lõi: Đỏ ruby ấm áp phát quang từ trong tim
+      const normY = THREE.MathUtils.clamp((pt.y + 1.25) / 2.5, 0.0, 1.0);
+      const pColor = new THREE.Color();
+      pColor.copy(colorCrimson).lerp(colorHotPink, normY * 0.5 + r * 0.5);
+
+      colors[idx]     = pColor.r;
+      colors[idx + 1] = pColor.g;
+      colors[idx + 2] = pColor.b;
+
+      pIdx++;
+    }
+
+    // Đóng gói vào BufferGeometry tối ưu GPU
     const geometry = new THREE.BufferGeometry();
-    const positions = new Float32Array(starCount * 3);
-    const colors = new Float32Array(starCount * 3);
-
-    for (let i = 0; i < starCount; i++) {
-      const radius = 25 + Math.random() * 50;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(2 * Math.random() - 1);
-
-      positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-      positions[i * 3 + 2] = radius * Math.cos(phi);
-
-      const rVal = 0.8 + Math.random() * 0.2;
-      const gVal = 0.7 + Math.random() * 0.2;
-      const bVal = 0.85 + Math.random() * 0.15;
-
-      colors[i * 3] = rVal;
-      colors[i * 3 + 1] = gVal;
-      colors[i * 3 + 2] = bVal;
-    }
-
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('aBaseColor', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('aLayerType', new THREE.BufferAttribute(layerTypes, 1));
+    geometry.setAttribute('aBaseSize', new THREE.BufferAttribute(baseSizes, 1));
 
-    const starMaterial = new THREE.PointsMaterial({
-      size: 1.1,
-      map: this.generateParticleTexture(),
+    // Shader Material với Additive Blending
+    this.heartMaterial = new THREE.ShaderMaterial({
+      vertexShader: HeartShader.vertexShader,
+      fragmentShader: HeartShader.fragmentShader,
+      uniforms: {
+        uTime: { value: 0.0 },
+        uBPM: { value: this.currentBPM },
+        uExcitement: { value: 0.0 },
+        uGlow: { value: HEART_CONFIG.glowMultiplier },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2.0) },
+        uPointScale: { value: this.pointScale }
+      },
       transparent: true,
-      vertexColors: true,
-      blending: THREE.AdditiveBlending,
-      opacity: 0.65
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
     });
 
-    this.starParticles = new THREE.Points(geometry, starMaterial);
-    this.scene.add(this.starParticles);
+    this.heartPointsMesh = new THREE.Points(geometry, this.heartMaterial);
+    this.scene.add(this.heartPointsMesh);
   }
 
-  generateParticleTexture() {
-    const canvas = document.createElement('canvas');
-    canvas.width = 64;
-    canvas.height = 64;
-    const ctx = canvas.getContext('2d');
+  createStardustMesh() {
+    const count = HEART_CONFIG.stardustParticles;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const orbitSpeeds = new Float32Array(count);
+    const phases = new Float32Array(count);
 
-    const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-    gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');
-    gradient.addColorStop(0.25, 'rgba(255, 180, 205, 0.9)');
-    gradient.addColorStop(0.6, 'rgba(255, 80, 140, 0.35)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    const colorPink = new THREE.Color('#ff6ba7');
+    const colorPurple = new THREE.Color('#b5179e');
+    const colorViolet = new THREE.Color('#7209b7');
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 64, 64);
+    for (let i = 0; i < count; i++) {
+      const radius = 1.6 + Math.pow(Math.random(), 1.5) * 2.7;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = (Math.random() - 0.5) * Math.PI;
 
-    const texture = new THREE.CanvasTexture(canvas);
-    return texture;
+      positions[i * 3]     = radius * Math.cos(phi) * Math.sin(theta);
+      positions[i * 3 + 1] = radius * Math.sin(phi) * 1.1 + 0.08;
+      positions[i * 3 + 2] = radius * Math.cos(phi) * Math.cos(theta);
+
+      const mixedColor = colorPink.clone().lerp(
+        Math.random() > 0.5 ? colorPurple : colorViolet,
+        Math.random()
+      );
+
+      colors[i * 3]     = mixedColor.r;
+      colors[i * 3 + 1] = mixedColor.g;
+      colors[i * 3 + 2] = mixedColor.b;
+
+      sizes[i] = 0.028 + Math.random() * 0.034;
+      orbitSpeeds[i] = (Math.random() * 0.6 + 0.4) * (Math.random() > 0.5 ? 1 : -1);
+      phases[i] = Math.random() * Math.PI * 2;
+    }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('aColor', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute('aSize', new THREE.BufferAttribute(sizes, 1));
+    geometry.setAttribute('aOrbitSpeed', new THREE.BufferAttribute(orbitSpeeds, 1));
+    geometry.setAttribute('aPhase', new THREE.BufferAttribute(phases, 1));
+
+    this.stardustMaterial = new THREE.ShaderMaterial({
+      vertexShader: StardustShader.vertexShader,
+      fragmentShader: StardustShader.fragmentShader,
+      uniforms: {
+        uTime: { value: 0.0 },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2.0) },
+        uGlow: { value: HEART_CONFIG.glowMultiplier },
+        uPointScale: { value: this.pointScale }
+      },
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+
+    this.stardustPointsMesh = new THREE.Points(geometry, this.stardustMaterial);
+    this.scene.add(this.stardustPointsMesh);
   }
 
-  onHeartClick() {
-    this.beatScale = 1.35;
+  setupBpmButtons() {
+    const bpmSelectors = [
+      { id: 'btn-bpm-calm', bpm: 65 },
+      { id: 'btn-bpm-romance', bpm: 82 },
+      { id: 'btn-bpm-passionate', bpm: 105 }
+    ];
+
+    bpmSelectors.forEach(({ id, bpm }) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          bpmSelectors.forEach(item => {
+            const btn = document.getElementById(item.id);
+            if (btn) {
+              btn.classList.remove('bg-pink-600', 'text-white', 'shadow-sm');
+              btn.classList.add('text-pink-200');
+            }
+          });
+          el.classList.add('bg-pink-600', 'text-white', 'shadow-sm');
+          el.classList.remove('text-pink-200');
+          this.setBPM(bpm);
+          this.triggerHeartThrill();
+        });
+      }
+    });
+  }
+
+  setBPM(bpm) {
+    this.targetBPM = bpm;
+  }
+
+  onPointerDown(e) {
+    this.triggerHeartThrill();
+  }
+
+  triggerHeartThrill() {
+    this.extraExcitement = 1.0;
+
+    // Hiệu ứng đèn nền nhịp đập rực rỡ
+    if (this.bgGlowElement) {
+      this.bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.3)';
+      this.bgGlowElement.style.opacity = '0.95';
+      setTimeout(() => {
+        if (this.bgGlowElement) {
+          this.bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.0)';
+          this.bgGlowElement.style.opacity = '0.65';
+        }
+      }, 320);
+    }
+
+    // Hiệu ứng cánh hoa / confetti lấp lánh
     if (window.confetti) {
       window.confetti({
-        particleCount: 35,
+        particleCount: 30,
         spread: 60,
         origin: { y: 0.5 },
-        colors: ['#ff477e', '#ff6b8b', '#ffd166', '#ffffff']
+        colors: ['#ff0a36', '#ff2282', '#ff4d9e', '#8518cf', '#ffffff']
       });
     }
   }
 
   onWindowResize() {
     if (!this.camera || !this.renderer || !this.container) return;
+
     const width = this.container.clientWidth || window.innerWidth;
-    const height = this.container.clientHeight || (window.innerHeight - 64);
+    const height = this.container.clientHeight || (window.innerHeight - 56);
     if (width <= 0 || height <= 0) return;
 
     const aspect = width / height;
     this.camera.aspect = aspect;
     this.camera.updateProjectionMatrix();
-    this.renderer.setSize(width, height);
 
-    // Canh chỉnh khoảng cách camera chuẩn đẹp trên màn hình mobile và desktop
-    if (this.camera) {
-      const targetDist = aspect < 1 ? Math.max(50, Math.round(38 / (0.8284 * aspect))) : 42;
-      if (this.controls && this.controls.target) {
+    this.renderer.setSize(width, height);
+    const pRatio = Math.min(window.devicePixelRatio || 1, 2.0);
+    this.renderer.setPixelRatio(pRatio);
+
+    const targetDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
+    this.pointScale = targetDist / 4.8;
+
+    if (this.heartMaterial) {
+      this.heartMaterial.uniforms.uPixelRatio.value = pRatio;
+      this.heartMaterial.uniforms.uPointScale.value = this.pointScale;
+    }
+    if (this.stardustMaterial) {
+      this.stardustMaterial.uniforms.uPixelRatio.value = pRatio;
+      this.stardustMaterial.uniforms.uPointScale.value = this.pointScale;
+    }
+
+    const targetY = aspect < 1 ? -0.15 : -0.25;
+    if (this.controls) {
+      this.controls.maxDistance = Math.max(14.0, targetDist * 1.7);
+      this.controls.target.set(0, targetY, 0);
+      const currentLen = this.camera.position.length();
+      if (Math.abs(currentLen - targetDist) > 2.5) {
         this.camera.position.setLength(targetDist);
       }
     }
@@ -314,50 +639,46 @@ export class Heart3DViewer {
     if (!this.isActive) return;
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
 
-    this.time += 0.035;
+    const elapsedTime = this.clock ? this.clock.getElapsedTime() : 0.0;
 
-    // Mô phỏng nhịp đập phập phồng quả bóng bay căng mọng (Chubby balloon breathing)
-    const cycle = (this.time * 1.35) % (Math.PI * 2);
-    let pulse = 0;
-    if (cycle < 0.6) {
-      pulse = Math.sin(cycle * Math.PI / 0.6) * 0.14;
-    } else if (cycle > 0.8 && cycle < 1.35) {
-      pulse = Math.sin((cycle - 0.8) * Math.PI / 0.55) * 0.08;
+    // Chuyển đổi nhịp tim mượt mà
+    this.currentBPM += (this.targetBPM - this.currentBPM) * 0.08;
+
+    // Giảm dần xung kích hoạt click
+    this.extraExcitement *= 0.92;
+    if (this.extraExcitement < 0.001) this.extraExcitement = 0.0;
+
+    // Cập nhật Uniforms cho Shaders
+    if (this.heartMaterial) {
+      this.heartMaterial.uniforms.uTime.value = elapsedTime;
+      this.heartMaterial.uniforms.uBPM.value = this.currentBPM;
+      this.heartMaterial.uniforms.uExcitement.value = this.extraExcitement;
     }
 
-    this.beatScale += (1 - this.beatScale) * 0.08;
-    const currentScale = (1 + pulse) * this.beatScale;
-
-    if (this.heartParticles && this.heartParticles.geometry) {
-      const positions = this.heartParticles.geometry.attributes.position.array;
-      const count = Math.min(this.particleCount, this.basePositions.length);
-      for (let i = 0; i < count; i++) {
-        const base = this.basePositions[i];
-        if (!base) continue;
-
-        // Hiệu ứng phập phồng nhẹ nhàng trên bề mặt bóng bay
-        const wave = Math.sin(this.time * 2.2 + base.randomOffset) * 0.08;
-        const s = currentScale + wave * 0.02;
-
-        positions[i * 3] = base.x * s;
-        positions[i * 3 + 1] = base.y * s;
-        positions[i * 3 + 2] = base.z * s;
-      }
-      this.heartParticles.geometry.attributes.position.needsUpdate = true;
-
-      this.heartParticles.rotation.y = Math.sin(this.time * 0.35) * 0.14;
-      this.heartParticles.rotation.z = Math.cos(this.time * 0.25) * 0.04;
+    if (this.stardustMaterial) {
+      this.stardustMaterial.uniforms.uTime.value = elapsedTime;
     }
 
-    if (this.starParticles) {
-      this.starParticles.rotation.y = this.time * 0.04;
-      this.starParticles.rotation.x = Math.sin(this.time * 0.02) * 0.05;
+    // Cập nhật hiệu ứng đèn nền nhấp nháy theo nhịp tim sinh học
+    if (this.bgGlowElement) {
+      const period = 60.0 / this.currentBPM;
+      const phase = (elapsedTime % period) / period;
+      const b1 = Math.exp(-Math.pow(phase - 0.06, 2) / 0.0045);
+      const b2 = 0.45 * Math.exp(-Math.pow(phase - 0.23, 2) / 0.0055);
+      const pulseVal = Math.max(0.0, b1 + b2) + this.extraExcitement * 0.5;
+
+      const scaleVal = 1.0 + pulseVal * 0.12;
+      const opacityVal = 0.55 + pulseVal * 0.35;
+      this.bgGlowElement.style.transform = `translate(-50%, -50%) scale(${scaleVal})`;
+      this.bgGlowElement.style.opacity = opacityVal;
     }
 
+    // Cập nhật OrbitControls
     if (this.controls) {
       this.controls.update();
     }
 
+    // Render Frame
     if (this.renderer && this.scene && this.camera) {
       this.renderer.render(this.scene, this.camera);
     }
@@ -389,8 +710,34 @@ export class Heart3DViewer {
 
   destroy() {
     this.pause();
-    if (this.renderer && this.renderer.domElement && this.renderer.domElement.parentNode) {
-      this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+    window.removeEventListener('resize', this._onResizeBound, false);
+    if (this.container) {
+      this.container.removeEventListener('pointerdown', this._onPointerDownBound, false);
     }
+
+    if (this.heartPointsMesh) {
+      if (this.heartPointsMesh.geometry) this.heartPointsMesh.geometry.dispose();
+      if (this.heartMaterial) this.heartMaterial.dispose();
+      this.scene?.remove(this.heartPointsMesh);
+    }
+
+    if (this.stardustPointsMesh) {
+      if (this.stardustPointsMesh.geometry) this.stardustPointsMesh.geometry.dispose();
+      if (this.stardustMaterial) this.stardustMaterial.dispose();
+      this.scene?.remove(this.stardustPointsMesh);
+    }
+
+    if (this.controls) {
+      this.controls.dispose();
+    }
+
+    if (this.renderer) {
+      this.renderer.dispose();
+      if (this.renderer.domElement && this.renderer.domElement.parentNode) {
+        this.renderer.domElement.parentNode.removeChild(this.renderer.domElement);
+      }
+    }
+
+    this.isInitialized = false;
   }
 }

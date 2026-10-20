@@ -167,10 +167,14 @@
   <main class="relative z-10 pt-14 sm:pt-16 min-h-screen">
 
     <!-- =================================================== -->
+    <!-- =================================================== -->
     <!-- TAB 1: TRÁI TIM 3D ĐIỂM HẠT ĐANG ĐẬP (NỀN ĐEN) -->
     <!-- =================================================== -->
     <section id="tab-content-heart3d" class="relative w-full flex flex-col justify-between">
       
+      <!-- Subtle pulsating ambient glow behind 3D heart -->
+      <div id="heart-bg-glow" class="heart-bg-glow"></div>
+
       <!-- Three.js 3D Interactive Canvas -->
       <div id="heart-3d-canvas-container"></div>
 
@@ -191,10 +195,19 @@
 
       <!-- Bottom Interactive Controls & Guidance -->
       <div class="heart-overlay-content pb-6 sm:pb-10 px-4 text-center flex flex-col items-center gap-2.5 sm:gap-4">
-        <!-- Interactive Tip -->
-        <div class="heart-hint-chip px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl text-[11px] sm:text-sm flex items-center gap-1.5 sm:gap-2 max-w-md">
-          <span>🖐️</span>
-          <span>Xoay 360°, cuộn/chụm để zoom, chạm để tăng nhịp đập ♡</span>
+        <!-- Interactive Tip & BPM Selector -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-md">
+          <div class="heart-hint-chip px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl text-[11px] sm:text-sm flex items-center gap-1.5 sm:gap-2">
+            <span>🖐️</span>
+            <span>Xoay 360°, cuộn/chụm để zoom, chạm để tăng nhịp đập ♡</span>
+          </div>
+
+          <!-- Nhịp tim presets (65 / 82 / 105 BPM) -->
+          <div class="heart-interactive-btn flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full border border-pink-500/20 text-[11px]">
+            <button id="btn-bpm-calm" class="px-2.5 py-0.5 rounded-full bg-pink-600 text-white shadow-sm font-semibold transition-all" data-bpm="65">Êm dịu</button>
+            <button id="btn-bpm-romance" class="px-2.5 py-0.5 rounded-full text-pink-200 hover:text-white font-semibold transition-all" data-bpm="82">Rộn ràng</button>
+            <button id="btn-bpm-passionate" class="px-2.5 py-0.5 rounded-full text-pink-200 hover:text-white font-semibold transition-all" data-bpm="105">Xao xuyến</button>
+          </div>
         </div>
 
         <!-- Quick Switcher to Other Tabs -->
