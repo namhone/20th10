@@ -101,18 +101,32 @@
       "rawInput": "huyền trân",
       "verifiedAt": "2026-10-20T18:21:13.925Z",
       "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-20T23:14:07.229Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "huyền trân",
+      "verifiedAt": "2026-10-20T23:14:41.236Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
-    "openedCount": 0,
+    "openedCount": 1,
     "userConfig": {
       "recipientName": "Huyền Trân",
       "senderName": "Cậu bạn 17 tuổi của Trân",
       "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
-    "openedIds": [],
-    "updatedAt": "2026-10-20T18:21:14.567Z"
+    "openedIds": [
+      "poem-1"
+    ],
+    "updatedAt": "2026-10-20T23:14:48.003Z"
   },
   "dateVouchers": [
     {
@@ -164,6 +178,16 @@
       "recipient": "Huyền Trân",
       "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
       "timestamp": "2026-10-20T18:16:26.402Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T23:14:15.392Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-20T23:14:52.086Z"
     }
   ],
   "messages": [
@@ -260,6 +284,26 @@
       "sender": "Huyền Trân",
       "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
       "time": "2026-10-20T18:16:27.526Z"
+    },
+    {
+      "id": 1792538054901,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🌙 [Liều ngủ ngoan không âu lo]: Gác lại sách vở bài tập thôi nào cô bé 17 tuổi. Đêm nay hãy thả lỏng bờ vai, nhắm mắt lại và ngủ một giấc thật êm. Mọi muộn phiền cứ để tớ gánh thay cậu.",
+      "time": "2026-10-20T23:14:14.897Z"
+    },
+    {
+      "id": 1792538056702,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-20T23:14:16.700Z"
+    },
+    {
+      "id": 1792538091631,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🛡️ [Liều lá chắn bình yên]: Mấy trò đùa lố lăng, vô duyên của đám con trai ở trường không đáng để Trân bận tâm một giây nào. Tớ luôn đứng về phía cậu và bảo vệ nụ cười của cậu!",
+      "time": "2026-10-20T23:14:51.629Z"
     }
   ]
 }

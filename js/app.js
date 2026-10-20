@@ -158,27 +158,50 @@ class AppController {
 
   setupHeaderActions() {
     const audioBtn = document.getElementById('audio-toggle-btn');
+    const audioNextBtn = document.getElementById('audio-next-btn');
     const audioIcon = document.getElementById('audio-icon');
     const audioText = document.getElementById('audio-text');
 
-    audioPlayer.onStateChange = (isPlaying) => {
+    audioPlayer.onStateChange = (isPlaying, track) => {
+      const current = track || audioPlayer.getCurrentTrack();
       if (isPlaying) {
-        if (audioIcon) audioIcon.textContent = '🔊';
-        if (audioText) audioText.textContent = 'Đang phát';
-        if (audioBtn) audioBtn.classList.add('bg-brand-200', 'text-brand-700');
+        if (audioIcon) audioIcon.textContent = '🎶';
+        if (audioText) audioText.textContent = current.title;
+        if (audioBtn) audioBtn.classList.add('bg-brand-200', 'text-brand-700', 'font-bold');
       } else {
         if (audioIcon) audioIcon.textContent = '🎵';
-        if (audioText) audioText.textContent = 'Nhạc ru êm';
-        if (audioBtn) audioBtn.classList.remove('bg-brand-200', 'text-brand-700');
+        if (audioText) audioText.textContent = 'Nhạc tình yêu';
+        if (audioBtn) audioBtn.classList.remove('bg-brand-200', 'text-brand-700', 'font-bold');
       }
+    };
+
+    audioPlayer.onTrackChange = (track) => {
+      if (audioText && audioPlayer.isPlaying) {
+        audioText.textContent = track.title;
+      }
+      this.lettersManager?.showToast(
+        `Đang phát: ${track.title} — ${track.composer} ♡`,
+        track.icon || '🎶'
+      );
     };
 
     if (audioBtn) {
       audioBtn.addEventListener('click', () => {
         const isNowPlaying = audioPlayer.toggle();
-        this.lettersManager.showToast(
-          isNowPlaying ? 'Đã bật nhạc hộp quà du dương ♡' : 'Đã tắt nhạc',
+        const current = audioPlayer.getCurrentTrack();
+        this.lettersManager?.showToast(
+          isNowPlaying ? `Đang phát nhạc không lời: ${current.title} ♡` : 'Đã tạm dừng nhạc',
           isNowPlaying ? '🎶' : '🔇'
+        );
+      });
+    }
+
+    if (audioNextBtn) {
+      audioNextBtn.addEventListener('click', () => {
+        const nextTrack = audioPlayer.next();
+        this.lettersManager?.showToast(
+          `Đổi bài: ${nextTrack.title} — ${nextTrack.composer} ♡`,
+          nextTrack.icon || '⏭️'
         );
       });
     }

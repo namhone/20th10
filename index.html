@@ -140,11 +140,16 @@
 
       <!-- Action Buttons -->
       <div class="flex items-center gap-1 sm:gap-2">
-        <!-- Audio Lullaby Toggle -->
-        <button id="audio-toggle-btn" class="w-8 h-8 sm:w-auto p-1.5 sm:px-3 sm:py-1.5 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 transition-all flex items-center justify-center gap-1 text-xs font-semibold" title="Bật/Tắt hộp nhạc">
-          <span id="audio-icon">🎵</span>
-          <span id="audio-text" class="hidden md:inline">Nhạc ru êm</span>
-        </button>
+        <!-- Audio Romantic Instrumental Toggle & Next -->
+        <div class="flex items-center bg-brand-50 hover:bg-brand-100/90 rounded-full border border-brand-200 p-0.5 transition-all shadow-xs">
+          <button id="audio-toggle-btn" class="px-2 sm:px-3 py-1 text-brand-600 transition-all flex items-center gap-1 text-xs font-semibold" title="Bật/Tắt nhạc tình yêu không lời">
+            <span id="audio-icon">🎵</span>
+            <span id="audio-text" class="hidden md:inline">Nhạc tình yêu</span>
+          </button>
+          <button id="audio-next-btn" class="px-1.5 py-1 text-brand-400 hover:text-brand-700 transition-all text-xs border-l border-brand-200/80" title="Chuyển bài kế tiếp">
+            <span>⏭️</span>
+          </button>
+        </div>
 
         <!-- Personalization Settings -->
         <button id="config-open-btn" class="w-8 h-8 sm:w-auto p-1.5 sm:px-2.5 sm:py-1.5 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 transition-all flex items-center justify-center text-xs font-semibold" title="Cá nhân hóa">
