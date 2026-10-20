@@ -1,0 +1,101 @@
+/* ===================================================
+   MAIN STYLESHEET — HỘP QUÀ 20/10 DÀNH CHO HUYỀN TRÂN
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap');
+
+:root {
+  --color-brand-50: #FFF5F7;
+  --color-brand-100: #FFE6EC;
+  --color-brand-200: #FFCCD7;
+  --color-brand-300: #FFA3B5;
+  --color-brand-400: #FF6B8B;
+  --color-brand-500: #FF477E;
+  --color-brand-600: #E01E5A;
+  --color-brand-700: #B81446;
+  
+  --color-cream-50: #FFFDF9;
+  --color-cream-100: #FFF9F0;
+  --color-cream-200: #FFF0DE;
+  
+  --color-warmgray-600: #645B5B;
+  --color-warmgray-700: #4A4242;
+  --color-warmgray-800: #322C2C;
+}
+
+body {
+  background-color: #FFFDF9;
+  color: var(--color-warmgray-700);
+  font-family: 'Be Vietnam Pro', 'Plus Jakarta Sans', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  transition: background-color 0.4s ease;
+}
+
+/* Chế độ Dark Theme khi ở Tab 1 (Trái tim 3D) */
+body.theme-dark-heart {
+  background-color: #050508;
+  color: #F8F9FA;
+}
+
+body.theme-dark-heart header {
+  background-color: rgba(10, 10, 15, 0.85);
+  border-color: rgba(255, 107, 139, 0.2);
+}
+
+body.theme-dark-heart .nav-tab-btn {
+  color: #a0aec0;
+}
+body.theme-dark-heart .nav-tab-btn.active {
+  background-color: rgba(255, 71, 126, 0.15);
+  border-color: #FF477E;
+  color: #FFCCD7;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #FFF5F7;
+}
+::-webkit-scrollbar-thumb {
+  background: #FFCCD7;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FFA3B5;
+}
+
+/* Background 2D Particles Canvas */
+#particles-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Floating Hearts Click Feedback */
+@keyframes heartFloatUp {
+  0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-90px) scale(1.2) rotate(20deg); opacity: 0; }
+}
+.floating-heart {
+  position: absolute;
+  animation: heartFloatUp 1.2s forwards ease-out;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* Keyframes Shake for invalid input */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+.animate-shake {
+  animation: shake 0.4s ease-in-out;
+}

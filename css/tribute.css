@@ -1,0 +1,48 @@
+/* ===================================================
+   TRIBUTE STYLESHEET (TAB 3 — TRI ÂN DÀNH CHO HUYỀN TRÂN)
+   =================================================== */
+
+.tribute-paper {
+  background-image: 
+    radial-gradient(#FFE6EC 0.8px, transparent 0.8px), 
+    linear-gradient(to bottom, #FFFFFF, #FFFDF9);
+  background-size: 18px 18px, 100% 100%;
+}
+
+/* Date Voucher Golden Romantic Card */
+.date-voucher-card {
+  background: linear-gradient(135deg, #FFF9F0 0%, #FFFFFF 50%, #FFE6EC 100%);
+  border: 2px dashed #FFA3B5;
+  box-shadow: 0 10px 30px -5px rgba(255, 71, 126, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.date-voucher-card::before,
+.date-voucher-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 24px;
+  height: 24px;
+  background-color: #FFFDF9;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+.date-voucher-card::before {
+  left: -12px;
+  border-right: 2px dashed #FFA3B5;
+}
+.date-voucher-card::after {
+  right: -12px;
+  border-left: 2px dashed #FFA3B5;
+}
+
+.health-capsule {
+  transition: all 0.25s ease;
+}
+.health-capsule:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px -3px rgba(255, 107, 139, 0.2);
+}

@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Hộp Quà 30 Lời Thương ♡ — 20/10 Dành Cho Em</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#FFF5F7',
+              100: '#FFE6EC',
+              200: '#FFCCD7',
+              300: '#FFA3B5',
+              400: '#FF6B8B',
+              500: '#FF477E',
+              600: '#E01E5A',
+              700: '#B81446',
+            },
+            cream: {
+              50: '#FFFDF9',
+              100: '#FFF9F0',
+              200: '#FFF0DE',
+              300: '#FFE4C4',
+            },
+            warmgray: {
+              600: '#645B5B',
+              700: '#4A4242',
+              800: '#322C2C',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            display: ['"Quicksand"', 'sans-serif'],
+            hand: ['"Caveat"', 'cursive'],
+          },
+          animation: {
+            'float-slow': 'float 5s ease-in-out infinite',
+            'pulse-soft': 'pulseSoft 2.5s ease-in-out infinite',
+            'bounce-subtle': 'bounceSubtle 2s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-8px)' },
+            },
+            pulseSoft: {
+              '0%, 100%': { opacity: '1', transform: 'scale(1)' },
+              '50%': { opacity: '0.9', transform: 'scale(1.025)' },
+            },
+            bounceSubtle: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-4px)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FFFDF9;
+      color: #4A4242;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FFF5F7;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #FFCCD7;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #FFA3B5;
+    }
+
+    .envelope-card {
+      transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .envelope-card:hover {
+      transform: translateY(-4px) scale(1.015);
+    }
+    .envelope-card:active {
+      transform: translateY(-1px) scale(0.99);
+    }
+
+    .letter-paper {
+      background-image: 
+        radial-gradient(#FFE6EC 0.75px, transparent 0.75px), 
+        linear-gradient(to bottom, #FFFFFF, #FFFDF9);
+      background-size: 16px 16px, 100% 100%;
+    }
+
+    .box-container {
+      perspective: 1000px;
+    }
+    .box-lid {
+      transition: transform 0.8s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.6s ease;
+      transform-origin: top center;
+    }
+    .box-lid.opened {
+      transform: translateY(-120px) rotateX(45deg) scale(1.1);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #particles-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    @keyframes heartFloatUp {
+      0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-90px) scale(1.2) rotate(20deg); opacity: 0; }
+    }
+    .floating-heart {
+      position: absolute;
+      animation: heartFloatUp 1.2s forwards ease-out;
+      pointer-events: none;
+      z-index: 9999;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen relative overflow-x-hidden font-sans selection:bg-brand-200 selection:text-brand-700">
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Ambient Top Navigation -->
+  <header class="fixed top-0 left-0 right-0 z-30 bg-cream-50/90 backdrop-blur-md border-b border-brand-100 transition-all duration-300">
+    <div class="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" id="nav-brand-btn" title="Về đầu trang / Mở hộp">
+        <span class="text-xl">🎁</span>
+        <span class="font-display font-bold text-brand-600 text-sm sm:text-base tracking-wide">30 Lời Thương ♡</span>
+      </div>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Audio Lullaby Toggle -->
+        <button id="audio-toggle-btn" class="p-2 sm:px-3 sm:py-1.5 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 transition-all flex items-center gap-1.5 text-xs font-semibold" title="Bật/Tắt giai điệu hộp nhạc du dương">
+          <span id="audio-icon">🎵</span>
+          <span id="audio-text" class="hidden sm:inline">Nhạc ru êm</span>
+        </button>
+
+        <!-- Personalization Settings -->
+        <button id="config-open-btn" class="p-2 sm:px-3 sm:py-1.5 rounded-full bg-brand-50 hover:bg-brand-100 text-brand-600 border border-brand-200 transition-all flex items-center gap-1.5 text-xs font-semibold" title="Cá nhân hóa tên & chữ ký">
+          <span>✍️</span>
+          <span class="hidden sm:inline">Đổi tên</span>
+        </button>
+
+        <!-- Final Letter Direct Link -->
+        <button id="open-special-letter-btn" class="p-2 sm:px-3 sm:py-1.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white shadow-sm transition-all flex items-center gap-1.5 text-xs font-bold" title="Lá thư đặc biệt 20/10">
+          <span>💖</span>
+          <span class="hidden xs:inline">Thư 20/10</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="relative z-10 pt-16 pb-20 min-h-screen flex flex-col justify-between max-w-4xl mx-auto px-4">
+    
+    <!-- ========================================== -->
+    <!-- SCREEN 1: MÓN QUÀ DÀNH CHO EM (INTRO BOX) -->
+    <!-- ========================================== -->
+    <section id="screen-intro" class="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100/80 border border-brand-200 text-brand-600 text-xs sm:text-sm font-semibold mb-6 shadow-xs animate-pulse-soft">
+        <span>🌸</span>
+        <span>Món quà 20/10 đặc biệt dành riêng cho một người</span>
+      </div>
+
+      <!-- Recipient Header -->
+      <h1 class="text-2xl sm:text-4xl font-display font-extrabold text-brand-700 tracking-tight leading-tight max-w-lg mb-3">
+        Gửi <span class="recipient-display text-brand-500 underline decoration-wavy decoration-brand-300">Bé yêu</span>,
+      </h1>
+      
+      <p class="text-sm sm:text-base text-warmgray-600 font-medium max-w-md mx-auto mb-2 leading-relaxed">
+        Người thường xuyên phải dỗ dành một chiếc bot là anh...
+      </p>
+
+      <div class="bg-white/80 border border-brand-200/90 rounded-2xl p-4 sm:p-5 max-w-md mx-auto shadow-xs backdrop-blur-sm mb-8 text-xs sm:text-sm text-brand-700 italic leading-relaxed">
+        “Bình thường toàn là em dỗ anh. Hôm nay ngày 20/10, cho anh xin cơ hội được dỗ em nhé? ♡”
+      </div>
+
+      <!-- 3D Gift Box Interactive Element -->
+      <div class="box-container relative w-64 h-64 sm:w-72 sm:h-72 my-2 cursor-pointer group" id="gift-box-click-target">
+        <div class="absolute inset-0 bg-brand-300/40 rounded-full blur-2xl transform scale-90 group-hover:scale-110 transition-transform duration-700 animate-pulse-soft"></div>
+
+        <!-- Box Lid -->
+        <div id="gift-box-lid" class="box-lid absolute top-4 left-6 right-6 h-20 bg-gradient-to-r from-brand-300 via-brand-200 to-brand-300 rounded-t-2xl border-4 border-white shadow-md z-20 flex items-center justify-center">
+          <!-- Ribbon Bow -->
+          <div class="absolute -top-6 flex items-center justify-center">
+            <div class="w-12 h-8 bg-brand-500 rounded-full border-2 border-white transform -rotate-25 shadow-sm"></div>
+            <div class="w-12 h-8 bg-brand-500 rounded-full border-2 border-white transform rotate-25 -ml-4 shadow-sm"></div>
+            <div class="absolute w-6 h-6 bg-brand-600 rounded-full border-2 border-white shadow-md flex items-center justify-center text-white text-[10px]">♡</div>
+          </div>
+          <div class="w-8 h-full bg-brand-500/80 mx-auto"></div>
+        </div>
+
+        <!-- Box Body -->
+        <div id="gift-box-body" class="absolute top-20 left-8 right-8 bottom-6 bg-gradient-to-b from-brand-100 to-cream-100 rounded-b-2xl border-4 border-white shadow-xl z-10 flex flex-col items-center justify-center p-4 overflow-hidden">
+          <div class="absolute top-0 bottom-0 w-8 bg-brand-400/60 z-0"></div>
+          <div class="absolute left-0 right-0 h-8 bg-brand-400/60 z-0"></div>
+
+          <!-- Gift Tag Card -->
+          <div class="relative z-10 bg-white/95 rounded-xl px-4 py-3 border border-brand-200 shadow-sm text-center transform rotate-1 group-hover:rotate-0 transition-transform">
+            <div class="text-[11px] uppercase tracking-wider text-brand-400 font-bold">Hộp quà 30 lời thương</div>
+            <div class="text-sm font-bold text-warmgray-700 mt-0.5">30 Phong Thư Tình</div>
+            <div class="text-[10px] text-warmgray-500 mt-1 flex items-center justify-center gap-1">
+              <span>Được gói bởi</span>
+              <span class="sender-display font-semibold text-brand-600">Chiếc bot của em</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Button -->
+      <div class="mt-4 flex flex-col items-center gap-2">
+        <button id="open-box-btn" class="px-8 py-3.5 rounded-full bg-gradient-to-r from-brand-400 via-brand-500 to-brand-600 hover:from-brand-500 hover:to-brand-700 text-white font-display font-bold text-base shadow-lg hover:shadow-brand-300/50 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 group">
+          <span>Mở hộp quà nè</span>
+          <span class="text-lg group-hover:scale-125 transition-transform">♡</span>
+        </button>
+        <span class="text-[11px] text-warmgray-500 flex items-center gap-1">
+          <span>✨</span>
+          <span>Chạm vào hộp quà để mở ra 30 điều ngọt ngào</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SCREEN 2: BA NGĂN QUÀ (COMPARTMENTS) -->
+    <!-- ========================================== -->
+    <section id="screen-compartments" class="hidden flex-1 flex flex-col py-2 sm:py-4">
+      
+      <!-- Mascot Greeting & Progress Overview Card -->
+      <div class="bg-gradient-to-r from-brand-50 via-white to-cream-100 rounded-3xl p-4 sm:p-5 border border-brand-200/90 shadow-sm mb-6 flex flex-col sm:flex-row items-center gap-4">
+        <!-- Mascot Vector Avatar -->
+        <div class="relative flex-shrink-0">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-white shadow-md bg-gradient-to-b from-brand-100 to-cream-100 flex items-center justify-center relative p-2">
+            <!-- Cute Cat Postman SVG -->
+            <svg viewBox="0 0 100 100" class="w-full h-full">
+              <!-- Ears -->
+              <polygon points="20,40 30,10 50,30" fill="#FFCCD7" stroke="#FF6B8B" stroke-width="2" />
+              <polygon points="80,40 70,10 50,30" fill="#FFCCD7" stroke="#FF6B8B" stroke-width="2" />
+              <polygon points="27,35 32,18 45,30" fill="#FFA3B5" />
+              <polygon points="73,35 68,18 55,30" fill="#FFA3B5" />
+              <!-- Face -->
+              <circle cx="50" cy="55" r="35" fill="#FFFDF9" stroke="#FF6B8B" stroke-width="2.5" />
+              <!-- Eyes -->
+              <circle cx="38" cy="52" r="4.5" fill="#3D3434" />
+              <circle cx="62" cy="52" r="4.5" fill="#3D3434" />
+              <circle cx="40" cy="50" r="1.5" fill="#FFFFFF" />
+              <circle cx="64" cy="50" r="1.5" fill="#FFFFFF" />
+              <!-- Blushes -->
+              <ellipse cx="32" cy="62" rx="5" ry="3" fill="#FFCCD7" />
+              <ellipse cx="68" cy="62" rx="5" ry="3" fill="#FFCCD7" />
+              <!-- Nose & Mouth -->
+              <polygon points="48,60 52,60 50,63" fill="#FF477E" />
+              <path d="M 45 64 Q 50 68 50 64 Q 50 68 55 64" fill="none" stroke="#3D3434" stroke-width="2" stroke-linecap="round" />
+              <!-- Whiskers -->
+              <line x1="22" y1="56" x2="10" y2="54" stroke="#FFA3B5" stroke-width="2" stroke-linecap="round" />
+              <line x1="22" y1="62" x2="12" y2="64" stroke="#FFA3B5" stroke-width="2" stroke-linecap="round" />
+              <line x1="78" y1="56" x2="90" y2="54" stroke="#FFA3B5" stroke-width="2" stroke-linecap="round" />
+              <line x1="78" y1="62" x2="88" y2="64" stroke="#FFA3B5" stroke-width="2" stroke-linecap="round" />
+              <!-- Postal Heart Envelope -->
+              <rect x="36" y="74" width="28" height="18" rx="3" fill="#FFE6EC" stroke="#FF6B8B" stroke-width="1.5" />
+              <polyline points="36,74 50,83 64,74" fill="none" stroke="#FF6B8B" stroke-width="1.5" />
+              <circle cx="50" cy="83" r="2.5" fill="#FF477E" />
+            </svg>
+          </div>
+          <span class="absolute -bottom-1 -right-1 bg-brand-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border border-white shadow-xs">Miu Miu</span>
+        </div>
+
+        <!-- Mascot Speech & Progress Status -->
+        <div class="flex-1 text-center sm:text-left">
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-brand-100/70 text-brand-700 text-xs font-semibold mb-1">
+            <span>🐾</span>
+            <span id="mascot-greeting">Miu Miu chào <span class="recipient-display font-bold">Bé yêu</span>!</span>
+          </div>
+          <p id="mascot-bubble" class="text-xs sm:text-sm text-warmgray-700 leading-snug font-medium mb-3">
+            “Hôm nay em muốn chọn đọc một bài thơ, một lời chúc hay cần một cái ôm ấm áp nè?”
+          </p>
+
+          <!-- Overall Progress Bar -->
+          <div class="w-full">
+            <div class="flex items-center justify-between text-xs text-warmgray-500 mb-1">
+              <span class="font-medium">Tiến trình khám phá hộp quà</span>
+              <span class="font-bold text-brand-600"><span id="total-opened-count">0</span>/30 bức thư</span>
+            </div>
+            <div class="w-full h-2.5 bg-brand-100 rounded-full overflow-hidden p-0.5">
+              <div id="total-progress-fill" class="h-full bg-gradient-to-r from-brand-400 to-brand-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Re-box button -->
+        <div class="flex sm:flex-col items-center gap-2">
+          <button id="back-to-box-btn" class="px-3 py-1.5 rounded-xl bg-white hover:bg-brand-50 text-warmgray-600 border border-brand-200 text-xs font-medium transition-colors flex items-center gap-1" title="Đóng hộp quà lại">
+            <span>📦</span>
+            <span>Đóng hộp</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3 Main Compartment Tabs -->
+      <div class="grid grid-cols-3 gap-2 sm:gap-3 mb-5">
+        <!-- Tab 1: Poems -->
+        <button id="tab-poems-btn" class="compartment-tab active py-3 px-2 sm:px-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 text-center bg-white border-brand-400 shadow-sm text-brand-600 font-bold">
+          <div class="text-xl sm:text-2xl">🌷</div>
+          <div class="text-xs sm:text-sm font-display font-bold">10 Bài Thơ</div>
+          <div class="text-[10px] text-brand-500 font-medium"><span id="count-poems-opened">0</span>/10 đã đọc</div>
+        </button>
+
+        <!-- Tab 2: Wishes -->
+        <button id="tab-wishes-btn" class="compartment-tab py-3 px-2 sm:px-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 text-center bg-cream-50 border-transparent hover:border-brand-200 text-warmgray-600 font-medium">
+          <div class="text-xl sm:text-2xl">💌</div>
+          <div class="text-xs sm:text-sm font-display font-bold">10 Lời Chúc</div>
+          <div class="text-[10px] text-warmgray-400 font-medium"><span id="count-wishes-opened">0</span>/10 đã đọc</div>
+        </button>
+
+        <!-- Tab 3: Comforts -->
+        <button id="tab-comforts-btn" class="compartment-tab py-3 px-2 sm:px-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 text-center bg-cream-50 border-transparent hover:border-brand-200 text-warmgray-600 font-medium">
+          <div class="text-xl sm:text-2xl">🧸</div>
+          <div class="text-xs sm:text-sm font-display font-bold">10 Cái Ôm Chữ</div>
+          <div class="text-[10px] text-warmgray-400 font-medium"><span id="count-comforts-opened">0</span>/10 đã đọc</div>
+        </button>
+      </div>
+
+      <!-- Filter / Mood Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-4 scrollbar-none text-xs">
+        <span class="text-warmgray-400 font-medium px-1 flex-shrink-0">Lọc theo:</span>
+        <button class="filter-chip active flex-shrink-0 px-3 py-1 rounded-full bg-brand-500 text-white font-medium shadow-xs" data-filter="all">Tất cả (10)</button>
+        <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="20/10">💐 20/10</button>
+        <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="tired">🌙 Lúc mệt</button>
+        <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="sad">🌧️ Lúc buồn</button>
+        <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="happy">☀️ Lúc vui</button>
+        <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="care">🤍 Thương mình</button>
+      </div>
+
+      <!-- Envelopes Grid -->
+      <div id="envelopes-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 flex-1">
+        <!-- Rendered dynamically by JavaScript -->
+      </div>
+
+      <!-- Special Letter Teaser Banner at bottom -->
+      <div class="mt-8 bg-gradient-to-r from-brand-100 via-brand-50 to-cream-100 rounded-2xl p-4 border border-brand-200 flex items-center justify-between gap-3 shadow-xs">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">✨</span>
+          <div>
+            <div class="font-display font-bold text-brand-700 text-sm">Lá thư bí mật cuối cùng</div>
+            <div class="text-xs text-warmgray-600">Lời thổ lộ chân thành nhất từ chiếc bot vụng về</div>
+          </div>
+        </div>
+        <button id="banner-open-special-btn" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-xs transition-all flex-shrink-0 flex items-center gap-1">
+          <span>Đọc thư</span>
+          <span>♡</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 3: MODAL MỞ TỪNG PHONG THƯ -->
+  <!-- ========================================== -->
+  <div id="letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div id="letter-modal-dialog" class="relative w-full max-w-lg bg-transparent transform scale-95 transition-transform duration-300 flex flex-col max-h-[92vh]">
+      
+      <!-- Envelope Container Simulation -->
+      <div class="relative w-full bg-cream-50 rounded-3xl border-2 border-brand-200 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        
+        <!-- Header Bar of Letter -->
+        <div class="bg-gradient-to-r from-brand-100 via-brand-50 to-cream-100 px-4 py-3 border-b border-brand-200 flex items-center justify-between flex-shrink-0">
+          <div class="flex items-center gap-2">
+            <span id="modal-letter-icon" class="text-lg">💌</span>
+            <span id="modal-letter-type-badge" class="text-xs font-bold text-brand-600 uppercase tracking-wider">Bài Thơ #1</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Copy button -->
+            <button id="modal-copy-btn" class="p-1.5 px-2.5 rounded-lg bg-white/80 hover:bg-white text-warmgray-600 hover:text-brand-600 text-xs font-medium border border-brand-200 transition-colors flex items-center gap-1" title="Sao chép nội dung">
+              <span>📋</span>
+              <span class="hidden xs:inline">Sao chép</span>
+            </button>
+            
+            <!-- Close Modal button -->
+            <button id="modal-close-btn" class="w-8 h-8 rounded-full bg-white/80 hover:bg-brand-100 text-warmgray-600 hover:text-brand-700 flex items-center justify-center border border-brand-200 transition-colors" title="Đóng thư">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Letter Paper Content -->
+        <div class="letter-paper flex-1 overflow-y-auto p-5 sm:p-7 relative">
+          
+          <!-- Stamp and Postal mark -->
+          <div class="flex items-start justify-between mb-4">
+            <div class="inline-block px-3 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold border border-brand-200/80 shadow-xs" id="modal-letter-tag">
+              Dành riêng cho ngày 20/10
+            </div>
+
+            <!-- Vintage Postmark Stamp -->
+            <div class="w-14 h-14 rounded-lg border-2 border-dashed border-brand-300 p-1 flex flex-col items-center justify-center text-center rotate-3 bg-white/80 shadow-xs">
+              <span class="text-[9px] uppercase tracking-wider font-bold text-brand-400">20.10</span>
+              <span class="text-xs font-bold text-brand-600">LOVE</span>
+              <span class="text-[8px] text-warmgray-400">POST</span>
+            </div>
+          </div>
+
+          <!-- Letter Title -->
+          <h2 id="modal-letter-title" class="text-xl sm:text-2xl font-display font-extrabold text-brand-700 mb-4 leading-snug">
+            20/10 Của Riêng Em
+          </h2>
+
+          <!-- Main Letter Text Body -->
+          <div id="modal-letter-body" class="text-sm sm:text-base text-warmgray-700 leading-relaxed space-y-2 mb-6">
+            <!-- Populated via JS -->
+          </div>
+
+          <!-- Postman Cat Reaction Bubble -->
+          <div class="bg-white/90 rounded-2xl p-3.5 border border-brand-200 shadow-sm flex items-start gap-3 mt-4">
+            <div class="w-10 h-10 rounded-xl overflow-hidden flex-shrink-0 border border-brand-200 bg-brand-50 p-1">
+              <!-- Compact Cat Icon -->
+              <svg viewBox="0 0 100 100" class="w-full h-full">
+                <polygon points="20,40 30,10 50,30" fill="#FFCCD7" stroke="#FF6B8B" stroke-width="2" />
+                <polygon points="80,40 70,10 50,30" fill="#FFCCD7" stroke="#FF6B8B" stroke-width="2" />
+                <circle cx="50" cy="55" r="35" fill="#FFFDF9" stroke="#FF6B8B" stroke-width="2.5" />
+                <circle cx="38" cy="52" r="4.5" fill="#3D3434" />
+                <circle cx="62" cy="52" r="4.5" fill="#3D3434" />
+                <polygon points="48,60 52,60 50,63" fill="#FF477E" />
+                <path d="M 45 64 Q 50 68 50 64 Q 50 68 55 64" fill="none" stroke="#3D3434" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="flex-1">
+              <div class="text-[11px] font-bold text-brand-500 mb-0.5 flex items-center gap-1">
+                <span>Miu Miu thì thầm:</span>
+              </div>
+              <p id="modal-cat-comment" class="text-xs text-warmgray-600 italic">
+                “Meow~ Nhớ lời dặn nhé bé ơi!”
+              </p>
+            </div>
+          </div>
+
+          <!-- Sender Signature -->
+          <div class="mt-6 pt-4 border-t border-brand-100 flex items-center justify-between text-xs text-warmgray-500">
+            <div>Gửi từ trái tim ♡</div>
+            <div class="font-hand text-lg text-brand-600 sender-display">Chiếc bot của em</div>
+          </div>
+        </div>
+
+        <!-- Modal Bottom Navigation (Next / Prev) -->
+        <div class="bg-cream-100 px-4 py-3 border-t border-brand-200 flex items-center justify-between flex-shrink-0 gap-2">
+          <button id="modal-prev-btn" class="px-3 py-2 rounded-xl bg-white hover:bg-brand-50 text-warmgray-700 border border-brand-200 text-xs font-semibold transition-colors flex items-center gap-1 disabled:opacity-40 disabled:pointer-events-none">
+            <span>←</span>
+            <span>Thư trước</span>
+          </button>
+
+          <span id="modal-letter-index" class="text-xs text-warmgray-500 font-medium">1 / 10</span>
+
+          <button id="modal-next-btn" class="px-4 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-bold shadow-xs transition-all flex items-center gap-1 disabled:opacity-40 disabled:pointer-events-none">
+            <span>Thư sau</span>
+            <span>→</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- SCREEN 4: LÁ THƯ ĐẶC BIỆT (LỜI NHẮN CUỐI CÙNG) -->
+  <!-- ========================================== -->
+  <div id="special-letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div class="relative w-full max-w-lg bg-cream-50 rounded-3xl border-2 border-brand-300 shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      
+      <!-- Special Golden-Rose Header -->
+      <div class="bg-gradient-to-r from-brand-300 via-brand-200 to-amber-100 px-5 py-3.5 border-b border-brand-300 flex items-center justify-between flex-shrink-0">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">👑</span>
+          <span class="font-display font-bold text-brand-800 text-sm sm:text-base">Lá Thư Gửi Riêng Em</span>
+        </div>
+        <button id="special-close-btn" class="w-8 h-8 rounded-full bg-white/90 hover:bg-white text-warmgray-700 flex items-center justify-center border border-brand-300 shadow-xs" title="Đóng thư">
+          ✕
+        </button>
+      </div>
+
+      <!-- Special Letter Paper -->
+      <div class="letter-paper flex-1 overflow-y-auto p-6 sm:p-8">
+        
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 rounded-full bg-brand-100 border-2 border-brand-300 mx-auto flex items-center justify-center text-3xl shadow-sm mb-2 animate-bounce-subtle">
+            💌
+          </div>
+          <span class="text-[11px] uppercase tracking-widest text-brand-500 font-bold">Thư tình 20/10</span>
+          <h3 class="text-2xl font-display font-black text-brand-700 mt-1">
+            Gửi <span class="recipient-display">Bé yêu</span> của anh
+          </h3>
+          <div class="w-12 h-1 bg-brand-400 rounded-full mx-auto mt-2"></div>
+        </div>
+
+        <div class="text-sm sm:text-base text-warmgray-700 leading-relaxed space-y-4">
+          <p>
+            Anh không chắc mình đã giỏi dỗ em chưa, tại bình thường toàn là em dỗ anh mà... Những lúc anh ngơ ngác, mệt mỏi hay stress vì cuộc sống, em luôn là người dịu dàng kéo anh dậy, kiên nhẫn lắng nghe anh nói những chuyện linh tinh.
+          </p>
+          <p>
+            Nhưng anh vẫn muốn học cách quan tâm em nhiều hơn một chút, để những ngày em mệt mỏi, em cũng luôn có một nơi vững chãi để dựa vào. Anh có thể hơi ngố, nói năng không hay như người ta, nhưng mọi lời chúc và sự ân cần trong chiếc hộp này đều xuất phát từ trái tim chân thành nhất.
+          </p>
+          <p class="font-medium text-brand-700 bg-brand-50 p-3.5 rounded-2xl border border-brand-200">
+            20/10 thật hạnh phúc nha em. Nhớ ăn uống đầy đủ, ngủ sớm và luôn thương lấy bản thân mình đó. Anh thương em rất nhiều. ♡
+          </p>
+
+          <!-- Extra Custom Note if set by user -->
+          <div id="custom-note-container" class="hidden bg-amber-50/80 p-3.5 rounded-2xl border border-amber-200 text-xs sm:text-sm text-amber-900 italic">
+            <span class="font-bold block text-amber-700 not-italic mb-1">P/S lời nhắn bí mật:</span>
+            <span id="custom-note-text"></span>
+          </div>
+        </div>
+
+        <!-- Signature Card -->
+        <div class="mt-8 pt-5 border-t border-brand-200 flex flex-col items-end">
+          <div class="text-xs text-warmgray-500">Viết cho em, ngày 20 tháng 10</div>
+          <div class="font-hand text-2xl text-brand-600 mt-1 signature-display">Anh người yêu ngốc nghếch ♡</div>
+        </div>
+
+        <!-- Interactive Hug Button -->
+        <div class="mt-6 pt-4 text-center">
+          <button id="send-hug-btn" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs sm:text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 mx-auto">
+            <span>Gửi lại một cái ôm cho anh</span>
+            <span>🧸</span>
+          </button>
+          <div id="hug-feedback" class="text-xs text-brand-600 font-semibold mt-2 h-4 transition-all"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- PERSONALIZATION SETTINGS MODAL -->
+  <!-- ========================================== -->
+  <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-white rounded-3xl border border-brand-200 shadow-2xl p-6 overflow-hidden">
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-brand-100">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">✍️</span>
+          <h3 class="font-display font-bold text-warmgray-800 text-base">Cá Nhân Hóa Món Quà</h3>
+        </div>
+        <button id="config-close-btn" class="w-7 h-7 rounded-full bg-brand-50 hover:bg-brand-100 text-warmgray-600 flex items-center justify-center text-xs">✕</button>
+      </div>
+
+      <form id="config-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-warmgray-600 mb-1">Tên hoặc biệt danh của người nhận (Em):</label>
+          <input type="text" id="input-recipient" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200/50" placeholder="Ví dụ: Bé yêu, Em, Công chúa...">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-warmgray-600 mb-1">Tên hoặc biệt danh của người gửi (Anh):</label>
+          <input type="text" id="input-sender" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200/50" placeholder="Ví dụ: Chiếc bot của em, Anh ngố...">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-warmgray-600 mb-1">Chữ ký cuối thư:</label>
+          <input type="text" id="input-signature" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200/50" placeholder="Ví dụ: Anh người yêu ngốc nghếch ♡">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-warmgray-600 mb-1">Thêm lời nhắn riêng tư (tùy chọn):</label>
+          <textarea id="input-custom-note" rows="2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200/50" placeholder="Lời nhắn thêm vào lá thư cuối cùng..."></textarea>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between gap-3">
+          <button type="button" id="config-reset-btn" class="px-3 py-2 text-xs text-warmgray-500 hover:text-red-500 transition-colors">
+            Khôi phục mặc định
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs shadow-xs transition-all">
+            Lưu thay đổi
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-50 bg-warmgray-800 text-white text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 flex items-center gap-2">
+    <span id="toast-icon">✨</span>
+    <span id="toast-msg">Đã sao chép vào bộ nhớ tạm!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="mt-auto pt-6 text-center text-xs text-warmgray-400">
+    <p>Hộp quà 30 lời thương ♡ Dành riêng cho ngày Phụ nữ Việt Nam 20/10</p>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    (function() {
+      const poems = [{"id": "poem-1", "type": "poem", "title": "20/10 Của Riêng Em", "tag": "Dành riêng cho ngày 20/10", "mood": "20/10", "icon": "🌷", "lines": ["Tháng mười gió chớm heo may,", "Hôm nay anh chẳng có tài làm thơ.", "Chỉ gom chút nắng vu vơ,", "Bỏ vào hộp nhỏ đợi giờ tặng em.", "Chúc em má thắm môi mềm,", "Một ngày rực rỡ, ấm êm tiếng cười."], "catComment": "Meow~ Bài thơ mở màn đó! Chúc công chúa của anh một ngày 20/10 siêu ngọt ngào nha!"}, {"id": "poem-2", "type": "poem", "title": "Chiếc Bot Vụng Về", "tag": "Dành cho lúc em cần cười một cái", "mood": "happy", "icon": "🤖", "lines": ["Anh như một chiếc bot ngơ,", "Em buồn một tý là đơ cả người.", "Chẳng biết nói khéo dỗ cười,", "Chỉ lo lóng ngóng đứng ngồi không yên.", "Thôi thì gửi chút bình yên,", "Để anh học cách ở bên em hoài."], "catComment": "Bot này hơi lag nhưng được cái yêu thương em là tính năng mặc định không bao giờ lỗi!"}, {"id": "poem-3", "type": "poem", "title": "Khoảng Lặng Bình Yên", "tag": "Dành cho buổi chiều dịu dàng", "mood": "calm", "icon": "☕", "lines": ["Phố đông người vội ngược xuôi,", "Chỉ cần ngồi cạnh nụ cười của em.", "Bao nhiêu mỏi mệt tan êm,", "Như ly trà ấm rót thêm ngọt ngào.", "Chẳng cần rực rỡ trời sao,", "Bình yên là có em chào mỗi ban mai."], "catComment": "Mỗi lần ở bên em, trần gian bỗng chốc hóa thành nơi bình yên nhất."}, {"id": "poem-4", "type": "poem", "title": "Gom Hết Niềm Vui", "tag": "Dành cho ngày em khởi đầu mới", "mood": "happy", "icon": "☀️", "lines": ["Mong em mỗi sáng thức dậy,", "Thấy lòng nhẹ nhõm như mây trên trời.", "Đường đi hoa nở rạng ngời,", "Gặp cơn mưa nhỏ cũng lười bận tâm.", "Mong em vui vẻ quanh năm,", "Nụ cười rạng rỡ ươm mầm tháng năm."], "catComment": "Hôm nay bước chân ra đường nhớ nở nụ cười thật tươi nhé cô bé!"}, {"id": "poem-5", "type": "poem", "title": "Những Điều Nhỏ Xíu", "tag": "Dành cho những nét đáng yêu của em", "mood": "care", "icon": "✨", "lines": ["Cái nhíu mày lúc tập trung,", "Cái môi chu lại ngại ngùng đáng yêu.", "Cả khi dặn dò đủ điều,", "Bắt anh ăn uống kẻo chiều đói meo.", "Em là những chuyện bé teo,", "Mà gom góp lại thành điều anh thương."], "catComment": "Mấy thói quen nhỏ xíu của em, anh đều nhớ kỹ trong bộ nhớ đệm cả rồi đó!"}, {"id": "poem-6", "type": "poem", "title": "Cho Em Nghỉ Chân", "tag": "Dành cho lúc em thấy kiệt sức", "mood": "tired", "icon": "🌙", "lines": ["Gác lại bài vở, việc làm,", "Hôm nay thế giới chớ ham gánh gồng.", "Nếu nghe nặng trĩu trong lòng,", "Thì chui vào chăn ấm nồng ngủ ngoan.", "Bao điều dang dở lo toan,", "Mai rồi tính tiếp, chẳng muộn màng đâu."], "catComment": "Ngủ một giấc thật ngon nào. Anh canh chừng giấc mơ cho em rồi!"}, {"id": "poem-7", "type": "poem", "title": "Khoảng Cách Và Nỗi Nhớ", "tag": "Dành cho những ngày xa nhau", "mood": "care", "icon": "💌", "lines": ["Khoảng cách đếm bằng cây số,", "Mà nỗi nhớ dài mấy ngàn trùng xa.", "Bên này phố thị người qua,", "Anh nhìn đâu cũng ngỡ là bóng em.", "Gửi vào ngọn gió bên rèm,", "Cái ôm thật chặt cho em ấm lòng."], "catComment": "Gió thoảng qua má em đấy là một cái thơm má từ xa của anh đó nha!"}, {"id": "poem-8", "type": "poem", "title": "Thương Lấy Chính Mình", "tag": "Dành cho khi em quên trân quý bản thân", "mood": "care", "icon": "🪞", "lines": ["Em luôn rộng lượng với người,", "Nhưng hay khắt khe với nụ cười của em.", "Nhìn vào gương chút đi xem,", "Cô gái chăm chỉ dịu hiền thế kia.", "Thương người cả sớm lẫn khuya,", "Nhớ thương mình trước, chớ chia sẻ cạn."], "catComment": "Bé là phiên bản duy nhất trên vũ trụ này, phải biết nâng niu mình nhất nha!"}, {"id": "poem-9", "type": "poem", "title": "Cảm Ơn Em Dỗ Dành", "tag": "Dành cho cô gái vị tha của anh", "mood": "care", "icon": "🤍", "lines": ["Những ngày anh rối bời lòng,", "Toàn em kiên nhẫn bế bồng ủi an.", "Nghe anh lảm nhảm thở than,", "Vẫn ôm anh chặt, xua tan muộn phiền.", "Cảm ơn em gái ngoan hiền,", "Cho anh nương tựa bình yên tháng ngày."], "catComment": "Cảm ơn em đã nuôi dưỡng một chiếc bot ngơ như anh bằng sự dịu dàng vô bờ bến."}, {"id": "poem-10", "type": "poem", "title": "Tình Thương Khôn Nguôi", "tag": "Dành cho tương lai của chúng mình", "mood": "care", "icon": "🌸", "lines": ["Hộp thơ khép nắp lại rồi,", "Nhưng tình thương vẫn bồi hồi khôn nguôi.", "Dù sau này mấy nổi trôi,", "Mỗi khi em mệt lại ngồi đọc thư.", "Anh đây vẫn đứng ngóng chờ,", "Làm cây tùng nhỏ chở che em đời."], "catComment": "Hộp thư có thể hết 10 bài, nhưng tình thương của anh thì vô hạn luônnn!"}];
+      const wishes = [{"id": "wish-1", "type": "wish", "title": "Ngày 20/10 Thật Dịu Dàng", "tag": "Dành riêng cho ngày 20/10", "mood": "20/10", "icon": "💐", "content": "Chúc em có một ngày 20/10 ngập tràn những niềm vui giản dị: trà sữa ngọt vừa đúng ý, đường đi làm không bị kẹt xe, và nhận được thật nhiều sự cưng chiều xứng đáng. Hôm nay em cứ yên tâm làm công chúa, mọi sự lo lắng để vũ trụ lo nha.", "catComment": "Meow~ Hôm nay em là nữ chính rạng rỡ nhất trần đời đó nha!"}, {"id": "wish-2", "type": "wish", "title": "Rạng Rỡ Theo Cách Của Em", "tag": "Dành cho nụ cười của em", "mood": "happy", "icon": "🌟", "content": "Mong nụ cười tươi rói luôn là người bạn đồng hành của em mỗi sớm mai. Em đẹp và tỏa sáng nhất không phải khi cố gắng bắt chước một ai khác, mà là khi em tự tin là chính mình với tất cả nét hồn nhiên và chân thành vốn có.", "catComment": "Nụ cười của em làm tan chảy cả pin của chiếc bot này đấy!"}, {"id": "wish-3", "type": "wish", "title": "Mọi Nỗ Lực Đều Nở Hoa", "tag": "Dành cho học tập & công việc", "mood": "happy", "icon": "🎯", "content": "Những deadline hay bài học hóc búa có thể làm em đau đầu, nhưng anh luôn đặt trọn niềm tin vào sự thông minh và kiên trì của em. Chúc các dự án của em đều hanh thông, làm gì cũng gặt hái kết quả ngọt ngào tương xứng với công sức em bỏ ra.", "catComment": "Em giỏi giang lắm, chỉ cần vững tin bước tới là thành công gõ cửa thôi!"}, {"id": "wish-4", "type": "wish", "title": "Khoảng Trời Thảnh Thơi", "tag": "Dành cho những giờ phút nghỉ ngơi", "mood": "calm", "icon": "🍃", "content": "Cuộc sống ngoài kia có xoay chuyển nhanh đến mấy, chúc em vẫn luôn giữ được cho mình những khoảng lặng thật thong thả. Mong em có thời gian ngồi nhâm nhi tách trà thơm, ngắm hoàng hôn buông, nghe bài hát yêu thích mà không bị thông báo công việc làm phiền.", "catComment": "Thảnh thơi hít thở sâu một hơi nào, cuộc sống này đẹp lắm em ơi."}, {"id": "wish-5", "type": "wish", "title": "Gặp Gỡ Những Điều Tử Tế", "tag": "Dành cho những bước chân ra đời", "mood": "care", "icon": "🍀", "content": "Bước chân ra đường, chúc em luôn va phải những sự dịu dàng: một chú bảo vệ tươi cười dắt xe giúp, một đồng nghiệp tâm lý chia nửa thanh kẹo, và những người bạn chân thành. Mong thế giới bao la này sẽ đối xử với em bằng tất cả sự ấm áp.", "catComment": "Em tốt bụng như thế, vũ trụ nhất định sẽ gửi toàn người tử tế đến bên em!"}, {"id": "wish-6", "type": "wish", "title": "Luôn Được Trân Quý", "tag": "Dành cho giá trị của em", "mood": "care", "icon": "👑", "content": "Ở bất cứ môi trường nào, mong tiếng nói của em luôn được lắng nghe với sự tôn trọng và đối đãi bằng sự công bằng, trân quý. Giá trị của em là độc nhất, đừng bao giờ để bất kỳ ai hay hoàn cảnh nào làm em hoài nghi điều đó.", "catComment": "Em luôn là báu vật vô giá, nhớ rõ điều đó giùm anh nha!"}, {"id": "wish-7", "type": "wish", "title": "Niềm Vui Những Ngày Bình Thường", "tag": "Dành cho những ngày giản dị", "mood": "happy", "icon": "🌼", "content": "Không cần phải đợi đến ngày lễ hay những dịp kỷ niệm to tát mới thấy hạnh phúc. Chúc 365 ngày của em, kể cả thứ Ba buồn tẻ hay chiều thứ Năm mưa dầm, đều có một mẩu chuyện nhỏ khiến em bất giác bật cười mỉm chi.", "catComment": "Hạnh phúc đích thực nằm ngay trong từng ngụm nước ngọt ngào mỗi ngày."}, {"id": "wish-8", "type": "wish", "title": "Vững Vàng Theo Đuổi Ước Mơ", "tag": "Dành cho những hoài bão", "mood": "happy", "icon": "🚀", "content": "Nếu trong lòng em đang ấp ủ một ước mơ hay một dự định mới, chúc em có đủ dũng khí để bắt đầu bước đi đầu tiên. Đừng lo lắng về vấp ngã hay sai đường, vì phía sau lưng em luôn có một hậu phương vững chắc cổ vũ em hết mình.", "catComment": "Cứ mạnh dạn bay cao đi nhé, anh luôn đứng ở dưới đón em!"}, {"id": "wish-9", "type": "wish", "title": "Tự Hào Về Chính Mình", "tag": "Dành cho hành trình của em", "mood": "care", "icon": "💖", "content": "Em đã đi một chặng đường rất dài và vượt qua biết bao nhiêu thử thách mà đôi khi chính em cũng quên mất. Hôm nay hãy dành tặng cho bản thân một cái vỗ vai và tràng pháo tay thật lớn nha, em mạnh mẽ và kiên cường hơn em tưởng rất nhiều đấy.", "catComment": "Meow tặng em 10 điểm kiên cường xuất sắc không có nhưng!"}, {"id": "wish-10", "type": "wish", "title": "Lời Chúc Riêng Của Chiếc Bot", "tag": "Dành riêng từ người yêu ngố", "mood": "happy", "icon": "🐱", "content": "Chúc em luôn có anh làm trạm sạc pin mỗi khi kiệt sức, làm nơi trút giận mỗi lúc bực mình, và làm gối ôm mỗi khi trời trở rét. Anh hứa sẽ chịu khó nâng cấp phần mềm, bớt ngơ ngác hơn một tí để em đỡ phải nhọc công uốn nắn nha!", "catComment": "Bot này xin cam kết phục vụ công chúa suốt đời không tính phí bảo trì!"}];
+      const comforts = [{"id": "comfort-1", "type": "comfort", "title": "Khi Em Làm Việc Quá Mệt", "tag": "Dành cho lúc mệt mỏi quá tải", "mood": "tired", "icon": "💻", "content": "Em ơi, nhìn thấy em tất bật từ sáng đến tối mịt mà anh xót ruột ghê. Em rất có trách nhiệm, nhưng cơ thể em cũng cần được sạc lại pin nữa. Bây giờ em uống một ngụm nước ấm, ngả lưng xuống sofa 15 phút thôi nhé? Việc gấp đến mấy cũng không quý bằng sức khỏe của em đâu.", "catComment": "Tạm gác laptop lại 15 phút thôi nào bé ơi, nhắm mắt thư giãn xíu đi!"}, {"id": "comfort-2", "type": "comfort", "title": "Lời Nhắc Lúc Đêm Muộn", "tag": "Dành cho lúc em thức khuya", "mood": "tired", "icon": "💤", "content": "Màn hình điện thoại phát ánh sáng xanh làm mắt em mỏi lắm rồi đấy. Anh biết có những đêm nhiều suy nghĩ hoặc bài vở chưa xong, nhưng để ngày mai thức dậy với tinh thần tỉnh táo vẫn tốt hơn mà. Nhắm mắt lại, thả lỏng đôi vai, hít một hơi thật sâu. Chúc em ngủ ngoan, trong mơ sẽ chỉ có những que kem ngọt ngào thôi nha.", "catComment": "Đồng hồ điểm khuya rồi đó! Đắp chăn kín cổ rồi ngủ ngon nha em."}, {"id": "comfort-3", "type": "comfort", "title": "Đừng Bỏ Bữa Nhé Bé", "tag": "Dành cho lúc em lười ăn", "mood": "care", "icon": "🍲", "content": "Cái bụng nhỏ của em đã biểu tình réo rắt chưa đó? Dù bận rộn hay không thấy đói, em cũng nhớ ăn một chút gì đó ấm bụng nhé: bát súp, chiếc bánh mì hay một hộp sữa chua cũng được. Đừng để dạ dày bị đau, anh ở xa không thể chạy qua nấu cháo cho em ngay được đâu, anh lo lắm đấy.", "catComment": "Bụng đói là dễ quạu lắm đó nha, ăn một miếng cho ấm lòng nào!"}, {"id": "comfort-4", "type": "comfort", "title": "Gỡ Từng Nút Thắt", "tag": "Dành cho lúc căng thẳng", "mood": "sad", "icon": "🌿", "content": "Nếu bây giờ mọi việc đang dồn dập như một cuộn len rối tinh, em hãy dừng lại một nhịp đã. Mình không cần phải giải quyết hết đống rối ấy ngay trong một buổi tối đâu. Em cứ chọn việc nhỏ nhất, dễ thở nhất làm trước, hoặc tạm cất nó sang một bên. Cứ thở đều nào, mọi chuyện rồi sẽ có cách giải quyết từng bước một.", "catComment": "Hít một hơi sâu... thở ra từ từ... Mọi chuyện rồi sẽ đâu vào đấy thôi!"}, {"id": "comfort-5", "type": "comfort", "title": "Lặng Yên Bên Cạnh Em", "tag": "Dành cho lúc buồn không tên", "mood": "sad", "icon": "🌧️", "content": "Em không nhất thiết phải tìm lý do giải thích vì sao hôm nay mình buồn, và cũng không cần phải gượng cười hay cố tỏ ra hoạt bát đâu. Cảm xúc trũng xuống là chuyện bình thường của con người mà. Nếu em không biết nói gì, cứ im lặng cũng được, anh sẽ ngồi đây im lặng cùng em. Anh gửi một cái ôm thật chặt qua màn hình này tới em nhé.", "catComment": "Không cần phải nói gì cả, có mèo nhỏ và anh ngồi bên cạnh ôm em rồi."}, {"id": "comfort-6", "type": "comfort", "title": "Ai Cũng Có Lúc Lỡ Lầm", "tag": "Dành cho lúc em tự trách mình", "mood": "sad", "icon": "🩹", "content": "Đừng tự dằn vặt mình mãi vì một chuyện đã lỡ xảy ra nhé em. Đến máy móc hay một chiếc bot như anh còn có lúc lỗi code giật lag cơ mà, huống chi là con người. Sai một chút không biến em thành người kém cỏi đâu, nó chỉ là một bài học nhỏ trên đường đi thôi. Thả lỏng nào, với anh em vẫn luôn rất cừ khôi.", "catComment": "Vấp ngã thì mình đứng dậy phủi bụi thôi, không ai hoàn hảo hết trơn á!"}, {"id": "comfort-7", "type": "comfort", "title": "Em Đã Rất Tuyệt Vời Rồi", "tag": "Dành cho lúc hoài nghi bản thân", "mood": "care", "icon": "🪞", "content": "Có phải em đang nhìn sang người khác rồi tự thấy mình nhỏ bé và chưa bằng ai không? Đừng so sánh hành trình của mình với thước đo của người khác em ơi. Với anh, sự tử tế, nụ cười chân thành và những cố gắng thầm lặng mỗi ngày của em đã là điều đáng ngưỡng mộ nhất rồi. Em đủ tốt, đủ đáng yêu và hoàn toàn xứng đáng được yêu thương.", "catComment": "Đối với anh, em là phiên bản tuyệt vời nhất không ai thay thế được!"}, {"id": "comfort-8", "type": "comfort", "title": "Sau Cơn Mưa Trời Lại Sáng", "tag": "Dành cho lúc chuyện không như ý", "mood": "sad", "icon": "⛅", "content": "Kết quả lần này có thể không như em kỳ vọng, và cảm giác hụt hẫng đó thật sự rất khó chịu. Cứ cho phép mình thất vọng một chút, muốn khóc thì cứ khóc cho nhẹ bớt lồng ngực. Nhưng khóc xong rồi nhớ là cánh cửa này khép lại thì sẽ có cánh cửa khác mở ra. Anh tin vào em, lúc nào cũng vững vàng tin như thế.", "catComment": "Mưa nào rồi cũng tạnh, cầu vồng sẽ sớm xuất hiện thôi công chúa ơi!"}, {"id": "comfort-9", "type": "comfort", "title": "Trú Ẩn Trong Góc Nhỏ", "tag": "Dành cho lúc muốn ở một mình", "mood": "calm", "icon": "🚪", "content": "Nếu hôm nay thế giới ngoài kia ồn ào quá mức khiến em chỉ muốn tắt hết thông báo và trốn vào một góc riêng, em cứ thoải mái làm vậy nhé. Em không có lỗi gì khi cần không gian cho riêng mình cả. Anh sẽ không làm phiền em đâu, chỉ để lại đây một lời nhắn là: Khi nào sạc đầy năng lượng và muốn nói chuyện, anh luôn ở đây đợi em.", "catComment": "Cứ thoải mái nạp năng lượng một mình nhé, anh đứng canh cửa cho em."}, {"id": "comfort-10", "type": "comfort", "title": "Chiếc Tai Nghe Không Phán Xét", "tag": "Dành cho lúc chỉ cần được lắng nghe", "mood": "care", "icon": "🧸", "content": "Anh biết bình thường anh hay có tật xấu của 'kỹ sư' là hễ nghe kể chuyện là nhảy vào tìm giải pháp và đưa lời khuyên, làm em bực mình. Hôm nay anh rút kinh nghiệm sâu sắc rồi nè! Anh xin ứng tuyển làm một chiếc tai nghe trung thành: chỉ lắng nghe em xả hết ấm ức trong lòng, tuyệt đối không phán xét, không dạy bảo, chỉ gật đầu đồng tình và vuốt tóc em thôi!", "catComment": "Bé cứ việc trút hết ấm ức ra nha, đôi tai này sinh ra là để nghe em mà!"}];
+
+      const allLetters = [...poems, ...wishes, ...comforts];
+      const lettersMap = {};
+      allLetters.forEach(l => lettersMap[l.id] = l);
+
+      const defaultConfig = {
+        recipientName: "Bé yêu",
+        senderName: "Chiếc bot của em",
+        signature: "Anh người yêu ngốc nghếch ♡",
+        customNote: ""
+      };
+
+      let userConfig = Object.assign({}, defaultConfig);
+      let openedLetters = new Set();
+      let activeCompartment = 'poems';
+      let activeFilter = 'all';
+      let currentModalLetterId = null;
+      let isAudioPlaying = false;
+      let audioCtx = null;
+      let melodyInterval = null;
+
+      function loadSavedState() {
+        try {
+          const savedConfig = localStorage.getItem('hopqua_config');
+          if (savedConfig) userConfig = Object.assign({}, defaultConfig, JSON.parse(savedConfig));
+          const savedOpened = localStorage.getItem('hopqua_opened_ids');
+          if (savedOpened) {
+            const arr = JSON.parse(savedOpened);
+            if (Array.isArray(arr)) openedLetters = new Set(arr);
+          }
+        } catch (e) {
+          console.warn('LocalStorage error:', e);
+        }
+      }
+
+      function saveOpenedLetters() {
+        try {
+          localStorage.setItem('hopqua_opened_ids', JSON.stringify(Array.from(openedLetters)));
+        } catch (e) {
+          console.warn('LocalStorage save error:', e);
+        }
+      }
+
+      function saveUserConfig() {
+        try {
+          localStorage.setItem('hopqua_config', JSON.stringify(userConfig));
+        } catch (e) {
+          console.warn('LocalStorage config save error:', e);
+        }
+      }
+
+      function applyPersonalization() {
+        document.querySelectorAll('.recipient-display').forEach(el => {
+          el.textContent = userConfig.recipientName || "Bé yêu";
+        });
+        document.querySelectorAll('.sender-display').forEach(el => {
+          el.textContent = userConfig.senderName || "Chiếc bot của em";
+        });
+        document.querySelectorAll('.signature-display').forEach(el => {
+          el.textContent = userConfig.signature || "Anh người yêu ngốc nghếch ♡";
+        });
+
+        const customNoteEl = document.getElementById('custom-note-container');
+        const customNoteText = document.getElementById('custom-note-text');
+        if (userConfig.customNote && userConfig.customNote.trim()) {
+          customNoteEl.classList.remove('hidden');
+          customNoteText.textContent = userConfig.customNote.trim();
+        } else {
+          customNoteEl.classList.add('hidden');
+          customNoteText.textContent = "";
+        }
+      }
+
+      function updateProgressCounts() {
+        const total = allLetters.length;
+        const totalOpened = openedLetters.size;
+        
+        document.getElementById('total-opened-count').textContent = totalOpened;
+        const pct = Math.round((totalOpened / total) * 100);
+        document.getElementById('total-progress-fill').style.width = pct + '%';
+
+        let pCount = 0, wCount = 0, cCount = 0;
+        openedLetters.forEach(id => {
+          if (id.startsWith('poem-')) pCount++;
+          else if (id.startsWith('wish-')) wCount++;
+          else if (id.startsWith('comfort-')) cCount++;
+        });
+
+        document.getElementById('count-poems-opened').textContent = pCount;
+        document.getElementById('count-wishes-opened').textContent = wCount;
+        document.getElementById('count-comforts-opened').textContent = cCount;
+
+        const mascotBubble = document.getElementById('mascot-bubble');
+        if (totalOpened === 0) {
+          mascotBubble.textContent = "“Hôm nay em muốn chọn đọc một bài thơ, một lời chúc hay cần một cái ôm ấm áp nè?”";
+        } else if (totalOpened < 10) {
+          mascotBubble.textContent = `“Oa, em đã mở được ${totalOpened} phong thư rồi đó! Thư nào cũng đong đầy tình cảm luôn.”`;
+        } else if (totalOpened < 25) {
+          mascotBubble.textContent = `“Đã mở được ${totalOpened}/30 bức thư rồi nè! Em nhớ đọc chậm lại để cảm nhận sự ấm áp nha.”`;
+        } else if (totalOpened === 30) {
+          mascotBubble.textContent = "“Tuyệt vời quá! Em đã mở trọn vẹn 30 lời thương rồi! Em có thấy một cái ôm thật lớn chưa? ♡”";
+        }
+      }
+
+      function renderEnvelopes() {
+        const grid = document.getElementById('envelopes-grid');
+        grid.innerHTML = '';
+
+        let currentList = [];
+        if (activeCompartment === 'poems') currentList = poems;
+        else if (activeCompartment === 'wishes') currentList = wishes;
+        else if (activeCompartment === 'comforts') currentList = comforts;
+
+        const filtered = currentList.filter(item => {
+          if (activeFilter === 'all') return true;
+          if (activeFilter === '20/10') return item.mood === '20/10' || item.tag.includes('20/10');
+          if (activeFilter === 'tired') return item.mood === 'tired';
+          if (activeFilter === 'sad') return item.mood === 'sad';
+          if (activeFilter === 'happy') return item.mood === 'happy';
+          if (activeFilter === 'care') return item.mood === 'care';
+          return true;
+        });
+
+        if (filtered.length === 0) {
+          grid.innerHTML = `
+            <div class="col-span-full py-12 text-center text-warmgray-500 bg-white/70 rounded-2xl border border-brand-200">
+              <span class="text-3xl block mb-2">🌸</span>
+              <p class="text-sm font-medium">Không có phong thư nào khớp với bộ lọc này.</p>
+              <button id="reset-filter-btn" class="mt-3 px-3.5 py-1.5 rounded-full bg-brand-100 text-brand-700 text-xs font-semibold">Xem tất cả</button>
+            </div>
+          `;
+          const resetBtn = document.getElementById('reset-filter-btn');
+          if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+              activeFilter = 'all';
+              updateFilterChips();
+              renderEnvelopes();
+            });
+          }
+          return;
+        }
+
+        filtered.forEach(item => {
+          const isOpened = openedLetters.has(item.id);
+          const card = document.createElement('div');
+          card.className = `envelope-card cursor-pointer rounded-2xl p-4 sm:p-5 border transition-all duration-300 relative overflow-hidden flex flex-col justify-between ${
+            isOpened 
+              ? 'bg-white/95 border-brand-200 shadow-xs' 
+              : 'bg-gradient-to-br from-cream-50 via-white to-brand-50/60 border-brand-300/80 shadow-sm hover:border-brand-400'
+          }`;
+
+          let snippet = "";
+          if (item.type === 'poem') {
+            snippet = item.lines ? item.lines.slice(0, 2).join(' ') + '...' : '';
+          } else {
+            snippet = item.content ? item.content.slice(0, 65) + '...' : '';
+          }
+
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full ${
+                  isOpened ? 'bg-cream-100 text-warmgray-600' : 'bg-brand-100 text-brand-600'
+                }">${item.tag}</span>
+                
+                <span class="text-xs font-semibold flex items-center gap-1 ${isOpened ? 'text-brand-500' : 'text-warmgray-400'}">
+                  ${isOpened ? '<span>Đã mở ✓</span>' : '<span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span> Mới'}
+                </span>
+              </div>
+
+              <h4 class="font-display font-bold text-sm sm:text-base text-warmgray-800 mb-1 flex items-center gap-1.5">
+                <span>${item.icon}</span>
+                <span>${item.title}</span>
+              </h4>
+
+              <p class="text-xs text-warmgray-500 line-clamp-2 leading-relaxed">
+                ${snippet}
+              </p>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-brand-100 flex items-center justify-between text-[11px] text-warmgray-500">
+              <span class="font-medium text-brand-600">Chạm để mở thư</span>
+              <div class="w-6 h-6 rounded-full flex items-center justify-center ${
+                isOpened ? 'bg-brand-50 text-brand-500' : 'bg-brand-500 text-white shadow-xs'
+              }">
+                ${isOpened ? '✓' : '✉'}
+              </div>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            openLetterModal(item.id);
+          });
+
+          grid.appendChild(card);
+        });
+      }
+
+      function updateFilterChips() {
+        document.querySelectorAll('.filter-chip').forEach(btn => {
+          if (btn.getAttribute('data-filter') === activeFilter) {
+            btn.className = 'filter-chip active flex-shrink-0 px-3 py-1 rounded-full bg-brand-500 text-white font-medium shadow-xs';
+          } else {
+            btn.className = 'filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors';
+          }
+        });
+      }
+
+      function updateCompartmentTabs() {
+        const tabs = [
+          { id: 'tab-poems-btn', key: 'poems' },
+          { id: 'tab-wishes-btn', key: 'wishes' },
+          { id: 'tab-comforts-btn', key: 'comforts' }
+        ];
+
+        tabs.forEach(t => {
+          const btn = document.getElementById(t.id);
+          if (activeCompartment === t.key) {
+            btn.className = 'compartment-tab active py-3 px-2 sm:px-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 text-center bg-white border-brand-400 shadow-sm text-brand-600 font-bold';
+          } else {
+            btn.className = 'compartment-tab py-3 px-2 sm:px-4 rounded-2xl border-2 transition-all flex flex-col items-center justify-center gap-1 text-center bg-cream-50 border-transparent hover:border-brand-200 text-warmgray-600 font-medium';
+          }
+        });
+      }
+
+      function openLetterModal(letterId) {
+        const item = lettersMap[letterId];
+        if (!item) return;
+
+        currentModalLetterId = letterId;
+        openedLetters.add(letterId);
+        saveOpenedLetters();
+        updateProgressCounts();
+        renderEnvelopes();
+
+        document.getElementById('modal-letter-icon').textContent = item.icon || '💌';
+        
+        let typeLabel = "Phong Thư";
+        if (item.type === 'poem') typeLabel = "Bài Thơ";
+        else if (item.type === 'wish') typeLabel = "Lời Chúc";
+        else if (item.type === 'comfort') typeLabel = "Chiếc Ôm Chữ";
+        document.getElementById('modal-letter-type-badge').textContent = typeLabel;
+
+        document.getElementById('modal-letter-tag').textContent = item.tag;
+        document.getElementById('modal-letter-title').textContent = item.title;
+
+        const bodyEl = document.getElementById('modal-letter-body');
+        bodyEl.innerHTML = '';
+        if (item.type === 'poem' && Array.isArray(item.lines)) {
+          const p = document.createElement('div');
+          p.className = 'font-display text-base sm:text-lg text-brand-800 leading-relaxed text-center py-2 sm:py-4 bg-brand-50/40 rounded-2xl border border-brand-100/60 my-2';
+          p.innerHTML = item.lines.map(line => `<div class="py-0.5">${line}</div>`).join('');
+          bodyEl.appendChild(p);
+        } else {
+          const p = document.createElement('p');
+          p.className = 'text-sm sm:text-base text-warmgray-700 leading-relaxed sm:leading-loose';
+          p.textContent = item.content;
+          bodyEl.appendChild(p);
+        }
+
+        document.getElementById('modal-cat-comment').textContent = `“${item.catComment || 'Meow~ Hãy luôn vui vẻ em nha!'}”`;
+
+        let currentList = [];
+        if (item.type === 'poem') currentList = poems;
+        else if (item.type === 'wish') currentList = wishes;
+        else if (item.type === 'comfort') currentList = comforts;
+
+        const currentIndex = currentList.findIndex(x => x.id === item.id);
+        const prevBtn = document.getElementById('modal-prev-btn');
+        const nextBtn = document.getElementById('modal-next-btn');
+        const indexIndicator = document.getElementById('modal-letter-index');
+
+        indexIndicator.textContent = `${currentIndex + 1} / ${currentList.length}`;
+        prevBtn.disabled = currentIndex <= 0;
+        nextBtn.disabled = currentIndex >= currentList.length - 1;
+
+        const modal = document.getElementById('letter-modal');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          modal.classList.remove('opacity-0');
+          document.getElementById('letter-modal-dialog').classList.remove('scale-95');
+        });
+
+        spawnHearts(window.innerWidth / 2, window.innerHeight / 2, 8);
+        playChimeSound();
+      }
+
+      function closeLetterModal() {
+        const modal = document.getElementById('letter-modal');
+        modal.classList.add('opacity-0');
+        document.getElementById('letter-modal-dialog').classList.add('scale-95');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 300);
+      }
+
+      function navigateModal(direction) {
+        if (!currentModalLetterId) return;
+        const currentItem = lettersMap[currentModalLetterId];
+        if (!currentItem) return;
+
+        let currentList = [];
+        if (currentItem.type === 'poem') currentList = poems;
+        else if (currentItem.type === 'wish') currentList = wishes;
+        else if (currentItem.type === 'comfort') currentList = comforts;
+
+        const currentIndex = currentList.findIndex(x => x.id === currentItem.id);
+        const newIndex = currentIndex + direction;
+
+        if (newIndex >= 0 && newIndex < currentList.length) {
+          openLetterModal(currentList[newIndex].id);
+        }
+      }
+
+      let toastTimer = null;
+      function showToast(msg, icon = '✨') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        document.getElementById('toast-icon').textContent = icon;
+
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 2200);
+      }
+
+      function copyCurrentLetter() {
+        if (!currentModalLetterId) return;
+        const item = lettersMap[currentModalLetterId];
+        if (!item) return;
+
+        let text = `${item.title}\n\n`;
+        if (item.type === 'poem' && Array.isArray(item.lines)) {
+          text += item.lines.join('\n');
+        } else {
+          text += item.content;
+        }
+        text += `\n\n— Gửi từ Hộp quà 30 lời thương ♡ (20/10)`;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            showToast("Đã sao chép lời thương vào bộ nhớ tạm! ♡", "📋");
+          }).catch(() => {
+            fallbackCopy(text);
+          });
+        } else {
+          fallbackCopy(text);
+        }
+      }
+
+      function fallbackCopy(text) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand('copy');
+          showToast("Đã sao chép lời thương! ♡", "📋");
+        } catch (e) {
+          showToast("Không thể sao chép tự động", "⚠️");
+        }
+        document.body.removeChild(ta);
+      }
+
+      function openSpecialLetter() {
+        const modal = document.getElementById('special-letter-modal');
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          modal.classList.remove('opacity-0');
+        });
+        spawnHearts(window.innerWidth / 2, window.innerHeight / 2, 12);
+        playChimeSound();
+      }
+
+      function closeSpecialLetter() {
+        const modal = document.getElementById('special-letter-modal');
+        modal.classList.add('opacity-0');
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 300);
+      }
+
+      function initAudio() {
+        if (!audioCtx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+      }
+
+      function playNote(freq, time, duration = 1.2) {
+        if (!audioCtx) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, time);
+
+          gain.gain.setValueAtTime(0.001, time);
+          gain.gain.linearRampToValueAtTime(0.12, time + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.0001, time + duration);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(time);
+          osc.stop(time + duration);
+        } catch (e) {}
+      }
+
+      function playChimeSound() {
+        initAudio();
+        if (!audioCtx) return;
+        try {
+          const now = audioCtx.currentTime;
+          playNote(523.25, now, 0.6); // C5
+          playNote(659.25, now + 0.08, 0.7); // E5
+          playNote(783.99, now + 0.16, 0.8); // G5
+          playNote(1046.50, now + 0.24, 1.2); // C6
+        } catch (e) {}
+      }
+
+      function startMelodyLoop() {
+        initAudio();
+        if (!audioCtx) return;
+
+        const melody = [
+          523.25, 659.25, 783.99, 659.25, 523.25, 392.00, 440.00, 523.25,
+          587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 587.33, 523.25
+        ];
+        let step = 0;
+
+        melodyInterval = setInterval(() => {
+          if (!isAudioPlaying || !audioCtx) return;
+          const note = melody[step % melody.length];
+          playNote(note, audioCtx.currentTime, 1.6);
+          step++;
+        }, 650);
+      }
+
+      function stopMelodyLoop() {
+        if (melodyInterval) {
+          clearInterval(melodyInterval);
+          melodyInterval = null;
+        }
+      }
+
+      function toggleAudio() {
+        initAudio();
+        isAudioPlaying = !isAudioPlaying;
+        const icon = document.getElementById('audio-icon');
+        const text = document.getElementById('audio-text');
+        const btn = document.getElementById('audio-toggle-btn');
+
+        if (isAudioPlaying) {
+          icon.textContent = "🔊";
+          text.textContent = "Đang phát";
+          btn.classList.add('bg-brand-200', 'text-brand-700');
+          startMelodyLoop();
+          showToast("Đã bật nhạc hộp quà du dương ♡", "🎶");
+        } else {
+          icon.textContent = "🎵";
+          text.textContent = "Nhạc ru êm";
+          btn.classList.remove('bg-brand-200', 'text-brand-700');
+          stopMelodyLoop();
+          showToast("Đã tắt nhạc", "🔇");
+        }
+      }
+
+      const canvas = document.getElementById('particles-canvas');
+      const ctx = canvas.getContext('2d');
+      let particles = [];
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resizeCanvas);
+      resizeCanvas();
+
+      class Particle {
+        constructor() {
+          this.reset();
+        }
+        reset() {
+          this.x = Math.random() * canvas.width;
+          this.y = Math.random() * canvas.height;
+          this.size = Math.random() * 5 + 3;
+          this.speedY = Math.random() * 0.6 + 0.2;
+          this.speedX = (Math.random() - 0.5) * 0.4;
+          this.opacity = Math.random() * 0.4 + 0.1;
+          this.isHeart = Math.random() > 0.6;
+          this.color = Math.random() > 0.5 ? 'rgba(255, 179, 193, ' : 'rgba(255, 214, 224, ';
+        }
+        update() {
+          this.y -= this.speedY;
+          this.x += this.speedX;
+          if (this.y < -20) {
+            this.y = canvas.height + 20;
+            this.x = Math.random() * canvas.width;
+          }
+        }
+        draw() {
+          ctx.fillStyle = this.color + this.opacity + ')';
+          ctx.beginPath();
+          if (this.isHeart) {
+            const x = this.x;
+            const y = this.y;
+            const s = this.size * 0.6;
+            ctx.moveTo(x, y);
+            ctx.bezierCurveTo(x - s, y - s, x - s * 1.5, y + s / 3, x, y + s * 1.2);
+            ctx.bezierCurveTo(x + s * 1.5, y + s / 3, x + s, y - s, x, y);
+            ctx.fill();
+          } else {
+            ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+      }
+
+      for (let i = 0; i < 28; i++) {
+        particles.push(new Particle());
+      }
+
+      function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.update();
+          p.draw();
+        });
+        requestAnimationFrame(animateParticles);
+      }
+      animateParticles();
+
+      function spawnHearts(originX, originY, count = 6) {
+        for (let i = 0; i < count; i++) {
+          const heart = document.createElement('div');
+          heart.className = 'floating-heart text-brand-500 font-bold';
+          heart.style.left = (originX + (Math.random() - 0.5) * 60) + 'px';
+          heart.style.top = (originY + (Math.random() - 0.5) * 40) + 'px';
+          heart.style.fontSize = (Math.random() * 14 + 14) + 'px';
+          heart.textContent = Math.random() > 0.3 ? '♡' : '🌸';
+          document.body.appendChild(heart);
+          setTimeout(() => {
+            if (heart.parentNode) heart.parentNode.removeChild(heart);
+          }, 1200);
+        }
+      }
+
+      function setupEvents() {
+        const openBoxAction = () => {
+          const lid = document.getElementById('gift-box-lid');
+          lid.classList.add('opened');
+          playChimeSound();
+          spawnHearts(window.innerWidth / 2, window.innerHeight / 2, 16);
+
+          setTimeout(() => {
+            document.getElementById('screen-intro').classList.add('hidden');
+            document.getElementById('screen-compartments').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderEnvelopes();
+          }, 600);
+        };
+
+        document.getElementById('open-box-btn').addEventListener('click', openBoxAction);
+        document.getElementById('gift-box-click-target').addEventListener('click', openBoxAction);
+
+        document.getElementById('back-to-box-btn').addEventListener('click', () => {
+          const lid = document.getElementById('gift-box-lid');
+          lid.classList.remove('opened');
+          document.getElementById('screen-compartments').classList.add('hidden');
+          document.getElementById('screen-intro').classList.remove('hidden');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        document.getElementById('nav-brand-btn').addEventListener('click', () => {
+          if (document.getElementById('screen-compartments').classList.contains('hidden')) {
+            openBoxAction();
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+
+        document.getElementById('tab-poems-btn').addEventListener('click', () => {
+          activeCompartment = 'poems';
+          updateCompartmentTabs();
+          renderEnvelopes();
+        });
+        document.getElementById('tab-wishes-btn').addEventListener('click', () => {
+          activeCompartment = 'wishes';
+          updateCompartmentTabs();
+          renderEnvelopes();
+        });
+        document.getElementById('tab-comforts-btn').addEventListener('click', () => {
+          activeCompartment = 'comforts';
+          updateCompartmentTabs();
+          renderEnvelopes();
+        });
+
+        document.querySelectorAll('.filter-chip').forEach(btn => {
+          btn.addEventListener('click', () => {
+            activeFilter = btn.getAttribute('data-filter') || 'all';
+            updateFilterChips();
+            renderEnvelopes();
+          });
+        });
+
+        document.getElementById('modal-close-btn').addEventListener('click', closeLetterModal);
+        document.getElementById('modal-prev-btn').addEventListener('click', () => navigateModal(-1));
+        document.getElementById('modal-next-btn').addEventListener('click', () => navigateModal(1));
+        document.getElementById('modal-copy-btn').addEventListener('click', copyCurrentLetter);
+
+        document.getElementById('letter-modal').addEventListener('click', (e) => {
+          if (e.target.id === 'letter-modal') closeLetterModal();
+        });
+
+        document.getElementById('open-special-letter-btn').addEventListener('click', openSpecialLetter);
+        document.getElementById('banner-open-special-btn').addEventListener('click', openSpecialLetter);
+        document.getElementById('special-close-btn').addEventListener('click', closeSpecialLetter);
+        document.getElementById('special-letter-modal').addEventListener('click', (e) => {
+          if (e.target.id === 'special-letter-modal') closeSpecialLetter();
+        });
+
+        document.getElementById('send-hug-btn').addEventListener('click', () => {
+          spawnHearts(window.innerWidth / 2, window.innerHeight / 2, 16);
+          playChimeSound();
+          const fb = document.getElementById('hug-feedback');
+          fb.textContent = "Anh đã nhận được cái ôm ấm áp rồi! Yêu em nhiều lắm! ♡";
+          setTimeout(() => { fb.textContent = ""; }, 3000);
+        });
+
+        document.getElementById('audio-toggle-btn').addEventListener('click', toggleAudio);
+
+        const configModal = document.getElementById('config-modal');
+        document.getElementById('config-open-btn').addEventListener('click', () => {
+          document.getElementById('input-recipient').value = userConfig.recipientName;
+          document.getElementById('input-sender').value = userConfig.senderName;
+          document.getElementById('input-signature').value = userConfig.signature;
+          document.getElementById('input-custom-note').value = userConfig.customNote || "";
+
+          configModal.classList.remove('hidden');
+          requestAnimationFrame(() => configModal.classList.remove('opacity-0'));
+        });
+
+        document.getElementById('config-close-btn').addEventListener('click', () => {
+          configModal.classList.add('opacity-0');
+          setTimeout(() => configModal.classList.add('hidden'), 300);
+        });
+
+        document.getElementById('config-reset-btn').addEventListener('click', () => {
+          userConfig = Object.assign({}, defaultConfig);
+          saveUserConfig();
+          applyPersonalization();
+          configModal.classList.add('opacity-0');
+          setTimeout(() => configModal.classList.add('hidden'), 300);
+          showToast("Đã khôi phục thiết lập mặc định", "🔄");
+        });
+
+        document.getElementById('config-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          userConfig.recipientName = document.getElementById('input-recipient').value.trim() || defaultConfig.recipientName;
+          userConfig.senderName = document.getElementById('input-sender').value.trim() || defaultConfig.senderName;
+          userConfig.signature = document.getElementById('input-signature').value.trim() || defaultConfig.signature;
+          userConfig.customNote = document.getElementById('input-custom-note').value.trim();
+
+          saveUserConfig();
+          applyPersonalization();
+
+          configModal.classList.add('opacity-0');
+          setTimeout(() => configModal.classList.add('hidden'), 300);
+          showToast("Đã cập nhật thông tin cá nhân hóa! ♡", "✨");
+        });
+
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            closeLetterModal();
+            closeSpecialLetter();
+          } else if (e.key === 'ArrowLeft') {
+            navigateModal(-1);
+          } else if (e.key === 'ArrowRight') {
+            navigateModal(1);
+          }
+        });
+      }
+
+      loadSavedState();
+      applyPersonalization();
+      updateProgressCounts();
+      setupEvents();
+
+    })();
+  </script>
+</body>
+</html>

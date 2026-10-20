@@ -1,0 +1,40 @@
+/* ===================================================
+   AUTH MODAL STYLESHEET (CỔNG XÁC THỰC TÊN NGƯỜI NHẬN)
+   =================================================== */
+
+#auth-modal {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 204, 215, 0.85);
+  box-shadow: 0 20px 50px -10px rgba(255, 71, 126, 0.25);
+}
+
+.auth-input {
+  transition: all 0.25s ease;
+  background-color: #FFFDF9;
+}
+
+.auth-input:focus {
+  background-color: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(255, 107, 139, 0.25);
+}
+
+.auth-submit-btn {
+  background: linear-gradient(135deg, #FF6B8B 0%, #FF477E 50%, #E01E5A 100%);
+  box-shadow: 0 6px 20px -3px rgba(255, 71, 126, 0.45);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.auth-submit-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 10px 25px -4px rgba(255, 71, 126, 0.6);
+}
+
+.auth-submit-btn:active {
+  transform: translateY(0) scale(0.98);
+}

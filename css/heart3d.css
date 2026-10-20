@@ -1,0 +1,54 @@
+/* ===================================================
+   HEART 3D STYLESHEET (TAB 1 — TRÁI TIM 3D ĐIỂM HẠT)
+   =================================================== */
+
+#tab-content-heart3d {
+  position: relative;
+  width: 100%;
+  min-height: calc(100vh - 4.5rem);
+  background-color: #050508;
+  overflow: hidden;
+}
+
+#heart-3d-canvas-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  z-index: 2;
+}
+
+#heart-3d-canvas-container:active {
+  cursor: grabbing;
+}
+
+.heart-overlay-content {
+  position: relative;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.heart-interactive-btn {
+  pointer-events: auto;
+}
+
+.glow-text-love {
+  color: #FFF5F7;
+  text-shadow: 
+    0 0 10px rgba(255, 71, 126, 0.7),
+    0 0 25px rgba(255, 71, 126, 0.45),
+    0 0 50px rgba(224, 30, 90, 0.3);
+}
+
+.glow-text-sub {
+  color: #FFCCD7;
+  text-shadow: 0 0 12px rgba(255, 107, 139, 0.5);
+}
+
+.heart-hint-chip {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 204, 215, 0.25);
+  backdrop-filter: blur(8px);
+  color: #FFCCD7;
+}
