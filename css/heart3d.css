@@ -5,7 +5,8 @@
 #tab-content-heart3d {
   position: relative;
   width: 100%;
-  min-height: calc(100vh - 4.5rem);
+  min-height: calc(100vh - 3.5rem);
+  min-height: calc(100dvh - 3.5rem);
   background-color: #050508;
   overflow: hidden;
 }

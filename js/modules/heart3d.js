@@ -29,11 +29,13 @@ export class Heart3DViewer {
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.FogExp2(0x05050a, 0.002);
 
-    // 2. Camera
+    // 2. Camera (Tự động canh góc chuẩn tỷ lệ cho cả điện thoại màn hình dọc và máy tính)
     const width = this.container.clientWidth || window.innerWidth;
     const height = this.container.clientHeight || (window.innerHeight - 64);
-    this.camera = new THREE.PerspectiveCamera(45, Math.max(0.1, width / Math.max(1, height)), 0.1, 1000);
-    this.camera.position.set(0, 5, 45);
+    const aspect = Math.max(0.1, width / Math.max(1, height));
+    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 1000);
+    const cameraDist = aspect < 1 ? Math.max(50, Math.round(38 / (0.8284 * aspect))) : 42;
+    this.camera.position.set(0, 2.5, cameraDist);
 
     // 3. Renderer
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false, powerPreference: 'high-performance' });
@@ -76,59 +78,125 @@ export class Heart3DViewer {
 
     this.basePositions = [];
 
-    const color1 = new THREE.Color(0xff2a6d); // Deep Rose
-    const color2 = new THREE.Color(0xff6b8b); // Pastel Pink
-    const color3 = new THREE.Color(0xffccd7); // Tender Pink
-    const color4 = new THREE.Color(0xffd166); // Golden Warm Spark
+    // Bảng màu bóng bay trái tim căng mọng (Puffy / Chubby 3D Balloon Heart)
+    const colorDeep = new THREE.Color(0xff1853);   // Đỏ hồng nhung sâu thẳm
+    const colorRose = new THREE.Color(0xff336f);   // Hồng quả mọng tươi tắn
+    const colorPastel = new THREE.Color(0xff7597); // Hồng phấn cánh hoa
+    const colorSoft = new THREE.Color(0xffb8cb);   // Hồng phớt kẹo ngọt
+    const colorGloss = new THREE.Color(0xffffff);  // Ánh sáng trắng phản quang bóng bay
+    const colorGold = new THREE.Color(0xffdf88);   // Ánh vàng lung linh
 
-    for (let i = 0; i < this.particleCount; i++) {
-      // Công thức tạo hình trái tim 3D Taubin / Cardioid
-      const t = Math.PI * (2 * Math.random() - 1);
+    // Hướng ánh sáng phản quang bóng bay (Gloss specular reflection)
+    const lightDir = new THREE.Vector3(0.35, 0.65, 0.68).normalize();
 
-      // Tham số hóa trái tim cơ bản
-      let x = 16 * Math.pow(Math.sin(t), 3);
-      let y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
-      
-      // Độ sâu z để tạo thể tích khối 3D phồng đều
-      const zThickness = Math.sqrt(Math.max(0, 1 - Math.pow(x / 18, 2))) * 10;
-      let z = (Math.random() - 0.5) * zThickness * 1.6;
+    // Thuật toán lấy mẫu bề mặt thể tích bóng bay trái tim 3D (Taubin Balloon Implicit Manifold)
+    // a = x^2 + 1.25*z^2 + y^2 - 1
+    // F(x, y, z) = a^3 - x^2 * y^3 - 0.1125 * z^2 * y^3 <= 0
+    // Hệ số z^2 = 1.25 giúp độ sâu (Z) phồng căng tròn đều như quả bóng bay từ mọi hướng
+    let count = 0;
+    let attempts = 0;
 
-      // Thêm volume dispersion (lớp lõi và lớp vỏ)
-      const spread = Math.pow(Math.random(), 0.6);
-      x *= (0.7 + 0.3 * spread);
-      y *= (0.7 + 0.3 * spread);
-      z *= (0.7 + 0.3 * spread);
+    const surfaceQuota = Math.floor(this.particleCount * 0.82);
+    let surfaceCount = 0;
+    let innerCount = 0;
 
-      // Tinh chỉnh tỷ lệ cho cân đối thẩm mỹ
-      const scale = 0.85;
-      x *= scale;
-      y = (y + 2) * scale;
-      z *= scale;
+    const scaleFactor = 13.8;
 
-      positions[i * 3] = x;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = z;
+    while (count < this.particleCount && attempts < 500000) {
+      attempts++;
+      const x = (Math.random() - 0.5) * 2.8;
+      const y = (Math.random() - 0.5) * 2.8;
+      const z = (Math.random() - 0.5) * 2.8;
 
-      this.basePositions.push({ x, y, z, originalScale: scale, randomOffset: Math.random() * Math.PI * 2 });
+      const a = x * x + 1.25 * z * z + y * y - 1;
+      const val = a * a * a - x * x * y * y * y - 0.1125 * z * z * y * y * y;
 
-      // Phối màu hạt gradient theo tọa độ y và z
-      let c = color1.clone();
-      const normY = (y + 12) / 24;
-      if (normY > 0.6) {
-        c.lerp(color2, (normY - 0.6) * 2);
-      } else if (normY < 0.3) {
-        c.lerp(color3, (0.3 - normY) * 2);
+      if (val <= 0.02) {
+        let isSurface = false;
+        if (val >= -0.16 && surfaceCount < surfaceQuota) {
+          isSurface = true;
+          surfaceCount++;
+        } else if (innerCount < (this.particleCount - surfaceQuota)) {
+          isSurface = false;
+          innerCount++;
+        } else if (surfaceCount < surfaceQuota) {
+          isSurface = true;
+          surfaceCount++;
+        } else {
+          continue;
+        }
+
+        // Tọa độ thực tế phóng to đều 3 chiều
+        const posX = x * scaleFactor;
+        const posY = (y + 0.15) * scaleFactor;
+        const posZ = z * scaleFactor;
+
+        positions[count * 3] = posX;
+        positions[count * 3 + 1] = posY;
+        positions[count * 3 + 2] = posZ;
+
+        this.basePositions.push({
+          x: posX,
+          y: posY,
+          z: posZ,
+          unitX: x,
+          unitY: y,
+          unitZ: z,
+          isSurface: isSurface,
+          randomOffset: Math.random() * Math.PI * 2
+        });
+
+        // Tính vector pháp tuyến để tạo hiệu ứng bóng phản chiếu (Gloss Specular Highlight)
+        const aSqr = a * a;
+        const ySqr = y * y;
+        const yCube = ySqr * y;
+
+        const nx = 6 * x * aSqr - 2 * x * yCube;
+        const ny = 6 * y * aSqr - 3 * x * x * ySqr - 0.3375 * z * z * ySqr;
+        const nz = 7.5 * z * aSqr - 0.225 * z * yCube;
+        const len = Math.sqrt(nx * nx + ny * ny + nz * nz) || 1;
+
+        const normVec = new THREE.Vector3(nx / len, ny / len, nz / len);
+        const spec = Math.max(0, normVec.dot(lightDir));
+
+        // Phối màu cho từng hạt
+        let c = colorDeep.clone();
+        const normHeight = (y + 1.1) / 2.3; // từ đáy (0) đến đỉnh tai trái tim (1)
+
+        if (normHeight > 0.55) {
+          c.lerp(colorRose, (normHeight - 0.55) * 2.2);
+        } else {
+          c.lerp(colorPastel, 0.4);
+        }
+
+        // Hiệu ứng vỏ bóng bay căng bóng (Glossy Balloon Highlight)
+        if (isSurface && spec > 0.58) {
+          const glossFactor = Math.pow((spec - 0.58) / 0.42, 1.8);
+          c.lerp(colorGloss, glossFactor * 0.95);
+        } else if (isSurface && spec > 0.4) {
+          c.lerp(colorGold, (spec - 0.4) * 0.5);
+        }
+
+        if (!isSurface) {
+          // Lớp bụi tinh thể bên trong lõi phát sáng ấm áp
+          c.lerp(colorSoft, 0.6);
+        }
+
+        colors[count * 3] = c.r;
+        colors[count * 3 + 1] = c.g;
+        colors[count * 3 + 2] = c.b;
+
+        // Kích thước hạt
+        if (isSurface && spec > 0.6) {
+          sizes[count] = Math.random() * 1.5 + 2.2; // Điểm phản quang to lấp lánh
+        } else if (isSurface) {
+          sizes[count] = Math.random() * 1.4 + 1.6; // Hạt vỏ bóng
+        } else {
+          sizes[count] = Math.random() * 0.9 + 1.1; // Bụi lõi
+        }
+
+        count++;
       }
-
-      if (Math.random() > 0.88) {
-        c.lerp(color4, 0.6);
-      }
-
-      colors[i * 3] = c.r;
-      colors[i * 3 + 1] = c.g;
-      colors[i * 3 + 2] = c.b;
-
-      sizes[i] = Math.random() * 2.2 + 1.2;
     }
 
     geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -138,13 +206,13 @@ export class Heart3DViewer {
     const particleTexture = this.generateParticleTexture();
 
     const material = new THREE.PointsMaterial({
-      size: 1.8,
+      size: 1.75,
       map: particleTexture,
       transparent: true,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
-      opacity: 0.92
+      opacity: 0.94
     });
 
     this.heartParticles = new THREE.Points(geometry, material);
@@ -228,9 +296,18 @@ export class Heart3DViewer {
     const height = this.container.clientHeight || (window.innerHeight - 64);
     if (width <= 0 || height <= 0) return;
 
-    this.camera.aspect = width / height;
+    const aspect = width / height;
+    this.camera.aspect = aspect;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(width, height);
+
+    // Canh chỉnh khoảng cách camera chuẩn đẹp trên màn hình mobile và desktop
+    if (this.camera) {
+      const targetDist = aspect < 1 ? Math.max(50, Math.round(38 / (0.8284 * aspect))) : 42;
+      if (this.controls && this.controls.target) {
+        this.camera.position.setLength(targetDist);
+      }
+    }
   }
 
   animate() {
@@ -239,13 +316,13 @@ export class Heart3DViewer {
 
     this.time += 0.035;
 
-    // Mô phỏng nhịp đập sinh học (Thình-thịch)
-    const cycle = (this.time * 1.4) % (Math.PI * 2);
+    // Mô phỏng nhịp đập phập phồng quả bóng bay căng mọng (Chubby balloon breathing)
+    const cycle = (this.time * 1.35) % (Math.PI * 2);
     let pulse = 0;
     if (cycle < 0.6) {
-      pulse = Math.sin(cycle * Math.PI / 0.6) * 0.16;
-    } else if (cycle > 0.8 && cycle < 1.3) {
-      pulse = Math.sin((cycle - 0.8) * Math.PI / 0.5) * 0.09;
+      pulse = Math.sin(cycle * Math.PI / 0.6) * 0.14;
+    } else if (cycle > 0.8 && cycle < 1.35) {
+      pulse = Math.sin((cycle - 0.8) * Math.PI / 0.55) * 0.08;
     }
 
     this.beatScale += (1 - this.beatScale) * 0.08;
@@ -253,12 +330,14 @@ export class Heart3DViewer {
 
     if (this.heartParticles && this.heartParticles.geometry) {
       const positions = this.heartParticles.geometry.attributes.position.array;
-      for (let i = 0; i < this.particleCount; i++) {
+      const count = Math.min(this.particleCount, this.basePositions.length);
+      for (let i = 0; i < count; i++) {
         const base = this.basePositions[i];
         if (!base) continue;
 
-        const wave = Math.sin(this.time * 2 + base.randomOffset) * 0.15;
-        const s = currentScale + wave * 0.03;
+        // Hiệu ứng phập phồng nhẹ nhàng trên bề mặt bóng bay
+        const wave = Math.sin(this.time * 2.2 + base.randomOffset) * 0.08;
+        const s = currentScale + wave * 0.02;
 
         positions[i * 3] = base.x * s;
         positions[i * 3 + 1] = base.y * s;
@@ -266,8 +345,8 @@ export class Heart3DViewer {
       }
       this.heartParticles.geometry.attributes.position.needsUpdate = true;
 
-      this.heartParticles.rotation.y = Math.sin(this.time * 0.4) * 0.12;
-      this.heartParticles.rotation.z = Math.cos(this.time * 0.3) * 0.05;
+      this.heartParticles.rotation.y = Math.sin(this.time * 0.35) * 0.14;
+      this.heartParticles.rotation.z = Math.cos(this.time * 0.25) * 0.04;
     }
 
     if (this.starParticles) {

@@ -169,7 +169,7 @@ export function initAuthGate(onSuccessCallback) {
       e.preventDefault();
       const rawVal = input.value;
       if (!rawVal || !rawVal.trim()) {
-        showError('Vui lòng gõ tên của em vào đây nhé! ♡');
+        showError('Nhập Tên của Baby nhé ♡');
         return;
       }
 
@@ -179,13 +179,13 @@ export function initAuthGate(onSuccessCallback) {
 
         // Hiệu ứng mở khóa thành công
         if (errorMsg) {
-          errorMsg.textContent = `Tuyệt vời! Chào mừng ${canonicalName} đến với hộp quà bí mật ♡`;
+          errorMsg.textContent = `Tuyệt vời! Chào mừng baby đến với không gian bí mật ♡`;
           errorMsg.className = 'text-xs text-brand-600 font-bold block mt-2 animate-bounce-subtle';
         }
 
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.innerHTML = `<span>Đang mở quà cho ${canonicalName}...</span> <span>🌸</span>`;
+          submitBtn.innerHTML = `<span>Đang mở quà cho baby...</span> <span>🌸</span>`;
         }
 
         setTimeout(() => {
@@ -205,7 +205,7 @@ export function initAuthGate(onSuccessCallback) {
         }, 800);
 
       } else {
-        showError('Hình như chưa đúng tên công chúa của anh rồi... Món quà 20/10 này chỉ dành riêng cho bạn Huyền Trân thôi ạ ♡');
+        showError('Ủa hình như chưa đúng tên của baby rồi nè... Thử lại nha baby ♡');
         input.classList.add('border-red-400', 'animate-shake');
         setTimeout(() => input.classList.remove('animate-shake'), 600);
       }
