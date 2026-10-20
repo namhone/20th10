@@ -1,4 +1,4 @@
-# 🌸 HỘP QUÀ 20/10 DÀNH RIÊNG CHO TRẦN THỊ HUYỀN TRÂN (11/01/2009)
+# 🌸 HỘP QUÀ 20/10 DÀNH RIÊNG CHO TRẦN THỊ HUYỀN TRÂN :3
 
 Món quà công nghệ và tình cảm được chuẩn bị riêng cho bạn **Trần Thị Huyền Trân**, với:
 1. **Tab 1 — Trái Tim 3D Điểm Hạt:** 5.200 hạt ánh sáng tạo hình trái tim 3D đang đập theo nhịp sinh học, tương tác xoay 360°, zoom, đổi góc nhìn (OrbitControls Three.js).
