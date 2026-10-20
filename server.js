@@ -47,7 +47,9 @@ function loadDatabase() {
 
 function saveDatabase(data) {
   try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    const tmp = DATA_FILE + '.tmp';
+    fs.writeFileSync(tmp, JSON.stringify(data, null, 2), 'utf8');
+    fs.renameSync(tmp, DATA_FILE);
   } catch (e) {
     console.error('Lỗi lưu database:', e);
   }
@@ -215,10 +217,8 @@ app.post('/api/signal', (req, res) => {
 
   res.json({ success: true, signal: signalRecord });
 });
-  res.json(db.messages || []);
-});
 
-// 5. Healthcheck
+// 6. Healthcheck
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', serverTime: new Date().toISOString() });
 });
