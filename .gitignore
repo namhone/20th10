@@ -10,6 +10,7 @@ node_modules/
 .agents/
 .playwright-cli/
 screenshots/
+backups/
 *.log
 
 # OS generated files
