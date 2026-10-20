@@ -1,6 +1,6 @@
 /**
  * SCRIPT TỰ ĐỘNG DEPLOY LÊN GITHUB & SAO LƯU LÊN GOOGLE DRIVE
- * - GitHub Repo: https://github.com/taogay2k-creator/20th10
+ * - GitHub Repo: https://github.com/namhone/20th10
  * - Google Drive: taogay2k@gmail.com
  * - Email thông báo: namho03052ki9@gmail.com
  */
@@ -12,12 +12,12 @@ const emailNotifier = require('../services/emailNotifier');
 require('dotenv').config();
 
 const ROOT_DIR = path.join(__dirname, '..');
-const REPO_URL = 'https://github.com/taogay2k-creator/20th10.git';
+const REPO_URL = 'https://github.com/namhone/20th10.git';
 
 async function runDeploy(customCommitMsg) {
   console.log(`\n======================================================`);
   console.log(`🚀 BẮT ĐẦU QUY TRÌNH DEPLOY VÀ BACKUP HỘP QUÀ 20/10`);
-  console.log(`👉 GitHub: https://github.com/taogay2k-creator/20th10`);
+  console.log(`👉 GitHub: https://github.com/namhone/20th10`);
   console.log(`👉 Backup Drive: taogay2k@gmail.com`);
   console.log(`👉 Thông báo: namho03052ki9@gmail.com`);
   console.log(`======================================================\n`);
@@ -41,13 +41,13 @@ async function runDeploy(customCommitMsg) {
 
   // 2. Push lên GitHub Repo
   let pushSuccess = false;
-  console.log('\n📤 Đang đẩy mã nguồn lên GitHub (https://github.com/taogay2k-creator/20th10)...');
+  console.log('\n📤 Đang đẩy mã nguồn lên GitHub (https://github.com/namhone/20th10)...');
 
   // Kiểm tra nếu có token trong .env để push trực tiếp
   const ghToken = process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
   if (ghToken) {
     try {
-      const authUrl = `https://${ghToken.trim()}@github.com/taogay2k-creator/20th10.git`;
+      const authUrl = `https://${ghToken.trim()}@github.com/namhone/20th10.git`;
       execSync(`git push "${authUrl}" main:main --force`, { cwd: ROOT_DIR, stdio: 'inherit' });
       pushSuccess = true;
       console.log('✅ Đã deploy lên GitHub thành công qua token cá nhân!');
@@ -60,14 +60,9 @@ async function runDeploy(customCommitMsg) {
     try {
       execSync('git push -u origin main', { cwd: ROOT_DIR, stdio: 'inherit' });
       pushSuccess = true;
-      console.log('✅ Đã deploy lên GitHub thành công!');
+      console.log('✅ Đã deploy lên GitHub thành công (https://github.com/namhone/20th10)!');
     } catch (err) {
-      console.error('\n⚠️ CHÚ Ý VỀ QUYỀN PUSH GITHUB:');
-      console.error('Tài khoản Git hiện tại trong máy là namhone, nhưng repo thuộc taogay2k-creator.');
-      console.error('Để tự động push trơn tru 100%, bạn có thể:');
-      console.error('1. Thêm "namhone" làm Collaborator tại: https://github.com/taogay2k-creator/20th10/settings/access');
-      console.error('   HOẶC');
-      console.error('2. Tạo Personal Access Token (classic hoặc fine-grained với quyền repo) tại https://github.com/settings/tokens rồi điền GITHUB_TOKEN=ghp_xxx vào file .env');
+      console.error('❌ Lỗi push:', err.message);
     }
   }
 
@@ -78,7 +73,7 @@ async function runDeploy(customCommitMsg) {
   // 4. Gửi email thông báo tình trạng Deploy & Backup đến namho03052ki9@gmail.com
   const statusMsg = `
     Quy trình Deploy & Backup hộp quà 20/10 vừa hoàn tất:
-    - Trạng thái GitHub: ${pushSuccess ? '✅ Đã cập nhật lên repo https://github.com/taogay2k-creator/20th10' : '⚠️ Cần xác thực quyền push của taogay2k-creator (xem hướng dẫn trong log)'}
+    - Trạng thái GitHub: ${pushSuccess ? '✅ Đã cập nhật lên repo https://github.com/namhone/20th10' : '❌ Lỗi push GitHub'}
     - Trạng thái Backup: ✅ File nén ${backupResult.fileName || 'backup.zip'} (${backupResult.sizeKB || 0} KB) đã được lưu vào thư mục backups/
     - Tài khoản Google Drive: taogay2k@gmail.com
     - Thời gian: ${new Date().toLocaleString('vi-VN')}
@@ -92,7 +87,7 @@ async function runDeploy(customCommitMsg) {
           <h2 style="color: #E01E5A; margin-top: 0;">🚀 Thông Báo Deploy & Backup Tự Động</h2>
           <p>Chào bạn Nam, hệ thống vừa thực hiện xong chu kỳ deploy và sao lưu cho web 20/10 của <strong>Trần Thị Huyền Trân</strong>:</p>
           <ul style="background: white; border: 1px solid #FFCCD7; padding: 15px 20px 15px 35px; border-radius: 10px;">
-            <li><strong>GitHub Repo:</strong> <a href="https://github.com/taogay2k-creator/20th10">https://github.com/taogay2k-creator/20th10</a> (${pushSuccess ? 'Thành công' : 'Đang chờ cấp token'})</li>
+            <li><strong>GitHub Repo:</strong> <a href="https://github.com/namhone/20th10">https://github.com/namhone/20th10</a> (${pushSuccess ? 'Thành công' : 'Thất bại'})</li>
             <li><strong>File Backup:</strong> <code>${backupResult.fileName || 'backup.zip'}</code> (${backupResult.sizeKB || 0} KB)</li>
             <li><strong>Drive Đích:</strong> taogay2k@gmail.com</li>
             <li><strong>Thời gian:</strong> ${new Date().toLocaleString('vi-VN')}</li>

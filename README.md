@@ -28,7 +28,7 @@ CC_EMAIL=namho03052k9@gmail.com
 
 ---
 
-## 🚀 TỰ ĐỘNG DEPLOY LÊN GITHUB (https://github.com/taogay2k-creator/20th10)
+## 🚀 TỰ ĐỘNG DEPLOY LÊN GITHUB (https://github.com/namhone/20th10)
 
 Lệnh chạy quy trình deploy:
 ```bash
@@ -37,17 +37,9 @@ npm run deploy
 
 Quy trình tự động thực hiện:
 1. Quét và commit toàn bộ thay đổi mới vào Git.
-2. Push lên nhánh `main` của repo `https://github.com/taogay2k-creator/20th10`.
+2. Push lên nhánh `main` của repo `https://github.com/namhone/20th10`.
 3. Tự động gọi script sao lưu (Backup) tạo file nén `.zip`.
 4. Gửi email báo cáo trạng thái deploy về `namho03052ki9@gmail.com`.
-
-### Cấp Quyền Push Cho GitHub:
-Vì tài khoản Git trên máy tính của bạn hiện tại là `namhone`, trong khi repo thuộc sở hữu của `taogay2k-creator`, bạn chỉ cần chọn 1 trong 2 cách đơn giản sau:
-* **Cách 1 (Nhanh nhất):** Dùng tài khoản `taogay2k-creator` vào [Cài đặt Repo](https://github.com/taogay2k-creator/20th10/settings/access) -> bấm **Add people** -> thêm tài khoản `namhone` làm Collaborator (quyền Write hoặc Admin).
-* **Cách 2:** Tạo Personal Access Token tại [GitHub Tokens](https://github.com/settings/tokens) (chọn quyền `repo`), rồi thêm vào file `.env`:
-  ```env
-  GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
-  ```
 
 ---
 
