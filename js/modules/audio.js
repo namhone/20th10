@@ -1,45 +1,54 @@
 /**
- * Module Âm Thanh Nhạc Không Lời Về Tình Yêu (Romantic Instrumental Audio Player)
- * Danh sách phát tuyển chọn những bản tình ca không lời bất hủ:
- * 1. Canon in D — Johann Pachelbel (Bản tình ca bất hủ muôn đời)
- * 2. Liebestraum No. 3 — Franz Liszt (Giấc Mộng Tình Yêu êm dịu)
- * 3. Moonlight Sonata — L.V. Beethoven (Ánh Trăng Tình Yêu thanh bình)
- * 4. Für Elise — L.V. Beethoven (Khúc nhạc dành riêng cho Nàng Thơ)
+ * Module Âm Thanh Tình Yêu Trending & Đáng Yêu (Trending & Cute Instrumental Love Playlist)
+ * Danh sách phát tuyển chọn những bản tình ca không lời ngọt ngào, nhẹ nhàng, đáng yêu nhất:
+ * 1. Until I Found You — Stephen Sanchez (Piano lãng mạn, bay bổng, trending TikTok)
+ * 2. Nàng Thơ — Hoàng Dũng (Piano trong trẻo, e ấp, dịu êm tuổi học trò)
+ * 3. Dịu Dàng Em Đến — ERIK (Piano chill ngọt ngào, đáng yêu, chữa lành)
+ * 4. Ánh Nắng Của Anh — Đức Phúc (Khúc tình ca ấm áp, dịu ngọt bên em)
+ * 5. Cupid — FIFTY FIFTY (Giai điệu tình yêu cute, rung rinh đáng yêu xỉu)
  * Kèm bộ dự phòng Synthesizer Web Audio API khi ngoại tuyến
  */
 
 export const ROMANTIC_PLAYLIST = [
   {
-    id: 'canon-in-d',
-    title: 'Canon in D',
-    subTitle: 'Giai Điệu Tình Yêu Bất Hủ',
-    composer: 'Johann Pachelbel',
-    src: 'assets/audio/canon_in_d.mp3',
-    icon: '🎻'
+    id: 'until-i-found-you',
+    title: 'Until I Found You',
+    subTitle: 'Tình Yêu Diệu Kỳ',
+    composer: 'Stephen Sanchez (Piano)',
+    src: 'assets/audio/until_i_found_you.mp3',
+    icon: '✨'
   },
   {
-    id: 'liebestraum',
-    title: 'Liebestraum No. 3',
-    subTitle: 'Giấc Mộng Tình Yêu',
-    composer: 'Franz Liszt',
-    src: 'assets/audio/liebestraum_love_dream.mp3',
-    icon: '🎹'
-  },
-  {
-    id: 'moonlight-sonata',
-    title: 'Moonlight Sonata',
-    subTitle: 'Ánh Trăng Dịu Êm',
-    composer: 'L.V. Beethoven',
-    src: 'assets/audio/moonlight_sonata.mp3',
-    icon: '🌙'
-  },
-  {
-    id: 'fur-elise',
-    title: 'Für Elise',
-    subTitle: 'Dành Cho Nàng Thơ',
-    composer: 'L.V. Beethoven',
-    src: 'assets/audio/fur_elise.mp3',
+    id: 'nang-tho',
+    title: 'Nàng Thơ',
+    subTitle: 'Trong Trẻo & E Ấp',
+    composer: 'Hoàng Dũng (Piano)',
+    src: 'assets/audio/nang_tho.mp3',
     icon: '🌸'
+  },
+  {
+    id: 'diu-dang-em-den',
+    title: 'Dịu Dàng Em Đến',
+    subTitle: 'Ngọt Ngào & Đáng Yêu',
+    composer: 'ERIK (Piano Chill)',
+    src: 'assets/audio/diu_dang_em_den.mp3',
+    icon: '🧸'
+  },
+  {
+    id: 'anh-nang-cua-anh',
+    title: 'Ánh Nắng Của Anh',
+    subTitle: 'Ấm Áp Bên Em',
+    composer: 'Đức Phúc (Piano)',
+    src: 'assets/audio/anh_nang_cua_anh.mp3',
+    icon: '☀️'
+  },
+  {
+    id: 'cupid-cute',
+    title: 'Cupid (Cute Ver.)',
+    subTitle: 'Rung Rinh Tuổi 17',
+    composer: 'FIFTY FIFTY (Piano)',
+    src: 'assets/audio/cupid_cute.mp3',
+    icon: '💘'
   }
 ];
 
@@ -230,7 +239,7 @@ class RomanticAudioPlayer {
     this.initContext();
     if (!this.audioCtx) return;
     this.isPlaying = true;
-    const canonMelody = [
+    const melodyNotes = [
       523.25, 493.88, 440.00, 392.00, 349.23, 329.63, 349.23, 392.00,
       523.25, 659.25, 587.33, 523.25, 493.88, 440.00, 493.88, 523.25
     ];
@@ -238,7 +247,7 @@ class RomanticAudioPlayer {
     if (this.synthInterval) clearInterval(this.synthInterval);
     this.synthInterval = setInterval(() => {
       if (!this.isPlaying || !this.audioCtx) return;
-      const note = canonMelody[step % canonMelody.length];
+      const note = melodyNotes[step % melodyNotes.length];
       this.playNote(note, this.audioCtx.currentTime, 1.6, 0.09);
       step++;
     }, 700);
