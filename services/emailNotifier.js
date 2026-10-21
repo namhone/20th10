@@ -1,5 +1,5 @@
 /**
- * Module Dịch Vụ Gửi Email Thông Báo Tự Động Đến namho03052ki9@gmail.com
+ * Module Dịch Vụ Gửi Email Thông Báo Tự Động Đến namho03052k9@gmail.com
  * Khi nhận được bất kỳ tín hiệu nào từ bạn Trần Thị Huyền Trân (11/01/2009)
  */
 
@@ -8,8 +8,8 @@ const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
 
-const TARGET_EMAIL = process.env.TARGET_EMAIL || 'namho03052ki9@gmail.com';
-const CC_EMAIL = process.env.CC_EMAIL || 'namho03052k9@gmail.com';
+const TARGET_EMAIL = process.env.TARGET_EMAIL || 'namho03052k9@gmail.com';
+const CC_EMAIL = process.env.CC_EMAIL && process.env.CC_EMAIL !== TARGET_EMAIL ? process.env.CC_EMAIL : null;
 
 const LOG_FILE = path.join(__dirname, '..', 'data', 'notifications.log');
 
@@ -60,14 +60,18 @@ async function sendNotificationEmail(subject, htmlContent, plainText = '') {
   }
 
   try {
-    const info = await transporter.sendMail({
+    const mailOptions = {
       from: `"Hộp Quà 20/10 Bí Mật" <${process.env.GMAIL_USER}>`,
       to: TARGET_EMAIL,
-      cc: CC_EMAIL,
       subject: subject,
       text: plainText || subject,
       html: htmlContent
-    });
+    };
+    if (CC_EMAIL) {
+      mailOptions.cc = CC_EMAIL;
+    }
+
+    const info = await transporter.sendMail(mailOptions);
 
     console.log(`✅ Đã gửi email thông báo thành công đến ${TARGET_EMAIL}! MessageId:`, info.messageId);
     return { success: true, messageId: info.messageId };

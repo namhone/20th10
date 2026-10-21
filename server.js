@@ -112,7 +112,7 @@ app.post('/api/auth/verify', (req, res) => {
     db.verifiedUsers.push(record);
     saveDatabase(db);
 
-    // Gửi thông báo đến Gmail namho03052ki9@gmail.com
+    // Gửi thông báo đến Gmail namho03052k9@gmail.com
     emailNotifier.notifyAuthLogin(canonicalName, input, record.ip, record.verifiedAt).catch(() => {});
 
     return res.json({
@@ -156,7 +156,7 @@ app.post('/api/date-voucher', (req, res) => {
   saveDatabase(db);
   console.log('🎉 Tín hiệu hẹn hò mới từ Huyền Trân:', voucher);
 
-  // Gửi thông báo đến Gmail namho03052ki9@gmail.com
+  // Gửi thông báo đến Gmail namho03052k9@gmail.com
   emailNotifier.notifyDateVoucher(voucher.recipient, voucher.activity, voucher.timestamp).catch(() => {});
 
   res.json({ success: true, voucher });
@@ -184,7 +184,7 @@ app.post('/api/messages', (req, res) => {
   saveDatabase(db);
   console.log('💌 Tin nhắn mới từ Huyền Trân:', message);
 
-  // Gửi thông báo đến Gmail namho03052ki9@gmail.com
+  // Gửi thông báo đến Gmail namho03052k9@gmail.com
   emailNotifier.notifySecretMessage(message.sender, message.content, message.time).catch(() => {});
 
   res.json({ success: true, message });
@@ -212,7 +212,7 @@ app.post('/api/signal', (req, res) => {
   saveDatabase(db);
   console.log('✨ Tương tác mới từ Huyền Trân:', signalRecord);
 
-  // Gửi thông báo đến Gmail namho03052ki9@gmail.com
+  // Gửi thông báo đến Gmail namho03052k9@gmail.com
   emailNotifier.notifySignal(name, type, detail, time).catch(() => {});
 
   res.json({ success: true, signal: signalRecord });

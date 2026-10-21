@@ -1,0 +1,145 @@
+{
+  "verifiedUsers": [
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-21T06:31:42.236Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Trần Thị Huyền Trân",
+      "rawInput": "Trần Thị Huyền Trân",
+      "verifiedAt": "2026-10-21T19:14:52.494Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Trần Thị Huyền Trân",
+      "rawInput": "Trần Thị Huyền Trân",
+      "verifiedAt": "2026-10-21T19:16:12.591Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ♡",
+      "verifiedAt": "2026-10-21T19:16:34.560Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-21T19:16:41.655Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Trần Thị Huyền Trân",
+      "rawInput": "Trần Thị Huyền Trân",
+      "verifiedAt": "2026-10-21T19:19:11.099Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ♡",
+      "verifiedAt": "2026-10-21T19:19:31.422Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-21T19:19:39.464Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-21T23:30:56.083Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Trần Thị Huyền Trân",
+      "rawInput": "Trần Thị Huyền Trân",
+      "verifiedAt": "2026-10-21T23:31:54.512Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ♡",
+      "verifiedAt": "2026-10-21T23:32:13.487Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-21T23:32:21.854Z",
+      "ip": "::1"
+    }
+  ],
+  "savedState": {
+    "openedCount": 0,
+    "openedIds": [],
+    "userConfig": {
+      "recipientName": "Huyền Trân",
+      "senderName": "Cậu bạn 17 tuổi của Trân",
+      "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
+      "customNote": ""
+    },
+    "updatedAt": "2026-10-21T23:32:22.689Z"
+  },
+  "dateVouchers": [
+    {
+      "recipient": "Trần Thị Huyền Trân",
+      "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
+      "timestamp": "2026-10-21T19:16:27.286Z"
+    },
+    {
+      "recipient": "Trần Thị Huyền Trân",
+      "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
+      "timestamp": "2026-10-21T19:19:24.767Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-21T23:31:03.419Z"
+    },
+    {
+      "recipient": "Trần Thị Huyền Trân",
+      "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
+      "timestamp": "2026-10-21T23:32:06.242Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": 1792610188109,
+      "type": "vitamin",
+      "sender": "Trần Thị Huyền Trân",
+      "detail": "🌙 [Liều ngủ ngoan không âu lo]: Gác lại sách vở bài tập thôi nào cô bé 17 tuổi. Đêm nay hãy thả lỏng bờ vai, nhắm mắt lại và ngủ một giấc thật êm. Mọi muộn phiền cứ để tớ gánh thay cậu.",
+      "time": "2026-10-21T19:16:28.103Z"
+    },
+    {
+      "id": 1792610365630,
+      "type": "vitamin",
+      "sender": "Trần Thị Huyền Trân",
+      "detail": "🌡️ [Liều hạ sốt & dưỡng sức]: Nếu hôm nay nghe người hâm hấp nóng hay mệt mỏi, Trân nhớ đo nhiệt độ, uống nhiều nước ấm và đắp chăn nằm nghỉ nhé. Đừng ráng ngồi học khi đang sốt, tớ lo cho cậu lắm đó! ♡",
+      "time": "2026-10-21T19:19:25.628Z"
+    },
+    {
+      "id": 1792625462966,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
+      "time": "2026-10-21T23:31:02.963Z"
+    },
+    {
+      "id": 1792625464763,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-21T23:31:04.759Z"
+    },
+    {
+      "id": 1792625527053,
+      "type": "vitamin",
+      "sender": "Trần Thị Huyền Trân",
+      "detail": "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
+      "time": "2026-10-21T23:32:07.044Z"
+    }
+  ]
+}

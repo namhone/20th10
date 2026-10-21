@@ -22,7 +22,16 @@ export class AmbientParticles {
       this.particles.push(this.createParticle());
     }
 
-    this.start();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        this.stop();
+      } else {
+        // Chỉ chạy nếu đang ở tab letters hoặc tribute
+        if (window.__APP__?.currentTab !== 'heart3d') {
+          this.start();
+        }
+      }
+    });
   }
 
   resize() {
@@ -89,6 +98,9 @@ export class AmbientParticles {
     if (this.animationId) {
       cancelAnimationFrame(this.animationId);
       this.animationId = null;
+    }
+    if (this.ctx && this.canvas) {
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }
 }

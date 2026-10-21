@@ -259,83 +259,119 @@ export class Heart3DViewer {
     this.animationFrameId = null;
     this.isInitialized = false;
     this.isActive = false;
+    this.isFallbackMode = false;
 
     this._onResizeBound = this.onWindowResize.bind(this);
     this._onPointerDownBound = this.onPointerDown.bind(this);
+    this._onVisibilityChangeBound = this.onVisibilityChange.bind(this);
+  }
+
+  isWebGLAvailable() {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch (e) {
+      return false;
+    }
+  }
+
+  activateFallbackMode() {
+    this.isFallbackMode = true;
+    const fallbackEl = document.getElementById('heart-3d-fallback');
+    if (fallbackEl) {
+      fallbackEl.classList.add('active');
+      fallbackEl.style.display = 'flex';
+    }
+    this.setupBpmButtons();
+    console.info('Thiết bị không hỗ trợ 3D WebGL, đã tự động chuyển sang chế độ Trái tim 2D phát quang dự phòng.');
   }
 
   init() {
     if (this.isInitialized || !this.container) return;
 
-    this.clock = new THREE.Clock();
-    this.bgGlowElement = document.getElementById('heart-bg-glow');
-
-    // 1. Khởi tạo Scene
-    this.scene = new THREE.Scene();
-    this.scene.fog = new THREE.FogExp2(0x030007, 0.04);
-
-    // 2. Camera phối cảnh 3D với auto-framing responsive cho mobile và desktop
-    const width = this.container.clientWidth || window.innerWidth;
-    const height = this.container.clientHeight || (window.innerHeight - 56);
-    const aspect = Math.max(0.1, width / Math.max(1, height));
-
-    this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
-
-    // Tính cự ly và độ bù điểm sáng tối ưu:
-    const defaultDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
-    this.pointScale = defaultDist / 4.8;
-
-    // Căn chỉnh trục Y hạ xuống nhẹ để tim nằm chính xác giữa tiêu đề trên và nút bấm dưới
-    const targetY = aspect < 1 ? -0.15 : -0.25;
-    this.camera.position.set(0, 0.0, defaultDist);
-
-    // 3. WebGL Renderer tối ưu hiệu năng
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
-    this.renderer.setSize(width, Math.max(1, height));
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2.0));
-    if (THREE.ACESFilmicToneMapping) {
-      this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      this.renderer.toneMappingExposure = 1.05;
-    }
-    this.renderer.setClearColor(0x030007, 1);
-
-    // Xóa bỏ nội dung cũ (nếu có) và thêm canvas mới
-    while (this.container.firstChild) {
-      this.container.removeChild(this.container.firstChild);
-    }
-    this.container.appendChild(this.renderer.domElement);
-
-    // 4. OrbitControls điều khiển góc nhìn tương tác
-    if (window.THREE && window.THREE.OrbitControls) {
-      this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-      this.controls.enableDamping = true;
-      this.controls.dampingFactor = 0.06;
-      this.controls.autoRotate = true;
-      this.controls.autoRotateSpeed = HEART_CONFIG.autoRotateSpeed;
-      this.controls.enableZoom = true;
-      this.controls.minDistance = 2.0;
-      this.controls.maxDistance = Math.max(14.0, defaultDist * 1.7);
-      this.controls.target.set(0, targetY, 0);
+    // Kiểm tra khả năng hỗ trợ WebGL của thiết bị (Tránh màn hình đen khi tắt Hardware Acceleration)
+    if (!this.isWebGLAvailable()) {
+      this.activateFallbackMode();
+      return;
     }
 
-    // 5. Khởi tạo hình học hạt Trái tim và Bụi sao
-    this.createChubbyHeartMesh();
-    this.createStardustMesh();
+    try {
+      this.clock = new THREE.Clock();
+      this.bgGlowElement = document.getElementById('heart-bg-glow');
 
-    // 6. Gán sự kiện tương tác
-    window.addEventListener('resize', this._onResizeBound, false);
-    this.container.addEventListener('pointerdown', this._onPointerDownBound, false);
+      // 1. Khởi tạo Scene
+      this.scene = new THREE.Scene();
+      this.scene.fog = new THREE.FogExp2(0x030007, 0.04);
 
-    // Gán nút preset BPM nếu có trên giao diện
-    this.setupBpmButtons();
+      // 2. Camera phối cảnh 3D với auto-framing responsive cho mobile và desktop
+      const width = this.container.clientWidth || window.innerWidth;
+      const height = this.container.clientHeight || (window.innerHeight - 56);
+      const aspect = Math.max(0.1, width / Math.max(1, height));
 
-    this.isInitialized = true;
-    this.isActive = true;
-    this.animate();
+      this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+
+      // Tính cự ly và độ bù điểm sáng tối ưu:
+      const defaultDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
+      this.pointScale = defaultDist / 4.8;
+
+      // Căn chỉnh trục Y hạ xuống nhẹ để tim nằm chính xác giữa tiêu đề trên và nút bấm dưới
+      const targetY = aspect < 1 ? -0.15 : -0.25;
+      this.camera.position.set(0, 0.0, defaultDist);
+
+      // 3. WebGL Renderer tối ưu hiệu năng (Tắt antialias không cần thiết trên point particle để giảm tải GPU)
+      this.renderer = new THREE.WebGLRenderer({
+        antialias: false,
+        alpha: true,
+        powerPreference: 'high-performance'
+      });
+      this.renderer.setSize(width, Math.max(1, height));
+      // Giới hạn mật độ điểm ảnh ở mức tối đa 1.75 để máy mát và mượt mà
+      const pRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+      this.renderer.setPixelRatio(pRatio);
+      if (THREE.ACESFilmicToneMapping) {
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.05;
+      }
+      this.renderer.setClearColor(0x030007, 1);
+
+      // Xóa bỏ nội dung cũ (nếu có) và thêm canvas mới
+      while (this.container.firstChild) {
+        this.container.removeChild(this.container.firstChild);
+      }
+      this.container.appendChild(this.renderer.domElement);
+
+      // 4. OrbitControls điều khiển góc nhìn tương tác
+      if (window.THREE && window.THREE.OrbitControls) {
+        this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.controls.enableDamping = true;
+        this.controls.dampingFactor = 0.06;
+        this.controls.autoRotate = true;
+        this.controls.autoRotateSpeed = HEART_CONFIG.autoRotateSpeed;
+        this.controls.enableZoom = true;
+        this.controls.minDistance = 2.0;
+        this.controls.maxDistance = Math.max(14.0, defaultDist * 1.7);
+        this.controls.target.set(0, targetY, 0);
+      }
+
+      // 5. Khởi tạo hình học hạt Trái tim và Bụi sao
+      this.createChubbyHeartMesh();
+      this.createStardustMesh();
+
+      // 6. Gán sự kiện tương tác
+      window.addEventListener('resize', this._onResizeBound, false);
+      this.container.addEventListener('pointerdown', this._onPointerDownBound, false);
+      document.addEventListener('visibilitychange', this._onVisibilityChangeBound, false);
+
+      // Gán nút preset BPM nếu có trên giao diện
+      this.setupBpmButtons();
+
+      this.isInitialized = true;
+      this.isActive = true;
+      this.animate();
+    } catch (err) {
+      console.warn('Lỗi khởi tạo WebGL, kích hoạt chế độ Fallback 2D:', err);
+      this.activateFallbackMode();
+    }
   }
 
   createChubbyHeartMesh() {
@@ -463,7 +499,7 @@ export class Heart3DViewer {
         uBPM: { value: this.currentBPM },
         uExcitement: { value: 0.0 },
         uGlow: { value: HEART_CONFIG.glowMultiplier },
-        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2.0) },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
         uPointScale: { value: this.pointScale }
       },
       transparent: true,
@@ -522,7 +558,7 @@ export class Heart3DViewer {
       fragmentShader: StardustShader.fragmentShader,
       uniforms: {
         uTime: { value: 0.0 },
-        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 2.0) },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
         uGlow: { value: HEART_CONFIG.glowMultiplier },
         uPointScale: { value: this.pointScale }
       },
@@ -565,6 +601,24 @@ export class Heart3DViewer {
 
   setBPM(bpm) {
     this.targetBPM = bpm;
+    // Đồng bộ tốc độ đập cho cả Trái tim 2D dự phòng nếu đang ở chế độ Fallback
+    const fallbackSvg = document.querySelector('.fallback-heart-svg');
+    if (fallbackSvg) {
+      const dur = (60.0 / Math.max(30, bpm)).toFixed(2);
+      fallbackSvg.style.animationDuration = `${dur}s`;
+    }
+  }
+
+  onVisibilityChange() {
+    if (document.hidden) {
+      this.pause();
+    } else {
+      const isHeartTab = window.__APP__?.currentTab === 'heart3d';
+      const hasOpenModal = document.querySelector('#letter-modal:not(.hidden), #special-letter-modal:not(.hidden), #config-modal:not(.hidden), #auth-modal:not(.hidden)');
+      if (isHeartTab && !hasOpenModal) {
+        this.start();
+      }
+    }
   }
 
   onPointerDown(e) {
@@ -609,7 +663,7 @@ export class Heart3DViewer {
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
-    const pRatio = Math.min(window.devicePixelRatio || 1, 2.0);
+    const pRatio = Math.min(window.devicePixelRatio || 1, 1.75);
     this.renderer.setPixelRatio(pRatio);
 
     const targetDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
@@ -711,6 +765,7 @@ export class Heart3DViewer {
   destroy() {
     this.pause();
     window.removeEventListener('resize', this._onResizeBound, false);
+    document.removeEventListener('visibilitychange', this._onVisibilityChangeBound, false);
     if (this.container) {
       this.container.removeEventListener('pointerdown', this._onPointerDownBound, false);
     }

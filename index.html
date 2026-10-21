@@ -109,7 +109,7 @@
             20/10 Cho Em
           </span>
           <span class="text-[9px] sm:text-[10px] text-warmgray-500 font-medium">
-            Gửi <span class="recipient-display font-bold text-brand-500">Huyền Trân</span> ♡
+            Gửi <span class="recipient-display font-bold text-brand-500 max-w-[90px] sm:max-w-[160px] inline-block truncate align-bottom">Huyền Trân</span> ♡
           </span>
         </div>
       </div>
@@ -175,7 +175,7 @@
     <!-- =================================================== -->
     <!-- TAB 1: TRÁI TIM 3D ĐIỂM HẠT ĐANG ĐẬP (NỀN ĐEN) -->
     <!-- =================================================== -->
-    <section id="tab-content-heart3d" class="relative w-full flex flex-col justify-between">
+    <section id="tab-content-heart3d" class="relative w-full min-h-[calc(100vh-3.5rem)] min-h-[calc(100dvh-3.5rem)] flex flex-col justify-between overflow-hidden">
       
       <!-- Subtle pulsating ambient glow behind 3D heart -->
       <div id="heart-bg-glow" class="heart-bg-glow"></div>
@@ -183,32 +183,54 @@
       <!-- Three.js 3D Interactive Canvas -->
       <div id="heart-3d-canvas-container"></div>
 
-      <!-- Top Romantic Floating Header -->
-      <div class="heart-overlay-content pt-4 sm:pt-10 px-3 sm:px-4 text-center">
-        <div class="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 sm:px-4 sm:py-1.5 rounded-full heart-hint-chip text-[11px] sm:text-sm font-semibold mb-2 sm:mb-4 shadow-sm animate-pulse-soft">
+      <!-- 2D Fallback Heart khi thiết bị không hỗ trợ WebGL hoặc tắt Hardware Acceleration -->
+      <div id="heart-3d-fallback" class="absolute inset-0 flex flex-col items-center justify-center z-5 pointer-events-none px-4 text-center" style="display: none;">
+        <svg class="fallback-heart-svg mb-3" viewBox="0 0 200 200">
+          <defs>
+            <radialGradient id="fallbackHeartGrad" cx="50%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#FF6B8B" />
+              <stop offset="45%" stop-color="#FF2282" />
+              <stop offset="85%" stop-color="#B81446" />
+              <stop offset="100%" stop-color="#4A051E" />
+            </radialGradient>
+            <filter id="fallbackHeartGlow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="6" result="blur" />
+              <feComposite in="SourceGraphic" in2="blur" operator="over" />
+            </filter>
+          </defs>
+          <path filter="url(#fallbackHeartGlow)" fill="url(#fallbackHeartGrad)" d="M 100,175 C 95,170 30,122 18,80 C 8,46 32,18 64,18 C 80,18 92,26 100,38 C 108,26 120,18 136,18 C 168,18 192,46 182,80 C 170,122 105,170 100,175 Z" />
+        </svg>
+        <div class="heart-hint-chip px-3 py-1 rounded-full text-xs text-brand-200">
+          Trái tim yêu thương 20/10 dành riêng cho em ♡
+        </div>
+      </div>
+
+      <!-- Top Romantic Floating Header (Gọn gàng trên Mobile, chạm xuyên qua để xoay 3D) -->
+      <div class="heart-overlay-content pt-2 sm:pt-8 px-3 sm:px-4 text-center pointer-events-none">
+        <div class="inline-flex items-center gap-1 sm:gap-2 px-2.5 py-0.5 sm:px-4 sm:py-1 rounded-full heart-hint-chip text-[10px] sm:text-xs font-semibold mb-1 sm:mb-2 shadow-sm animate-pulse-soft">
           <span>✨</span>
           <span>Dành riêng cho <strong class="recipient-display text-brand-400">Trần Thị Huyền Trân</strong> • 11/01/2009</span>
         </div>
 
-        <h1 class="text-2xl sm:text-5xl md:text-6xl font-display font-black tracking-tight glow-text-love mb-1.5 sm:mb-3 leading-tight">
+        <h1 class="text-xl sm:text-4xl md:text-5xl font-display font-black tracking-tight glow-text-love mb-0.5 sm:mb-2 leading-tight">
           Tớ Thích Cậu ♡
         </h1>
-        <p class="text-xs sm:text-xl font-serif italic glow-text-sub max-w-xl mx-auto leading-relaxed">
+        <p class="text-[11px] sm:text-base font-serif italic glow-text-sub max-w-lg mx-auto leading-tight sm:leading-relaxed line-clamp-2 sm:line-clamp-none">
           “Chúc cô bạn 17 tuổi của tớ một ngày 20/10 thật bình yên, mạnh khỏe và luôn mỉm cười nhé!”
         </p>
       </div>
 
       <!-- Bottom Interactive Controls & Guidance -->
-      <div class="heart-overlay-content pb-6 sm:pb-10 px-4 text-center flex flex-col items-center gap-2.5 sm:gap-4">
+      <div class="heart-overlay-content pb-4 sm:pb-8 px-3 sm:px-4 text-center flex flex-col items-center gap-2 sm:gap-3 pointer-events-none">
         <!-- Interactive Tip & BPM Selector -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-2 max-w-md">
-          <div class="heart-hint-chip px-3 py-1.5 sm:px-4 sm:py-2 rounded-2xl text-[11px] sm:text-sm flex items-center gap-1.5 sm:gap-2">
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5 sm:gap-2 max-w-md pointer-events-auto">
+          <div class="heart-hint-chip px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-xl sm:rounded-2xl text-[10px] sm:text-xs flex items-center gap-1 sm:gap-1.5">
             <span>🖐️</span>
-            <span>Xoay 360°, cuộn/chụm để zoom, chạm để tăng nhịp đập ♡</span>
+            <span>Xoay 360°, cuộn để zoom, chạm để tăng nhịp đập ♡</span>
           </div>
 
-          <!-- Nhịp tim presets (65 / 82 / 105 BPM) -->
-          <div class="heart-interactive-btn flex items-center gap-1 bg-black/40 backdrop-blur-md px-2 py-1 rounded-full border border-pink-500/20 text-[11px]">
+          <!-- Nhịp tim presets (65 / 82 / 105 BPM) - Độ che phủ cao, không dùng backdrop-filter blur -->
+          <div class="heart-interactive-btn flex items-center gap-1 bg-[#140a18] px-2 py-1 rounded-full border border-pink-500/30 text-[10px] sm:text-[11px]">
             <button id="btn-bpm-calm" class="px-2.5 py-0.5 rounded-full bg-pink-600 text-white shadow-sm font-semibold transition-all" data-bpm="65">Êm dịu</button>
             <button id="btn-bpm-romance" class="px-2.5 py-0.5 rounded-full text-pink-200 hover:text-white font-semibold transition-all" data-bpm="82">Rộn ràng</button>
             <button id="btn-bpm-passionate" class="px-2.5 py-0.5 rounded-full text-pink-200 hover:text-white font-semibold transition-all" data-bpm="105">Xao xuyến</button>
@@ -216,14 +238,14 @@
         </div>
 
         <!-- Quick Switcher to Other Tabs -->
-        <div class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 heart-interactive-btn w-full sm:w-auto max-w-xs sm:max-w-none">
-          <button class="nav-tab-btn w-full sm:w-auto px-5 py-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-xs sm:text-sm shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2" data-tab="letters">
+        <div class="flex items-center justify-center gap-2 sm:gap-3 heart-interactive-btn w-full sm:w-auto max-w-xs sm:max-w-none pointer-events-auto">
+          <button class="nav-tab-btn flex-1 sm:flex-initial px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-gradient-to-r from-brand-500 to-brand-600 hover:from-brand-600 hover:to-brand-700 text-white font-bold text-xs sm:text-sm shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5" data-tab="letters">
             <span>Mở 30 Lời Thương</span>
             <span>💌</span>
           </button>
 
-          <button class="nav-tab-btn w-full sm:w-auto px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-brand-200 border border-brand-300/40 font-bold text-xs sm:text-sm backdrop-blur-md hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2" data-tab="tribute">
-            <span>Lời Tri Ân Riêng Em</span>
+          <button class="nav-tab-btn flex-1 sm:flex-initial px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-[#1e1026] hover:bg-[#281534] text-brand-200 border border-brand-300/40 font-bold text-xs sm:text-sm hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5" data-tab="tribute">
+            <span>Tri Ân Bé Trân</span>
             <span>🌸</span>
           </button>
         </div>
@@ -392,15 +414,18 @@
           </button>
         </div>
 
-        <!-- Filter / Mood Chips -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-2 mb-3 sm:mb-4 scrollbar-none text-[11px] sm:text-xs">
-          <span class="text-warmgray-400 font-medium px-1 flex-shrink-0">Lọc theo:</span>
-          <button class="filter-chip active flex-shrink-0 px-3 py-1 rounded-full bg-brand-500 text-white font-medium shadow-xs" data-filter="all">Tất cả (10)</button>
-          <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="20/10">💐 20/10</button>
-          <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="tired">🌙 Lúc mệt</button>
-          <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="sad">🌧️ Lúc buồn</button>
-          <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="happy">☀️ Lúc vui</button>
-          <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="care">🤍 Thương mình</button>
+        <!-- Filter / Mood Chips with Horizontal Scroll Indicator (Fade mask on mobile) -->
+        <div class="filter-chips-container mb-3 sm:mb-4">
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none text-[11px] sm:text-xs pr-8">
+            <span class="text-warmgray-400 font-medium px-1 flex-shrink-0">Lọc theo:</span>
+            <button class="filter-chip active flex-shrink-0 px-3 py-1 rounded-full bg-brand-500 text-white font-medium shadow-xs" data-filter="all">Tất cả (10)</button>
+            <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="20/10">💐 20/10</button>
+            <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="tired">🌙 Lúc mệt</button>
+            <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="sad">🌧️ Lúc buồn</button>
+            <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="happy">☀️ Lúc vui</button>
+            <button class="filter-chip flex-shrink-0 px-3 py-1 rounded-full bg-white hover:bg-brand-50 border border-brand-200 text-warmgray-600 font-medium transition-colors" data-filter="care">🤍 Thương mình</button>
+          </div>
+          <div class="filter-chips-fade-mask sm:hidden"></div>
         </div>
 
         <!-- Envelopes Grid -->
@@ -422,9 +447,6 @@
             <span>♡</span>
           </button>
         </div>
-
-      </div>
-    </section>
 
       </div>
     </section>
@@ -513,16 +535,43 @@
           Tấm vé này có giá trị đổi một buổi hẹn hò ngoài đời thực theo ý thích của <strong class="tribute-recipient-name text-brand-600">Huyền Trân</strong>. Em muốn chúng mình sẽ làm gì đầu tiên nè?
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 items-stretch sm:items-center">
-          <select id="date-activity-select" class="w-full sm:flex-1 px-3 sm:px-4 py-2.5 rounded-xl border border-brand-200 text-xs sm:text-sm text-warmgray-700 bg-white focus:outline-none focus:ring-2 focus:ring-brand-400">
-            <option value="Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng">🌅 Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng</option>
-            <option value="Trốn học thêm đi uống ly trà sữa ngọt ngào em thích">🧋 Trốn học thêm đi uống ly trà sữa ngọt ngào em thích</option>
-            <option value="Dắt em đi ăn tất cả những món ăn vặt cổng trường em mê">🍜 Dắt em đi ăn tất cả những món ăn vặt cổng trường em mê</option>
-            <option value="Ngồi góc quán cà phê/nhà sách yên tĩnh đọc truyện và ngắm nhìn em">📚 Ngồi góc quán cà phê/nhà sách yên tĩnh đọc truyện và ngắm nhìn em</option>
-            <option value="Để Trân toàn quyền chọn nơi muốn đi trốn!">✨ Để Trân toàn quyền chọn nơi muốn đi trốn!</option>
-          </select>
+        <!-- Danh sách thẻ lựa chọn hẹn hò hiển thị đầy đủ câu chữ, không bị cắt cụt ba chấm -->
+        <div id="date-choices-container" class="space-y-2 mb-3.5 sm:mb-4">
+          <div class="date-choice-card selected p-3 sm:p-3.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-left text-xs sm:text-sm text-warmgray-800" data-value="Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng">
+            <span class="text-lg flex-shrink-0">🌅</span>
+            <span class="flex-1 font-medium leading-snug">Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng</span>
+            <span class="choice-indicator text-brand-600 font-bold text-sm flex-shrink-0">✓</span>
+          </div>
 
-          <button id="confirm-date-btn" class="w-full sm:w-auto px-5 sm:px-6 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm shadow-sm transition-all flex items-center justify-center gap-1.5 flex-shrink-0">
+          <div class="date-choice-card p-3 sm:p-3.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-left text-xs sm:text-sm text-warmgray-800" data-value="Trốn học thêm đi uống ly trà sữa ngọt ngào em thích">
+            <span class="text-lg flex-shrink-0">🧋</span>
+            <span class="flex-1 font-medium leading-snug">Trốn học thêm đi uống ly trà sữa ngọt ngào em thích</span>
+            <span class="choice-indicator text-transparent font-bold text-sm flex-shrink-0">✓</span>
+          </div>
+
+          <div class="date-choice-card p-3 sm:p-3.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-left text-xs sm:text-sm text-warmgray-800" data-value="Dắt em đi ăn tất cả những món ăn vặt cổng trường em mê">
+            <span class="text-lg flex-shrink-0">🍜</span>
+            <span class="flex-1 font-medium leading-snug">Dắt em đi ăn tất cả những món ăn vặt cổng trường em mê</span>
+            <span class="choice-indicator text-transparent font-bold text-sm flex-shrink-0">✓</span>
+          </div>
+
+          <div class="date-choice-card p-3 sm:p-3.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-left text-xs sm:text-sm text-warmgray-800" data-value="Ngồi góc quán cà phê/nhà sách yên tĩnh đọc truyện và ngắm nhìn em">
+            <span class="text-lg flex-shrink-0">📚</span>
+            <span class="flex-1 font-medium leading-snug">Ngồi góc quán cà phê/nhà sách yên tĩnh đọc truyện và ngắm nhìn em</span>
+            <span class="choice-indicator text-transparent font-bold text-sm flex-shrink-0">✓</span>
+          </div>
+
+          <div class="date-choice-card p-3 sm:p-3.5 rounded-xl sm:rounded-2xl flex items-center gap-2.5 text-left text-xs sm:text-sm text-warmgray-800" data-value="Để Trân toàn quyền chọn nơi muốn đi trốn!">
+            <span class="text-lg flex-shrink-0">✨</span>
+            <span class="flex-1 font-medium leading-snug">Để Trân toàn quyền chọn nơi muốn đi trốn!</span>
+            <span class="choice-indicator text-transparent font-bold text-sm flex-shrink-0">✓</span>
+          </div>
+        </div>
+
+        <input type="hidden" id="date-activity-input" value="Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng">
+
+        <div class="flex items-center justify-center">
+          <button id="confirm-date-btn" class="w-full sm:w-auto px-6 sm:px-8 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-bold text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-1.5 flex-shrink-0">
             <span>Gửi tín hiệu hẹn hò</span>
             <span>💖</span>
           </button>
@@ -616,10 +665,10 @@
   <!-- =================================================== -->
   <!-- MODAL: ĐỌC TỪNG PHONG THƯ (TAB 2) -->
   <!-- =================================================== -->
-  <div id="letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-    <div id="letter-modal-dialog" class="relative w-full max-w-lg bg-transparent transform scale-95 transition-transform duration-300 flex flex-col max-h-[94vh] sm:max-h-[92vh]">
+  <div id="letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div id="letter-modal-dialog" class="relative w-full max-w-lg bg-[#FFFDF9] transform scale-95 transition-transform duration-300 flex flex-col max-h-[94vh] sm:max-h-[92vh] rounded-2xl sm:rounded-3xl border-2 border-brand-200 shadow-2xl overflow-hidden">
       
-      <div class="relative w-full bg-cream-50 rounded-2xl sm:rounded-3xl border-2 border-brand-200 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[90vh]">
+      <div class="relative w-full bg-[#FFFDF9] flex flex-col flex-1 overflow-hidden">
         
         <!-- Header Bar -->
         <div class="bg-gradient-to-r from-brand-100 via-brand-50 to-cream-100 px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-brand-200 flex items-center justify-between flex-shrink-0">
@@ -633,14 +682,17 @@
               <span>📋</span>
               <span class="hidden sm:inline">Sao chép</span>
             </button>
-            <button id="modal-close-btn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/80 hover:bg-brand-100 text-warmgray-600 hover:text-brand-700 flex items-center justify-center border border-brand-200 transition-colors text-xs sm:text-sm font-bold" title="Đóng thư">
-              ✕
+            <button id="modal-close-btn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-brand-100 text-warmgray-600 hover:text-brand-700 flex items-center justify-center border border-brand-200 transition-colors" title="Đóng thư">
+              <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
             </button>
           </div>
         </div>
 
-        <!-- Scrollable Letter Paper Content -->
-        <div class="letter-paper flex-1 overflow-y-auto p-4 sm:p-7 relative">
+        <!-- Scrollable Letter Paper Content (Nền đặc che phủ 100%, không bị đè chữ) -->
+        <div class="letter-paper flex-1 overflow-y-auto p-4 sm:p-7 relative bg-[#FFFDF9]">
           <div class="flex items-start justify-between mb-3 sm:mb-4">
             <div class="inline-block px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-brand-100 text-brand-700 text-[11px] sm:text-xs font-semibold border border-brand-200/80 shadow-xs" id="modal-letter-tag">
               Dành riêng cho ngày 20/10
@@ -708,22 +760,25 @@
   </div>
 
   <!-- =================================================== -->
-  <!-- MODAL: LÁ THƯ ĐẶC BIỆT (CUỐI CÙNG) -->
+  <!-- MODAL: LÁ THƯ ĐẶC BIỆT (CUỐI CÙNG - KHÔNG TRÀN CHỮ KÝ, NỀN ĐẶC) -->
   <!-- =================================================== -->
-  <div id="special-letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-    <div class="relative w-full max-w-lg bg-cream-50 rounded-2xl sm:rounded-3xl border-2 border-brand-300 shadow-2xl overflow-hidden flex flex-col max-h-[94vh] sm:max-h-[92vh]">
+  <div id="special-letter-modal" class="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div class="relative w-full max-w-lg bg-[#FFFDF9] rounded-2xl sm:rounded-3xl border-2 border-brand-300 shadow-2xl overflow-hidden flex flex-col max-h-[94vh] sm:max-h-[92vh]">
       
       <div class="bg-gradient-to-r from-brand-300 via-brand-200 to-amber-100 px-4 sm:px-5 py-3 sm:py-3.5 border-b border-brand-300 flex items-center justify-between flex-shrink-0">
         <div class="flex items-center gap-2">
           <span class="text-lg sm:text-xl">👑</span>
           <span class="font-display font-bold text-brand-800 text-sm sm:text-base">Lá Thư Gửi Riêng Em</span>
         </div>
-        <button id="special-close-btn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/90 hover:bg-white text-warmgray-700 flex items-center justify-center border border-brand-300 shadow-xs text-xs sm:text-sm font-bold" title="Đóng thư">
-          ✕
+        <button id="special-close-btn" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 hover:bg-white text-warmgray-700 flex items-center justify-center border border-brand-300 shadow-xs transition-colors" title="Đóng thư">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
         </button>
       </div>
 
-      <div class="letter-paper flex-1 overflow-y-auto p-4 sm:p-8">
+      <div class="letter-paper flex-1 overflow-y-auto p-4 sm:p-8 pb-10 sm:pb-12 bg-[#FFFDF9]">
         <div class="text-center mb-4 sm:mb-6">
           <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-brand-100 border-2 border-brand-300 mx-auto flex items-center justify-center text-2xl sm:text-3xl shadow-sm mb-2 animate-bounce-subtle">
             💌
@@ -749,18 +804,19 @@
             20/10 thật bình an nha Trân. Mong em mau khỏe khoắn, ăn uống đầy đủ và luôn có tớ ở bên cạnh em. Tớ thương cậu nhiều lắm. ♡
           </p>
 
-          <div id="custom-note-container" class="hidden bg-amber-50/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-200 text-xs sm:text-sm text-amber-900 italic">
+          <div id="custom-note-container" class="hidden bg-amber-50/80 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl border border-amber-200 text-xs sm:text-sm text-amber-900 italic break-words">
             <span class="font-bold block text-amber-700 not-italic mb-1">P/S lời nhắn bí mật:</span>
-            <span id="custom-note-text"></span>
+            <span id="custom-note-text" class="whitespace-pre-wrap"></span>
           </div>
         </div>
 
-        <div class="mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-brand-200 flex flex-col items-end">
+        <!-- Chữ ký nới rộng khoảng trống đáy, an toàn không tràn khung viền -->
+        <div class="mt-6 sm:mt-8 pt-4 sm:pt-5 border-t border-brand-200 flex flex-col items-end flex-shrink-0">
           <div class="text-[11px] sm:text-xs text-warmgray-500">Viết cho em, ngày 20 tháng 10</div>
-          <div class="font-hand text-xl sm:text-2xl text-brand-600 mt-0.5 sm:mt-1 signature-display">Cậu bạn 17 tuổi của Huyền Trân ♡</div>
+          <div class="font-hand text-xl sm:text-2xl text-brand-600 mt-0.5 sm:mt-1 signature-display break-words max-w-full text-right">Cậu bạn 17 tuổi của Huyền Trân ♡</div>
         </div>
 
-        <div class="mt-5 sm:mt-6 pt-3 sm:pt-4 text-center">
+        <div class="mt-5 sm:mt-6 pt-3 sm:pt-4 text-center pb-2">
           <button id="send-hug-btn" class="w-full sm:w-auto px-6 py-2.5 rounded-full bg-gradient-to-r from-brand-400 to-brand-500 hover:from-brand-500 hover:to-brand-600 text-white text-xs sm:text-sm font-bold shadow-md hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 mx-auto">
             <span>Gửi lại một cái ôm cho tớ</span>
             <span>🧸</span>
@@ -773,37 +829,42 @@
   </div>
 
   <!-- =================================================== -->
-  <!-- MODAL: CÁ NHÂN HÓA THÔNG TIN -->
+  <!-- MODAL: CÁ NHÂN HÓA THÔNG TIN (GIỚI HẠN KÝ TỰ AN TOÀN) -->
   <!-- =================================================== -->
-  <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-warmgray-800/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
-    <div class="relative w-full max-w-md bg-white rounded-3xl border border-brand-200 shadow-2xl p-6 overflow-hidden">
+  <div id="config-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+    <div class="relative w-full max-w-md bg-[#FFFDF9] rounded-3xl border border-brand-200 shadow-2xl p-6 overflow-hidden">
       <div class="flex items-center justify-between mb-4 pb-3 border-b border-brand-100">
         <div class="flex items-center gap-2">
           <span class="text-xl">✍️</span>
           <h3 class="font-display font-bold text-warmgray-800 text-base">Cá Nhân Hóa Món Quà</h3>
         </div>
-        <button id="config-close-btn" class="w-7 h-7 rounded-full bg-brand-50 hover:bg-brand-100 text-warmgray-600 flex items-center justify-center text-xs">✕</button>
+        <button id="config-close-btn" type="button" class="w-7 h-7 rounded-full bg-brand-50 hover:bg-brand-100 text-warmgray-600 flex items-center justify-center transition-colors" title="Đóng">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
       </div>
 
       <form id="config-form" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-warmgray-600 mb-1">Tên hoặc biệt danh của người nhận (Em):</label>
-          <input type="text" id="input-recipient" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Huyền Trân, Bé yêu, Công chúa...">
+          <input type="text" id="input-recipient" maxlength="25" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Huyền Trân, Bé yêu, Công chúa...">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-warmgray-600 mb-1">Tên hoặc biệt danh của người gửi (Anh):</label>
-          <input type="text" id="input-sender" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Chiếc bot của em, Anh ngố...">
+          <input type="text" id="input-sender" maxlength="30" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Chiếc bot của em, Anh ngố...">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-warmgray-600 mb-1">Chữ ký cuối thư:</label>
-          <input type="text" id="input-signature" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Anh người yêu ngốc nghếch ♡">
+          <input type="text" id="input-signature" maxlength="40" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Ví dụ: Anh người yêu ngốc nghếch ♡">
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-warmgray-600 mb-1">Thêm lời nhắn riêng tư (tùy chọn):</label>
-          <textarea id="input-custom-note" rows="2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Lời nhắn thêm vào lá thư cuối cùng..."></textarea>
+          <textarea id="input-custom-note" maxlength="200" rows="2" class="w-full px-3.5 py-2 text-sm rounded-xl border border-brand-200 focus:border-brand-500 focus:outline-none" placeholder="Lời nhắn thêm vào lá thư cuối cùng (tối đa 200 ký tự)..."></textarea>
         </div>
 
         <div class="pt-2 flex items-center justify-between gap-3">
@@ -830,6 +891,16 @@
   <footer class="pt-8 pb-6 text-center text-xs text-warmgray-400 relative z-20">
     <p>Hộp quà 20/10 ♡ Dành riêng cho Trần Thị Huyền Trân (11/01/2009)</p>
   </footer>
+
+  <!-- Nút hành động nổi trên điện thoại (Thư riêng & Cá nhân hóa không bị biến mất) -->
+  <div class="mobile-fab-container sm:hidden">
+    <button id="mobile-floating-letter-btn" class="mobile-fab-btn bg-gradient-to-r from-brand-400 to-brand-500 text-white shadow-lg active:scale-95" title="Mở lá thư riêng 20/10">
+      <span class="text-xl">💌</span>
+    </button>
+    <button id="mobile-floating-config-btn" class="mobile-fab-btn bg-white/95 border border-brand-200 text-brand-600 shadow-md active:scale-95" title="Cá nhân hóa món quà">
+      <span class="text-lg">✍️</span>
+    </button>
+  </div>
 
   <!-- Main JavaScript Module Entry Point -->
   <script type="module" src="js/app.js"></script>

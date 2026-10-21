@@ -28,12 +28,26 @@ export class TributeManager {
 
   loadSavedVoucher() {
     try {
-      const raw = localStorage.getItem('hopqua_date_voucher');
+      let raw = localStorage.getItem('hopqua_date_voucher');
+      if (!raw) {
+        const cookieVal = document.cookie.split('; ').find(row => row.startsWith('hopqua_date_voucher='));
+        if (cookieVal) raw = decodeURIComponent(cookieVal.split('=')[1]);
+      }
       if (raw) {
         const data = JSON.parse(raw);
         if (data && data.activity) {
-          const dateSelect = document.getElementById('date-activity-select');
-          if (dateSelect) dateSelect.value = data.activity;
+          const activityInput = document.getElementById('date-activity-input');
+          if (activityInput) activityInput.value = data.activity;
+
+          document.querySelectorAll('.date-choice-card').forEach(c => {
+            const isMatch = c.getAttribute('data-value') === data.activity;
+            c.classList.toggle('selected', isMatch);
+            const ind = c.querySelector('.choice-indicator');
+            if (ind) {
+              ind.classList.toggle('text-brand-600', isMatch);
+              ind.classList.toggle('text-transparent', !isMatch);
+            }
+          });
           this.renderConfirmedVoucher(data.activity, false);
         }
       }
@@ -45,17 +59,25 @@ export class TributeManager {
   renderConfirmedVoucher(activity, shouldAnimate = true) {
     const dateVoucherBtn = document.getElementById('confirm-date-btn');
     const dateFeedback = document.getElementById('date-voucher-feedback');
-    if (!dateVoucherBtn || !dateFeedback) return;
+    if (!dateFeedback) return;
 
-    dateVoucherBtn.disabled = true;
-    dateVoucherBtn.innerHTML = `<span>Đã gửi tín hiệu hẹn hò... ♡</span>`;
+    if (dateVoucherBtn) {
+      dateVoucherBtn.disabled = true;
+      dateVoucherBtn.innerHTML = `<span>Đã gửi tín hiệu hẹn hò... ♡</span>`;
+    }
+
+    const shareMsg = `Tớ đã chọn buổi hẹn: "${activity}" rồi nè! Hẹn sớm gặp cậu nhé ♡`;
+    const encodedMsg = encodeURIComponent(shareMsg);
 
     dateFeedback.innerHTML = `
-      <div class="bg-brand-50 border border-brand-200 rounded-2xl p-4 text-center mt-3 text-xs sm:text-sm text-brand-800 font-medium">
+      <div class="bg-brand-50 border border-brand-200 rounded-2xl p-4 text-center mt-3 text-xs sm:text-sm text-brand-800 font-medium shadow-xs">
         💌 <strong>Tớ đã nhận được tín hiệu của ${this.recipientName} rồi nè!</strong><br>
         Hẹn cậu một ngày sớm nhất: <em>"${activity}"</em> nhé. Tớ nhất định sẽ chuẩn bị thật chu đáo! ♡
-        <div class="mt-2.5">
-          <button id="re-select-date-btn" class="px-3 py-1 rounded-full bg-white hover:bg-brand-100 text-brand-600 border border-brand-200 text-xs font-semibold transition-colors">
+        <div class="mt-3 flex flex-wrap items-center justify-center gap-2">
+          <a href="sms:?&body=${encodedMsg}" class="px-3 py-1.5 rounded-full bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold shadow-xs transition-all flex items-center gap-1">
+            <span>💬 Báo cho cậu ấy qua tin nhắn</span>
+          </a>
+          <button id="re-select-date-btn" class="px-3 py-1.5 rounded-full bg-white hover:bg-brand-100 text-brand-600 border border-brand-200 text-xs font-semibold transition-colors">
             🔄 Chọn lại hoạt động khác
           </button>
         </div>
@@ -65,9 +87,12 @@ export class TributeManager {
     document.getElementById('re-select-date-btn')?.addEventListener('click', () => {
       try {
         localStorage.removeItem('hopqua_date_voucher');
+        document.cookie = 'hopqua_date_voucher=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       } catch (e) {}
-      dateVoucherBtn.disabled = false;
-      dateVoucherBtn.innerHTML = `<span>Gửi lại tín hiệu 💖</span>`;
+      if (dateVoucherBtn) {
+        dateVoucherBtn.disabled = false;
+        dateVoucherBtn.innerHTML = `<span>Gửi lại tín hiệu 💖</span>`;
+      }
       dateFeedback.innerHTML = '';
     });
   }
@@ -122,13 +147,38 @@ export class TributeManager {
       });
     }
 
-    // 2. Xác nhận Vé Hẹn Hò (Date Voucher)
-    const dateVoucherBtn = document.getElementById('confirm-date-btn');
-    const dateSelect = document.getElementById('date-activity-select');
+    // 2. Xác nhận Vé Hẹn Hò (Date Voucher - Chọn thẻ tương tác không bị cắt câu chữ)
+    const choiceCards = document.querySelectorAll('.date-choice-card');
+    const activityInput = document.getElementById('date-activity-input');
 
-    if (dateVoucherBtn && dateSelect) {
+    choiceCards.forEach(card => {
+      card.addEventListener('click', () => {
+        choiceCards.forEach(c => {
+          c.classList.remove('selected');
+          const ind = c.querySelector('.choice-indicator');
+          if (ind) {
+            ind.classList.remove('text-brand-600');
+            ind.classList.add('text-transparent');
+          }
+        });
+        card.classList.add('selected');
+        const ind = card.querySelector('.choice-indicator');
+        if (ind) {
+          ind.classList.remove('text-transparent');
+          ind.classList.add('text-brand-600');
+        }
+        const val = card.getAttribute('data-value');
+        if (activityInput) activityInput.value = val;
+      });
+    });
+
+    const dateVoucherBtn = document.getElementById('confirm-date-btn');
+
+    if (dateVoucherBtn) {
       dateVoucherBtn.addEventListener('click', () => {
-        const chosenActivity = dateSelect.value;
+        const chosenActivity = activityInput?.value ||
+          document.querySelector('.date-choice-card.selected')?.getAttribute('data-value') ||
+          "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng";
 
         audioPlayer.playChime();
         spawnFloatingHearts(window.innerWidth / 2, window.innerHeight / 2, 20);
@@ -142,12 +192,18 @@ export class TributeManager {
           });
         }
 
+        const voucherData = {
+          recipient: this.recipientName,
+          activity: chosenActivity,
+          timestamp: new Date().toISOString()
+        };
+
         try {
-          localStorage.setItem('hopqua_date_voucher', JSON.stringify({
-            recipient: this.recipientName,
-            activity: chosenActivity,
-            timestamp: new Date().toISOString()
-          }));
+          const voucherStr = JSON.stringify(voucherData);
+          localStorage.setItem('hopqua_date_voucher', voucherStr);
+          // Lưu vào Cookie hỗ trợ trình duyệt webview tích hợp (Zalo/Messenger)
+          const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
+          document.cookie = `hopqua_date_voucher=${encodeURIComponent(voucherStr)}; expires=${expires}; path=/; SameSite=Lax`;
         } catch (e) {}
 
         this.renderConfirmedVoucher(chosenActivity, true);
@@ -158,11 +214,7 @@ export class TributeManager {
             fetch('/api/date-voucher', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                recipient: this.recipientName,
-                activity: chosenActivity,
-                timestamp: new Date().toISOString()
-              })
+              body: JSON.stringify(voucherData)
             }).catch(() => {});
           } catch (e) {}
         }

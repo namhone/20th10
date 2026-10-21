@@ -54,11 +54,15 @@ export function formatCanonicalName(inputName) {
 }
 
 /**
- * Lấy profile đã lưu trong localStorage
+ * Lấy profile đã lưu trong localStorage hoặc Cookie
  */
 export function getStoredAuth() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) {
+      const cookieVal = document.cookie.split('; ').find(row => row.startsWith(`${STORAGE_KEY}=`));
+      if (cookieVal) raw = decodeURIComponent(cookieVal.split('=')[1]);
+    }
     if (!raw) return null;
     const profile = JSON.parse(raw);
     if (profile && profile.verified && profile.name) {
@@ -71,7 +75,7 @@ export function getStoredAuth() {
 }
 
 /**
- * Lưu profile vào localStorage và đồng bộ với backend
+ * Lưu profile vào localStorage, Cookie và đồng bộ với backend
  */
 export function saveAuthProfile(name, rawInput = '') {
   const profile = {
@@ -83,13 +87,20 @@ export function saveAuthProfile(name, rawInput = '') {
   };
 
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
+    const profileStr = JSON.stringify(profile);
+    localStorage.setItem(STORAGE_KEY, profileStr);
     
+    // Lưu dự phòng Cookie 365 ngày cho in-app browser
+    const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
+    document.cookie = `${STORAGE_KEY}=${encodeURIComponent(profileStr)}; expires=${expires}; path=/; SameSite=Lax`;
+
     // Đồng bộ cả sang hopqua_config cho tên người nhận
     const savedConfig = localStorage.getItem('hopqua_config');
     let cfg = savedConfig ? JSON.parse(savedConfig) : {};
     cfg.recipientName = name;
-    localStorage.setItem('hopqua_config', JSON.stringify(cfg));
+    const cfgStr = JSON.stringify(cfg);
+    localStorage.setItem('hopqua_config', cfgStr);
+    document.cookie = `hopqua_config=${encodeURIComponent(cfgStr)}; expires=${expires}; path=/; SameSite=Lax`;
   } catch (e) {
     console.warn('Lỗi lưu auth profile:', e);
   }
@@ -196,6 +207,7 @@ export function initAuthGate(onSuccessCallback) {
             setTimeout(() => {
               modal.classList.add('hidden');
               document.body.classList.remove('overflow-hidden');
+              window.scrollTo(0, 0);
             }, 400);
           }
 

@@ -2,7 +2,7 @@
  * SCRIPT TỰ ĐỘNG DEPLOY LÊN GITHUB & SAO LƯU LÊN GOOGLE DRIVE
  * - GitHub Repo: https://github.com/namhone/20th10
  * - Google Drive: taogay2k@gmail.com
- * - Email thông báo: namho03052ki9@gmail.com
+ * - Email thông báo: namho03052k9@gmail.com
  */
 
 const { execSync } = require('child_process');
@@ -19,7 +19,7 @@ async function runDeploy(customCommitMsg) {
   console.log(`🚀 BẮT ĐẦU QUY TRÌNH DEPLOY VÀ BACKUP HỘP QUÀ 20/10`);
   console.log(`👉 GitHub: https://github.com/namhone/20th10`);
   console.log(`👉 Backup Drive: taogay2k@gmail.com`);
-  console.log(`👉 Thông báo: namho03052ki9@gmail.com`);
+  console.log(`👉 Thông báo: namho03052k9@gmail.com`);
   console.log(`======================================================\n`);
 
   // 1. Kiểm tra & Chuẩn bị Git Commit
@@ -70,7 +70,7 @@ async function runDeploy(customCommitMsg) {
   console.log('\n📦 Đang tạo gói Backup và chuẩn bị gửi lên Google Drive...');
   const backupResult = await createZipBackup();
 
-  // 4. Gửi email thông báo tình trạng Deploy & Backup đến namho03052ki9@gmail.com
+  // 4. Gửi email thông báo tình trạng Deploy & Backup đến namho03052k9@gmail.com
   const statusMsg = `
     Quy trình Deploy & Backup hộp quà 20/10 vừa hoàn tất:
     - Trạng thái GitHub: ${pushSuccess ? '✅ Đã cập nhật lên repo https://github.com/namhone/20th10' : '❌ Lỗi push GitHub'}

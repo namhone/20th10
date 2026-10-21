@@ -46,3 +46,21 @@
   transform: translateY(-3px);
   box-shadow: 0 8px 20px -3px rgba(255, 107, 139, 0.2);
 }
+
+/* Thẻ chọn hoạt động hẹn hò (Interactive Choice Cards - không bị cắt câu chữ) */
+.date-choice-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 1.5px solid #FFCCD7;
+  background-color: #FFFFFF;
+}
+.date-choice-card:hover {
+  border-color: #FF6B8B;
+  background-color: #FFF5F7;
+  transform: translateY(-1px);
+}
+.date-choice-card.selected {
+  border-color: #FF477E;
+  background: linear-gradient(135deg, #FFF5F7 0%, #FFE6EC 100%);
+  box-shadow: 0 4px 14px -2px rgba(255, 71, 126, 0.25);
+}

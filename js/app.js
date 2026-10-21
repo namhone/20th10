@@ -137,9 +137,12 @@ class AppController {
       }
     });
 
-    // Điều khiển Three.js Loop để tiết kiệm pin/GPU
+    // Điều khiển Three.js Loop và AmbientParticles 2D để tiết kiệm pin/GPU (Point 4.1 & 4.5)
     if (tabId === 'heart3d') {
       document.body.classList.add('theme-dark-heart');
+      if (this.ambientParticles) {
+        this.ambientParticles.stop(); // Tắt hạt 2D vì tab 3D đã có bụi sao 3D
+      }
       requestAnimationFrame(() => {
         if (this.heartViewer) {
           this.heartViewer.start();
@@ -148,7 +151,10 @@ class AppController {
     } else {
       document.body.classList.remove('theme-dark-heart');
       if (this.heartViewer) {
-        this.heartViewer.pause();
+        this.heartViewer.pause(); // Đóng băng 3D khi sang tab 2 hoặc tab 3
+      }
+      if (this.ambientParticles) {
+        this.ambientParticles.start(); // Chỉ bật hạt 2D ở tab 2 và tab 3
       }
     }
 
@@ -161,6 +167,15 @@ class AppController {
     const audioNextBtn = document.getElementById('audio-next-btn');
     const audioIcon = document.getElementById('audio-icon');
     const audioText = document.getElementById('audio-text');
+
+    // Tự động phát nhạc ngay khi người dùng chạm tay lần đầu vào bất kỳ đâu trên màn hình (Point 3.4)
+    const handleFirstGesture = () => {
+      if (!audioPlayer.isPlaying && !audioPlayer.userExplicitlyPaused) {
+        audioPlayer.play();
+      }
+    };
+    window.addEventListener('pointerdown', handleFirstGesture, { once: true, passive: true });
+    window.addEventListener('touchstart', handleFirstGesture, { once: true, passive: true });
 
     audioPlayer.onStateChange = (isPlaying, track) => {
       const current = track || audioPlayer.getCurrentTrack();

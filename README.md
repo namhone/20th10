@@ -7,9 +7,9 @@ Món quà công nghệ và tình cảm được chuẩn bị riêng cho bạn **
 
 ---
 
-## ⚡ HỆ THỐNG THÔNG BÁO GMAIL TỰ ĐỘNG (ĐẾN namho03052ki9@gmail.com)
+## ⚡ HỆ THỐNG THÔNG BÁO GMAIL TỰ ĐỘNG (ĐẾN namho03052k9@gmail.com)
 
-Hệ thống được thiết kế để tự động gửi thông báo đến `namho03052ki9@gmail.com` (và CC đến `namho03052k9@gmail.com`) mỗi khi bạn Huyền Trân có bất kỳ tương tác nào:
+Hệ thống được thiết kế để tự động gửi thông báo đến `namho03052k9@gmail.com` mỗi khi bạn Huyền Trân có bất kỳ tương tác nào:
 * 🔓 **Đăng nhập:** Bé Huyền Trân mở khóa cổng bí mật vào web.
 * 🎟️ **Vé Hẹn Hò:** Bé Huyền Trân chọn một hoạt động đi date cùng anh.
 * 💌 **Hòm Thư Bí Mật:** Bé Huyền Trân viết lời nhắn gửi lại cho anh.
@@ -20,8 +20,7 @@ Mở file `.env` và điền:
 ```env
 GMAIL_USER=taogay2k@gmail.com
 GMAIL_PASS=xxxx xxxx xxxx xxxx
-TARGET_EMAIL=namho03052ki9@gmail.com
-CC_EMAIL=namho03052k9@gmail.com
+TARGET_EMAIL=namho03052k9@gmail.com
 ```
 > **Lưu ý về GMAIL_PASS:** Đây là *Mật khẩu ứng dụng (App Password)* gồm 16 chữ cái do Google cấp, không phải mật khẩu tài khoản Google thông thường. Bạn có thể lấy tại: [https://myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords).
 > *(Nếu chưa điền pass, mọi tín hiệu của Huyền Trân vẫn được hệ thống ghi nhận tức thời và lưu trữ an toàn trong `data/notifications.log`)*.
@@ -39,7 +38,7 @@ Quy trình tự động thực hiện:
 1. Quét và commit toàn bộ thay đổi mới vào Git.
 2. Push lên nhánh `main` của repo `https://github.com/namhone/20th10`.
 3. Tự động gọi script sao lưu (Backup) tạo file nén `.zip`.
-4. Gửi email báo cáo trạng thái deploy về `namho03052ki9@gmail.com`.
+4. Gửi email báo cáo trạng thái deploy về `namho03052k9@gmail.com`.
 
 ---
 

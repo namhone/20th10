@@ -13,9 +13,31 @@ export function syncBodyScrollLock() {
   );
   if (visibleModals.length > 0) {
     document.body.classList.add('overflow-hidden');
+    // Đóng băng hiệu ứng 3D khi đang mở bất kỳ cửa sổ nào (Point 4.1)
+    window.__APP__?.heartViewer?.pause();
   } else {
     document.body.classList.remove('overflow-hidden');
+    // Nếu đóng hết modal và đang ở Tab 1, bật lại render 3D
+    if (window.__APP__?.currentTab === 'heart3d') {
+      window.__APP__?.heartViewer?.start();
+    }
   }
+}
+
+function getCookie(name) {
+  try {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return decodeURIComponent(parts.pop().split(';').shift());
+  } catch (e) {}
+  return null;
+}
+
+function setCookie(name, value, days = 365) {
+  try {
+    const expires = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
+  } catch (e) {}
 }
 
 export class LettersManager {
@@ -47,11 +69,18 @@ export class LettersManager {
 
   loadSavedState() {
     try {
-      const savedConfig = localStorage.getItem('hopqua_config');
+      let savedConfig = localStorage.getItem('hopqua_config');
+      if (!savedConfig) {
+        savedConfig = getCookie('hopqua_config');
+      }
       if (savedConfig) {
         this.userConfig = Object.assign({}, this.userConfig, JSON.parse(savedConfig));
       }
-      const savedOpened = localStorage.getItem('hopqua_opened_ids');
+
+      let savedOpened = localStorage.getItem('hopqua_opened_ids');
+      if (!savedOpened) {
+        savedOpened = getCookie('hopqua_opened_ids');
+      }
       if (savedOpened) {
         const arr = JSON.parse(savedOpened);
         if (Array.isArray(arr)) this.openedLetters = new Set(arr);
@@ -63,8 +92,15 @@ export class LettersManager {
 
   saveState() {
     try {
-      localStorage.setItem('hopqua_opened_ids', JSON.stringify(Array.from(this.openedLetters)));
-      localStorage.setItem('hopqua_config', JSON.stringify(this.userConfig));
+      const openedArrStr = JSON.stringify(Array.from(this.openedLetters));
+      const configStr = JSON.stringify(this.userConfig);
+
+      localStorage.setItem('hopqua_opened_ids', openedArrStr);
+      localStorage.setItem('hopqua_config', configStr);
+
+      // Lưu dự phòng vào Cookie cho các trình duyệt webview tích hợp (Messenger, Zalo)
+      setCookie('hopqua_opened_ids', openedArrStr, 365);
+      setCookie('hopqua_config', configStr, 365);
     } catch (e) {
       console.warn('Lỗi lưu dữ liệu thư:', e);
     }
@@ -354,7 +390,7 @@ export class LettersManager {
     const modal = document.getElementById('letter-modal');
     if (modal) {
       modal.classList.remove('hidden');
-      document.body.classList.add('overflow-hidden');
+      syncBodyScrollLock();
       requestAnimationFrame(() => {
         modal.classList.remove('opacity-0');
         const dialog = document.getElementById('letter-modal-dialog');
@@ -459,7 +495,7 @@ export class LettersManager {
     const modal = document.getElementById('special-letter-modal');
     if (!modal) return;
     modal.classList.remove('hidden');
-    document.body.classList.add('overflow-hidden');
+    syncBodyScrollLock();
     requestAnimationFrame(() => {
       modal.classList.remove('opacity-0');
     });
@@ -563,9 +599,17 @@ export class LettersManager {
 
       if (configModal) {
         configModal.classList.remove('hidden');
-        document.body.classList.add('overflow-hidden');
+        syncBodyScrollLock();
         requestAnimationFrame(() => configModal.classList.remove('opacity-0'));
       }
+    });
+
+    // Mobile Floating Action Buttons (Point 2.1)
+    document.getElementById('mobile-floating-letter-btn')?.addEventListener('click', () => {
+      this.openSpecialLetter();
+    });
+    document.getElementById('mobile-floating-config-btn')?.addEventListener('click', () => {
+      document.getElementById('config-open-btn')?.click();
     });
 
     const closeConfigModal = () => {

@@ -69,6 +69,7 @@ class RomanticAudioPlayer {
     this.audioCtx = null;
     this.synthInterval = null;
 
+    this.userExplicitlyPaused = false;
     this.setupAudioListeners();
   }
 
@@ -125,12 +126,16 @@ class RomanticAudioPlayer {
     if (promise !== undefined) {
       promise.then(() => {
         this.isPlaying = true;
+        this.userExplicitlyPaused = false;
         if (typeof this.onStateChange === 'function') {
           this.onStateChange(true, this.getCurrentTrack());
         }
       }).catch(err => {
-        console.warn('Autoplay prevented or network blocked, trying synth:', err);
-        this.startSynthFallback();
+        // Trình duyệt chặn autoplay khi chưa có tương tác
+        this.isPlaying = false;
+        if (typeof this.onStateChange === 'function') {
+          this.onStateChange(false, this.getCurrentTrack());
+        }
       });
     }
     return this.isPlaying;
@@ -140,6 +145,7 @@ class RomanticAudioPlayer {
     this.audioElement.pause();
     this.stopSynthFallback();
     this.isPlaying = false;
+    this.userExplicitlyPaused = true;
     if (typeof this.onStateChange === 'function') {
       this.onStateChange(false, this.getCurrentTrack());
     }
