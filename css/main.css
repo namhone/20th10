@@ -200,3 +200,69 @@ footer {
 .animate-shake {
   animation: shake 0.4s ease-in-out;
 }
+
+
+/* ===================================================
+   TỐI ƯU TOÀN DIỆN CHO MỌI LOẠI ĐIỆN THOẠI (RESPONSIVE PHONES)
+   =================================================== */
+
+/* 1. Ẩn nút nổi tròn khi ở Tab 1 Trái Tim 3D để không che khuất màn hình 3D và các nút CTA */
+body.theme-dark-heart .mobile-fab-container {
+  display: none !important;
+}
+
+/* 2. Ngăn iOS Safari tự động phóng to trang khi người dùng chạm vào ô input/textarea */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="password"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* 3. Tối ưu cảm ứng mượt mà, loại bỏ độ trễ 300ms trên mọi trình duyệt mobile */
+button, a, input, textarea, select {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 4. Safe Area insets toàn diện cho tai thỏ, Dynamic Island và thanh điều hướng đáy */
+header {
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+.mobile-fab-container {
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(0.85rem + env(safe-area-inset-right, 0px)) !important;
+}
+#toast {
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  max-width: calc(100vw - 2rem) !important;
+}
+
+/* 5. Tinh chỉnh màn hình chiều cao thấp (màn hình nhỏ như iPhone SE, 568px - 680px) */
+@media (max-height: 700px) {
+  #tab-content-heart3d .heart-overlay-content:first-of-type {
+    padding-top: 0.25rem !important;
+  }
+  #tab-content-heart3d .heart-overlay-content:first-of-type h1 {
+    font-size: 1.25rem !important;
+    margin-bottom: 0.15rem !important;
+  }
+  #tab-content-heart3d .heart-overlay-content:first-of-type p {
+    font-size: 0.7rem !important;
+    line-height: 1.15 !important;
+    -webkit-line-clamp: 1 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+  #tab-content-heart3d .heart-overlay-content:last-of-type {
+    padding-bottom: calc(0.4rem + env(safe-area-inset-bottom, 0px)) !important;
+    gap: 0.35rem !important;
+  }
+}

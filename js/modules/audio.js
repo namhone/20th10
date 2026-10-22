@@ -1,18 +1,18 @@
 /**
- * Module Âm Thanh Tình Yêu Tuyển Chọn (Curated Romantic & Classical Love Playlist)
- * Danh sách phát tuyển chọn những bản tình ca và giai điệu không lời ngọt ngào, nhẹ nhàng, đáng yêu nhất:
+ * Module Âm Thanh Tình Yêu Tuyển Chọn (Modern & Trending Romantic Instrumental Playlist)
+ * Danh sách phát tuyển chọn những bản tình ca và giai điệu không lời mới nhất, hot trend và đáng yêu nhất:
  * 1. Until I Found You — Stephen Sanchez (Piano lãng mạn, bay bổng)
- * 2. Nàng Thơ — Hoàng Dũng (Piano trong trẻo, e ấp tuổi học trò)
- * 3. Dịu Dàng Em Đến — ERIK (Piano chill ngọt ngào, đáng yêu)
- * 4. Ánh Nắng Của Anh — Đức Phúc (Khúc tình ca ấm áp bên em)
- * 5. Cupid — FIFTY FIFTY (Giai điệu tình yêu cute, rung rinh đáng yêu xỉu)
- * 6. Canon in D — Johann Pachelbel (Bản tình ca bất hủ vượt thời gian)
- * 7. Für Elise — L.V. Beethoven (Khúc nhạc dành riêng cho nàng thơ)
- * 8. Träumerei — Robert Schumann (Giấc mộng tình yêu êm dịu, sâu lắng)
- * 9. Liebestraum No. 3 — Franz Liszt (Giấc mơ tình yêu ngọt ngào)
- * 10. Moonlight Sonata — L.V. Beethoven (Ánh trăng huyền ảo, dịu dàng)
- * 11. I Love You (Jeg Elsker Dig) — Edvard Grieg (Lời yêu chân thành)
- * 12. Air on the G String — J.S. Bach (Bình yên và thanh thản bên nàng)
+ * 2. Golden Hour — JVKE (Piano viral TikTok cực đỉnh)
+ * 3. Nàng Thơ — Hoàng Dũng (Piano trong trẻo, e ấp)
+ * 4. Dịu Dàng Em Đến — ERIK (Piano chill ngọt ngào, chữa lành)
+ * 5. Có Em — Madihu (Giai điệu dịu êm từng giây phút)
+ * 6. Ánh Nắng Của Anh — Đức Phúc (Khúc tình ca ấm áp bên em)
+ * 7. See Tình — Hoàng Thùy Linh (Piano cute rung động con tim)
+ * 8. Cupid — FIFTY FIFTY (Giai điệu tình yêu cute, rung rinh đáng yêu)
+ * 9. Chuyện Đôi Ta — Emcee L (Bản tình ca dịu ngọt)
+ * 10. Từng Quen — Wren Evans (Giai điệu piano RnB nhẹ nhàng)
+ * 11. Ánh Sao Và Bầu Trời — T.R.I (Lung linh như mắt em)
+ * 12. Mặt Mộc — Phạm Nguyên Ngọc (Dễ thương tự nhiên nhất)
  * Kèm bộ dự phòng Synthesizer Web Audio API khi ngoại tuyến
  */
 
@@ -24,6 +24,14 @@ export const ROMANTIC_PLAYLIST = [
     composer: 'Stephen Sanchez (Piano)',
     src: 'assets/audio/until_i_found_you.mp3',
     icon: '✨'
+  },
+  {
+    id: 'golden-hour',
+    title: 'Golden Hour',
+    subTitle: 'Khoảnh Khắc Vàng Bên Em',
+    composer: 'JVKE (Piano)',
+    src: 'assets/audio/golden_hour.mp3',
+    icon: '💫'
   },
   {
     id: 'nang-tho',
@@ -42,12 +50,28 @@ export const ROMANTIC_PLAYLIST = [
     icon: '🧸'
   },
   {
+    id: 'co-em',
+    title: 'Có Em',
+    subTitle: 'Dịu Êm Từng Giây Phút',
+    composer: 'Madihu (Piano Cover)',
+    src: 'assets/audio/co_em.mp3',
+    icon: '🌿'
+  },
+  {
     id: 'anh-nang-cua-anh',
     title: 'Ánh Nắng Của Anh',
     subTitle: 'Ấm Áp Bên Em',
     composer: 'Đức Phúc (Piano)',
     src: 'assets/audio/anh_nang_cua_anh.mp3',
     icon: '☀️'
+  },
+  {
+    id: 'see-tinh',
+    title: 'See Tình',
+    subTitle: 'Rung Động Con Tim',
+    composer: 'Hoàng Thùy Linh (Piano)',
+    src: 'assets/audio/see_tinh.mp3',
+    icon: '💓'
   },
   {
     id: 'cupid-cute',
@@ -58,60 +82,36 @@ export const ROMANTIC_PLAYLIST = [
     icon: '💘'
   },
   {
-    id: 'canon-in-d',
-    title: 'Canon in D',
-    subTitle: 'Giai Điệu Bất Hủ',
-    composer: 'Johann Pachelbel (Piano & Strings)',
-    src: 'assets/audio/canon_in_d.mp3',
-    icon: '🎻'
+    id: 'chuyen-doi-ta',
+    title: 'Chuyện Đôi Ta',
+    subTitle: 'Bản Tình Ca Dịu Ngọt',
+    composer: 'Emcee L (Piano)',
+    src: 'assets/audio/chuyen_doi_ta.mp3',
+    icon: '💌'
   },
   {
-    id: 'fur-elise',
-    title: 'Für Elise',
-    subTitle: 'Dành Cho Nàng Thơ',
-    composer: 'L.V. Beethoven (Piano Solo)',
-    src: 'assets/audio/fur_elise.mp3',
-    icon: '🎹'
+    id: 'tung-quen',
+    title: 'Từng Quen',
+    subTitle: 'Giai Điệu Tình Yêu Nhẹ Nhàng',
+    composer: 'Wren Evans (Piano)',
+    src: 'assets/audio/tung_quen.mp3',
+    icon: '🎶'
   },
   {
-    id: 'traumerei',
-    title: 'Träumerei (Mộng Mơ)',
-    subTitle: 'Ngọt Ngào & Sâu Lắng',
-    composer: 'Robert Schumann (Piano Solo)',
-    src: 'assets/audio/traumerei_dreaming.mp3',
-    icon: '💭'
+    id: 'anh-sao-va-bau-troi',
+    title: 'Ánh Sao Và Bầu Trời',
+    subTitle: 'Lung Linh Như Mắt Em',
+    composer: 'T.R.I (Piano)',
+    src: 'assets/audio/anh_sao_va_bau_troi.mp3',
+    icon: '🌟'
   },
   {
-    id: 'liebestraum',
-    title: 'Liebestraum No. 3',
-    subTitle: 'Giấc Mộng Tình Yêu',
-    composer: 'Franz Liszt (Piano Solo)',
-    src: 'assets/audio/liebestraum_love_dream.mp3',
-    icon: '💫'
-  },
-  {
-    id: 'moonlight-sonata',
-    title: 'Moonlight Sonata',
-    subTitle: 'Ánh Trăng Dịu Êm',
-    composer: 'L.V. Beethoven (Piano Solo)',
-    src: 'assets/audio/moonlight_sonata.mp3',
-    icon: '🌙'
-  },
-  {
-    id: 'grieg-i-love-you',
-    title: 'I Love You (Jeg Elsker Dig)',
-    subTitle: 'Khúc Tình Ca Chân Thành',
-    composer: 'Edvard Grieg (Piano Solo)',
-    src: 'assets/audio/grieg_i_love_you.mp3',
-    icon: '❤️'
-  },
-  {
-    id: 'air-on-g-string',
-    title: 'Air on the G String',
-    subTitle: 'Bình Yên Bên Nàng',
-    composer: 'J.S. Bach (Orchestral Suite)',
-    src: 'assets/audio/air_on_g_string.mp3',
-    icon: '🕊️'
+    id: 'mat-moc',
+    title: 'Mặt Mộc',
+    subTitle: 'Dễ Thương Tự Nhiên Nhất',
+    composer: 'Phạm Nguyên Ngọc (Piano)',
+    src: 'assets/audio/mat_moc.mp3',
+    icon: '🥰'
   }
 ];
 
