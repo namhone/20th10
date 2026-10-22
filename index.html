@@ -92,7 +92,7 @@
   <link rel="stylesheet" href="css/tribute.css">
 </head>
 
-<body class="min-h-screen relative overflow-x-hidden selection:bg-brand-200 selection:text-brand-700">
+<body class="theme-dark-heart min-h-screen relative overflow-x-hidden selection:bg-brand-200 selection:text-brand-700">
   <canvas id="particles-canvas"></canvas>
 
   <!-- =================================================== -->
@@ -141,7 +141,7 @@
       <!-- Action Buttons -->
       <div class="flex items-center gap-1 sm:gap-2">
         <!-- Audio Romantic Instrumental Toggle & Next -->
-        <div class="flex items-center bg-brand-50 hover:bg-brand-100/90 rounded-full border border-brand-200 p-0.5 transition-all shadow-xs">
+        <div id="audio-player-container" class="flex items-center bg-brand-50 hover:bg-brand-100/90 rounded-full border border-brand-200 p-0.5 transition-all shadow-xs">
           <button id="audio-toggle-btn" class="px-2 sm:px-3 py-1 text-brand-600 transition-all flex items-center gap-1 text-xs font-semibold" title="Bật/Tắt nhạc tình yêu không lời">
             <span id="audio-icon">🎵</span>
             <span id="audio-text" class="hidden md:inline">Nhạc tình yêu</span>

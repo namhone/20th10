@@ -13,7 +13,7 @@ import { AmbientParticles } from './modules/particles2d.js';
 
 class AppController {
   constructor() {
-    this.currentTab = 'heart3d'; // Mặc định mở Tab 1 (Trái tim 3D)
+    this.currentTab = null; // Mặc định chưa chọn để switchTab('heart3d') chạy hoàn chỉnh khi init
     this.heartViewer = null;
     this.lettersManager = null;
     this.giftBox = null;
