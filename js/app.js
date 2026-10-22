@@ -179,14 +179,24 @@ class AppController {
     const audioIcon = document.getElementById('audio-icon');
     const audioText = document.getElementById('audio-text');
 
+    const removeGestureListeners = () => {
+      window.removeEventListener('pointerdown', handleFirstGesture);
+      window.removeEventListener('touchstart', handleFirstGesture);
+    };
+
     // Tự động phát nhạc ngay khi người dùng chạm tay lần đầu vào bất kỳ đâu trên màn hình (Point 3.4)
-    const handleFirstGesture = () => {
+    const handleFirstGesture = (e) => {
+      // Nếu chạm trực tiếp vào nút điều khiển nhạc, nhường quyền xử lý hoàn toàn cho nút đó
+      if (e && e.target && e.target.closest('#audio-toggle-btn, #audio-next-btn')) {
+        return;
+      }
+      removeGestureListeners();
       if (!audioPlayer.isPlaying && !audioPlayer.userExplicitlyPaused) {
         audioPlayer.play();
       }
     };
-    window.addEventListener('pointerdown', handleFirstGesture, { once: true, passive: true });
-    window.addEventListener('touchstart', handleFirstGesture, { once: true, passive: true });
+    window.addEventListener('pointerdown', handleFirstGesture, { passive: true });
+    window.addEventListener('touchstart', handleFirstGesture, { passive: true });
 
     audioPlayer.onStateChange = (isPlaying, track) => {
       const current = track || audioPlayer.getCurrentTrack();
@@ -205,26 +215,33 @@ class AppController {
       if (audioText && audioPlayer.isPlaying) {
         audioText.textContent = track.title;
       }
+    };
+
+    audioPlayer.onAutoAdvance = (track) => {
       this.lettersManager?.showToast(
-        `Đang phát: ${track.title} — ${track.composer} ♡`,
+        `Bài tiếp theo: ${track.title} — ${track.composer} ♡`,
         track.icon || '🎶'
       );
     };
 
     if (audioBtn) {
-      audioBtn.addEventListener('click', () => {
-        const isNowPlaying = audioPlayer.toggle();
+      audioBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        removeGestureListeners();
+        const isNowPlaying = await audioPlayer.toggle();
         const current = audioPlayer.getCurrentTrack();
         this.lettersManager?.showToast(
-          isNowPlaying ? `Đang phát nhạc không lời: ${current.title} ♡` : 'Đã tạm dừng nhạc',
-          isNowPlaying ? '🎶' : '🔇'
+          isNowPlaying ? `Đang phát: ${current.title} — ${current.composer} ♡` : 'Đã tạm dừng nhạc ♡',
+          isNowPlaying ? (current.icon || '🎶') : '🔇'
         );
       });
     }
 
     if (audioNextBtn) {
-      audioNextBtn.addEventListener('click', () => {
-        const nextTrack = audioPlayer.next();
+      audioNextBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        removeGestureListeners();
+        const nextTrack = await audioPlayer.next(true);
         this.lettersManager?.showToast(
           `Đổi bài: ${nextTrack.title} — ${nextTrack.composer} ♡`,
           nextTrack.icon || '⏭️'

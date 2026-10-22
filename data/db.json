@@ -137,18 +137,27 @@
       "rawInput": "Huyền Trân",
       "verifiedAt": "2026-10-22T10:56:01.204Z",
       "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-22T13:22:33.898Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
-    "openedCount": 0,
-    "openedIds": [],
+    "openedCount": 2,
+    "openedIds": [
+      "poem-1",
+      "poem-2"
+    ],
     "userConfig": {
       "recipientName": "Huyền Trân",
       "senderName": "Cậu bạn 17 tuổi của Trân",
       "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
-    "updatedAt": "2026-10-22T11:06:08.072Z"
+    "updatedAt": "2026-10-22T13:22:46.698Z"
   },
   "dateVouchers": [
     {
@@ -180,6 +189,11 @@
       "recipient": "Trần Thị Huyền Trân",
       "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
       "timestamp": "2026-10-22T10:35:45.735Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-22T13:22:42.659Z"
     }
   ],
   "messages": [
@@ -236,6 +250,19 @@
       "sender": "Trần Thị Huyền Trân",
       "detail": "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
       "time": "2026-10-22T10:35:46.534Z"
+    },
+    {
+      "id": 1792675362175,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🧋 [Liều sạc pin ngọt ngào]: Gửi cho Trân một ly trà sữa ngọt ngào qua tâm trí! Cố lên nhé, rồi tớ sẽ sớm dắt cậu đi date ngoài đời thực để bù đắp hết những ngày mệt mỏi này nha.",
+      "time": "2026-10-22T13:22:42.166Z"
+    },
+    {
+      "id": 1792675363860,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-22T13:22:43.850Z"
     }
   ]
 }

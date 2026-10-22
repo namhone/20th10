@@ -1,11 +1,18 @@
 /**
- * Module Âm Thanh Tình Yêu Trending & Đáng Yêu (Trending & Cute Instrumental Love Playlist)
- * Danh sách phát tuyển chọn những bản tình ca không lời ngọt ngào, nhẹ nhàng, đáng yêu nhất:
- * 1. Until I Found You — Stephen Sanchez (Piano lãng mạn, bay bổng, trending TikTok)
- * 2. Nàng Thơ — Hoàng Dũng (Piano trong trẻo, e ấp, dịu êm tuổi học trò)
- * 3. Dịu Dàng Em Đến — ERIK (Piano chill ngọt ngào, đáng yêu, chữa lành)
- * 4. Ánh Nắng Của Anh — Đức Phúc (Khúc tình ca ấm áp, dịu ngọt bên em)
+ * Module Âm Thanh Tình Yêu Tuyển Chọn (Curated Romantic & Classical Love Playlist)
+ * Danh sách phát tuyển chọn những bản tình ca và giai điệu không lời ngọt ngào, nhẹ nhàng, đáng yêu nhất:
+ * 1. Until I Found You — Stephen Sanchez (Piano lãng mạn, bay bổng)
+ * 2. Nàng Thơ — Hoàng Dũng (Piano trong trẻo, e ấp tuổi học trò)
+ * 3. Dịu Dàng Em Đến — ERIK (Piano chill ngọt ngào, đáng yêu)
+ * 4. Ánh Nắng Của Anh — Đức Phúc (Khúc tình ca ấm áp bên em)
  * 5. Cupid — FIFTY FIFTY (Giai điệu tình yêu cute, rung rinh đáng yêu xỉu)
+ * 6. Canon in D — Johann Pachelbel (Bản tình ca bất hủ vượt thời gian)
+ * 7. Für Elise — L.V. Beethoven (Khúc nhạc dành riêng cho nàng thơ)
+ * 8. Träumerei — Robert Schumann (Giấc mộng tình yêu êm dịu, sâu lắng)
+ * 9. Liebestraum No. 3 — Franz Liszt (Giấc mơ tình yêu ngọt ngào)
+ * 10. Moonlight Sonata — L.V. Beethoven (Ánh trăng huyền ảo, dịu dàng)
+ * 11. I Love You (Jeg Elsker Dig) — Edvard Grieg (Lời yêu chân thành)
+ * 12. Air on the G String — J.S. Bach (Bình yên và thanh thản bên nàng)
  * Kèm bộ dự phòng Synthesizer Web Audio API khi ngoại tuyến
  */
 
@@ -49,6 +56,62 @@ export const ROMANTIC_PLAYLIST = [
     composer: 'FIFTY FIFTY (Piano)',
     src: 'assets/audio/cupid_cute.mp3',
     icon: '💘'
+  },
+  {
+    id: 'canon-in-d',
+    title: 'Canon in D',
+    subTitle: 'Giai Điệu Bất Hủ',
+    composer: 'Johann Pachelbel (Piano & Strings)',
+    src: 'assets/audio/canon_in_d.mp3',
+    icon: '🎻'
+  },
+  {
+    id: 'fur-elise',
+    title: 'Für Elise',
+    subTitle: 'Dành Cho Nàng Thơ',
+    composer: 'L.V. Beethoven (Piano Solo)',
+    src: 'assets/audio/fur_elise.mp3',
+    icon: '🎹'
+  },
+  {
+    id: 'traumerei',
+    title: 'Träumerei (Mộng Mơ)',
+    subTitle: 'Ngọt Ngào & Sâu Lắng',
+    composer: 'Robert Schumann (Piano Solo)',
+    src: 'assets/audio/traumerei_dreaming.mp3',
+    icon: '💭'
+  },
+  {
+    id: 'liebestraum',
+    title: 'Liebestraum No. 3',
+    subTitle: 'Giấc Mộng Tình Yêu',
+    composer: 'Franz Liszt (Piano Solo)',
+    src: 'assets/audio/liebestraum_love_dream.mp3',
+    icon: '💫'
+  },
+  {
+    id: 'moonlight-sonata',
+    title: 'Moonlight Sonata',
+    subTitle: 'Ánh Trăng Dịu Êm',
+    composer: 'L.V. Beethoven (Piano Solo)',
+    src: 'assets/audio/moonlight_sonata.mp3',
+    icon: '🌙'
+  },
+  {
+    id: 'grieg-i-love-you',
+    title: 'I Love You (Jeg Elsker Dig)',
+    subTitle: 'Khúc Tình Ca Chân Thành',
+    composer: 'Edvard Grieg (Piano Solo)',
+    src: 'assets/audio/grieg_i_love_you.mp3',
+    icon: '❤️'
+  },
+  {
+    id: 'air-on-g-string',
+    title: 'Air on the G String',
+    subTitle: 'Bình Yên Bên Nàng',
+    composer: 'J.S. Bach (Orchestral Suite)',
+    src: 'assets/audio/air_on_g_string.mp3',
+    icon: '🕊️'
   }
 ];
 
@@ -64,18 +127,26 @@ class RomanticAudioPlayer {
 
     this.onStateChange = null;
     this.onTrackChange = null;
+    this.onAutoAdvance = null;
 
     // Web Audio Context dự phòng khi cần âm thanh hiệu ứng (chuông, nhịp tim)
     this.audioCtx = null;
     this.synthInterval = null;
 
     this.userExplicitlyPaused = false;
+    this._playPromise = null;
+
+    // Nạp sẵn bài hát đầu tiên để audio.src không bị rỗng
+    this.loadTrack(0);
     this.setupAudioListeners();
   }
 
   setupAudioListeners() {
-    this.audioElement.addEventListener('ended', () => {
-      this.next();
+    this.audioElement.addEventListener('ended', async () => {
+      const nextTrack = await this.next(true);
+      if (typeof this.onAutoAdvance === 'function') {
+        this.onAutoAdvance(nextTrack);
+      }
     });
 
     this.audioElement.addEventListener('play', () => {
@@ -116,66 +187,80 @@ class RomanticAudioPlayer {
     }
   }
 
-  play() {
+  async play() {
     this.initContext();
+    this.userExplicitlyPaused = false;
+
     if (!this.audioElement.src || this.audioElement.src === window.location.href) {
       this.loadTrack(this.currentIndex);
     }
 
-    const promise = this.audioElement.play();
-    if (promise !== undefined) {
-      promise.then(() => {
-        this.isPlaying = true;
-        this.userExplicitlyPaused = false;
-        if (typeof this.onStateChange === 'function') {
-          this.onStateChange(true, this.getCurrentTrack());
-        }
-      }).catch(err => {
-        // Trình duyệt chặn autoplay khi chưa có tương tác
-        this.isPlaying = false;
-        if (typeof this.onStateChange === 'function') {
-          this.onStateChange(false, this.getCurrentTrack());
-        }
-      });
+    if (!this.audioElement.paused && this.isPlaying) {
+      return true;
     }
-    return this.isPlaying;
+
+    try {
+      this._playPromise = this.audioElement.play();
+      await this._playPromise;
+      this.isPlaying = true;
+      if (typeof this.onStateChange === 'function') {
+        this.onStateChange(true, this.getCurrentTrack());
+      }
+      return true;
+    } catch (err) {
+      // Trình duyệt chặn autoplay khi chưa có tương tác hoặc request bị huỷ
+      this.isPlaying = false;
+      if (typeof this.onStateChange === 'function') {
+        this.onStateChange(false, this.getCurrentTrack());
+      }
+      return false;
+    } finally {
+      this._playPromise = null;
+    }
   }
 
-  pause() {
-    this.audioElement.pause();
-    this.stopSynthFallback();
-    this.isPlaying = false;
+  async pause() {
     this.userExplicitlyPaused = true;
+    this.stopSynthFallback();
+
+    if (this._playPromise) {
+      try {
+        await this._playPromise;
+      } catch (e) {}
+    }
+
+    this.audioElement.pause();
+    this.isPlaying = false;
     if (typeof this.onStateChange === 'function') {
       this.onStateChange(false, this.getCurrentTrack());
     }
     return false;
   }
 
-  toggle() {
-    if (this.isPlaying) {
-      this.pause();
+  async toggle() {
+    if (this.isPlaying || (!this.audioElement.paused && this.audioElement.currentTime > 0)) {
+      await this.pause();
       return false;
     } else {
-      this.play();
-      return true;
+      const ok = await this.play();
+      return ok;
     }
   }
 
-  next() {
+  async next(autoPlay = true) {
     this.currentIndex = (this.currentIndex + 1) % this.playlist.length;
     this.loadTrack(this.currentIndex);
-    if (this.isPlaying) {
-      this.audioElement.play().catch(() => {});
+    if (autoPlay || this.isPlaying || !this.userExplicitlyPaused) {
+      await this.play();
     }
     return this.getCurrentTrack();
   }
 
-  prev() {
+  async prev(autoPlay = true) {
     this.currentIndex = (this.currentIndex - 1 + this.playlist.length) % this.playlist.length;
     this.loadTrack(this.currentIndex);
-    if (this.isPlaying) {
-      this.audioElement.play().catch(() => {});
+    if (autoPlay || this.isPlaying || !this.userExplicitlyPaused) {
+      await this.play();
     }
     return this.getCurrentTrack();
   }
