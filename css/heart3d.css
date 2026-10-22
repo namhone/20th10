@@ -11,20 +11,36 @@
   overflow: hidden;
 }
 
-/* Ambient Pulsating Glow behind 3D Heart */
+/* Ambient Pulsating Glow behind 3D Heart (Pure CSS Hardware-Composited, No JS DOM Thrashing) */
 .heart-bg-glow {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(85vw, 680px);
-  height: min(85vw, 680px);
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(255, 10, 54, 0.28) 0%, rgba(133, 24, 207, 0.12) 42%, rgba(3, 0, 7, 0) 75%);
+  width: min(85vw, 560px);
+  height: min(85vw, 560px);
+  transform: translate(-50%, -50%) translateZ(0);
+  background: radial-gradient(circle, rgba(255, 10, 54, 0.26) 0%, rgba(133, 24, 207, 0.10) 42%, rgba(3, 0, 7, 0) 75%);
   pointer-events: none;
   z-index: 1;
-  filter: blur(48px);
+  filter: blur(40px);
   border-radius: 50%;
-  transition: transform 0.25s ease-out, opacity 0.25s ease-out;
+  will-change: transform, opacity;
+  animation: heartGlowPulse var(--pulse-glow-duration, 0.92s) ease-in-out infinite;
+}
+
+@keyframes heartGlowPulse {
+  0% { transform: translate(-50%, -50%) scale(1) translateZ(0); opacity: 0.55; }
+  18% { transform: translate(-50%, -50%) scale(1.12) translateZ(0); opacity: 0.90; }
+  32% { transform: translate(-50%, -50%) scale(1.02) translateZ(0); opacity: 0.65; }
+  46% { transform: translate(-50%, -50%) scale(1.08) translateZ(0); opacity: 0.82; }
+  70% { transform: translate(-50%, -50%) scale(1) translateZ(0); opacity: 0.55; }
+  100% { transform: translate(-50%, -50%) scale(1) translateZ(0); opacity: 0.55; }
+}
+
+.heart-bg-glow.thrill {
+  transform: translate(-50%, -50%) scale(1.28) translateZ(0) !important;
+  opacity: 1 !important;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
 }
 
 #heart-3d-canvas-container {
@@ -34,6 +50,7 @@
   height: 100%;
   cursor: grab;
   z-index: 2;
+  touch-action: none;
 }
 
 #heart-3d-canvas-container:active {

@@ -71,6 +71,42 @@
       "rawInput": "Huyền Trân",
       "verifiedAt": "2026-10-21T23:32:21.854Z",
       "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-22T10:21:59.966Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-22T10:35:08.914Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Trần Thị Huyền Trân",
+      "rawInput": "Trần Thị Huyền Trân",
+      "verifiedAt": "2026-10-22T10:35:34.337Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ♡",
+      "verifiedAt": "2026-10-22T10:35:52.044Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-22T10:35:59.321Z",
+      "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân",
+      "verifiedAt": "2026-10-22T10:36:18.130Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
@@ -82,7 +118,7 @@
       "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
-    "updatedAt": "2026-10-21T23:32:22.689Z"
+    "updatedAt": "2026-10-22T10:36:18.945Z"
   },
   "dateVouchers": [
     {
@@ -104,6 +140,16 @@
       "recipient": "Trần Thị Huyền Trân",
       "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
       "timestamp": "2026-10-21T23:32:06.242Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-22T10:35:16.603Z"
+    },
+    {
+      "recipient": "Trần Thị Huyền Trân",
+      "activity": "Trốn học thêm đi uống ly trà sữa ngọt ngào em thích",
+      "timestamp": "2026-10-22T10:35:45.735Z"
     }
   ],
   "messages": [
@@ -140,6 +186,26 @@
       "sender": "Trần Thị Huyền Trân",
       "detail": "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
       "time": "2026-10-21T23:32:07.044Z"
+    },
+    {
+      "id": 1792665316208,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🌡️ [Liều hạ sốt & dưỡng sức]: Nếu hôm nay nghe người hâm hấp nóng hay mệt mỏi, Trân nhớ đo nhiệt độ, uống nhiều nước ấm và đắp chăn nằm nghỉ nhé. Đừng ráng ngồi học khi đang sốt, tớ lo cho cậu lắm đó! ♡",
+      "time": "2026-10-22T10:35:16.204Z"
+    },
+    {
+      "id": 1792665317704,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-22T10:35:17.700Z"
+    },
+    {
+      "id": 1792665346536,
+      "type": "vitamin",
+      "sender": "Trần Thị Huyền Trân",
+      "detail": "🕊️ [Liều chữa lành tâm hồn]: Ở nhà nếu lỡ phải nghe những lời nặng nề làm cậu tủi thân, hãy nhớ rằng cậu không làm gì sai cả. Cậu luôn là cô gái ngoan ngoãn và quý giá nhất đối với tớ.",
+      "time": "2026-10-22T10:35:46.534Z"
     }
   ]
 }

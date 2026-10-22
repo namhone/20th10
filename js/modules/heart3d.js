@@ -20,16 +20,41 @@
  * =========================================================================
  */
 
-// --- CẤU HÌNH THÔNG SỐ (PARAMETERS) ---
-export const HEART_CONFIG = {
-  shellParticles: 15000,     // Số lượng hạt lớp vỏ bề mặt
-  coreParticles: 7000,       // Số lượng hạt lớp ruột lõi
-  stardustParticles: 2500,   // Bụi sao bay lượn xung quanh
-  bpm: 65,                   // Nhịp tim mặc định (nhịp/phút)
-  glowMultiplier: 1.30,      // Cường độ phát quang cân bằng
-  heartScale: 1.18,          // Tỷ lệ phóng đại tổng thể cân đối viewport giữa header và footer
-  autoRotateSpeed: 0.85      // Tốc độ tự động xoay
-};
+// --- CẤU HÌNH THÔNG SỐ THÍCH ỨNG HIỆU NĂNG CAO (ADAPTIVE CONFIG) ---
+export function getAdaptiveHeartConfig() {
+  const isMobile = typeof window !== 'undefined' && (
+    window.innerWidth < 768 || 
+    (typeof navigator !== 'undefined' && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
+  );
+
+  if (isMobile) {
+    return {
+      shellParticles: 7000,     // 7,000 hạt lớp vỏ bề mặt (đủ căng mọng trên mobile, giảm 53% GPU load)
+      coreParticles: 2800,      // 2,800 hạt lớp ruột lõi
+      stardustParticles: 800,   // 800 hạt bụi sao xoáy
+      bpm: 65,                  // Nhịp tim mặc định (nhịp/phút)
+      glowMultiplier: 1.30,     // Cường độ phát quang cân bằng
+      heartScale: 1.18,         // Tỷ lệ phóng đại tổng thể cân đối viewport
+      autoRotateSpeed: 0.85,    // Tốc độ tự động xoay
+      maxDPR: 1.35,             // Giới hạn DPR 1.35 trên mobile để chip mát & mượt
+      isMobile: true
+    };
+  }
+
+  return {
+    shellParticles: 15000,
+    coreParticles: 7000,
+    stardustParticles: 2500,
+    bpm: 65,
+    glowMultiplier: 1.30,
+    heartScale: 1.18,
+    autoRotateSpeed: 0.85,
+    maxDPR: 1.75,
+    isMobile: false
+  };
+}
+
+export const HEART_CONFIG = getAdaptiveHeartConfig();
 
 // --- SHADER GLSL CHO KHỐI TRÁI TIM CHUBBY ---
 const HeartShader = {
@@ -239,6 +264,7 @@ export function evaluateHeartSurface(theta, phi) {
 export class Heart3DViewer {
   constructor(containerId) {
     this.container = document.getElementById(containerId);
+    this.config = getAdaptiveHeartConfig();
     this.scene = null;
     this.camera = null;
     this.renderer = null;
@@ -251,8 +277,8 @@ export class Heart3DViewer {
     this.stardustMaterial = null;
 
     this.bgGlowElement = null;
-    this.currentBPM = HEART_CONFIG.bpm;
-    this.targetBPM = HEART_CONFIG.bpm;
+    this.currentBPM = this.config.bpm;
+    this.targetBPM = this.config.bpm;
     this.extraExcitement = 0.0;
     this.pointScale = 1.0;
 
@@ -260,6 +286,7 @@ export class Heart3DViewer {
     this.isInitialized = false;
     this.isActive = false;
     this.isFallbackMode = false;
+    this._thrillTimer = null;
 
     this._onResizeBound = this.onWindowResize.bind(this);
     this._onPointerDownBound = this.onPointerDown.bind(this);
@@ -308,11 +335,14 @@ export class Heart3DViewer {
       const height = this.container.clientHeight || (window.innerHeight - 56);
       const aspect = Math.max(0.1, width / Math.max(1, height));
 
-      this.camera = new THREE.PerspectiveCamera(45, aspect, 0.1, 100);
+      const initialFOV = aspect < 1 ? 50 : 45;
+      this.camera = new THREE.PerspectiveCamera(initialFOV, aspect, 0.1, 100);
 
-      // Tính cự ly và độ bù điểm sáng tối ưu:
-      const defaultDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
-      this.pointScale = defaultDist / 4.8;
+      // Tính cự ly và độ bù điểm sáng tối ưu (clamp an toàn trên mobile tránh camera lùi quá xa và phóng to hạt):
+      const defaultDist = aspect < 1 
+        ? Math.min(7.2, Math.max(5.2, 4.4 / (1.05 * aspect))) 
+        : 5.4;
+      this.pointScale = Math.min(1.5, defaultDist / 4.8);
 
       // Căn chỉnh trục Y hạ xuống nhẹ để tim nằm chính xác giữa tiêu đề trên và nút bấm dưới
       const targetY = aspect < 1 ? -0.15 : -0.25;
@@ -325,8 +355,7 @@ export class Heart3DViewer {
         powerPreference: 'high-performance'
       });
       this.renderer.setSize(width, Math.max(1, height));
-      // Giới hạn mật độ điểm ảnh ở mức tối đa 1.75 để máy mát và mượt mà
-      const pRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+      const pRatio = Math.min(window.devicePixelRatio || 1, this.config.maxDPR);
       this.renderer.setPixelRatio(pRatio);
       if (THREE.ACESFilmicToneMapping) {
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -346,7 +375,7 @@ export class Heart3DViewer {
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.06;
         this.controls.autoRotate = true;
-        this.controls.autoRotateSpeed = HEART_CONFIG.autoRotateSpeed;
+        this.controls.autoRotateSpeed = this.config.autoRotateSpeed;
         this.controls.enableZoom = true;
         this.controls.minDistance = 2.0;
         this.controls.maxDistance = Math.max(14.0, defaultDist * 1.7);
@@ -366,8 +395,14 @@ export class Heart3DViewer {
       this.setupBpmButtons();
 
       this.isInitialized = true;
-      this.isActive = true;
-      this.animate();
+      // Chỉ chạy animation loop nếu không bị chặn bởi Auth Modal
+      const hasAuthModal = document.querySelector('#auth-modal:not(.hidden)');
+      if (!hasAuthModal) {
+        this.isActive = true;
+        this.animate();
+      } else {
+        this.isActive = false;
+      }
     } catch (err) {
       console.warn('Lỗi khởi tạo WebGL, kích hoạt chế độ Fallback 2D:', err);
       this.activateFallbackMode();
@@ -375,8 +410,8 @@ export class Heart3DViewer {
   }
 
   createChubbyHeartMesh() {
-    const shellCount = HEART_CONFIG.shellParticles;
-    const coreCount = HEART_CONFIG.coreParticles;
+    const shellCount = this.config.shellParticles;
+    const coreCount = this.config.coreParticles;
     const totalCount = shellCount + coreCount;
 
     const positions = new Float32Array(totalCount * 3);
@@ -384,7 +419,7 @@ export class Heart3DViewer {
     const layerTypes = new Float32Array(totalCount);
     const baseSizes = new Float32Array(totalCount);
 
-    const scale = HEART_CONFIG.heartScale;
+    const scale = this.config.heartScale;
 
     // Bảng màu nghệ thuật độ bão hòa cao (Rich Saturated Chromatic Palette)
     const colorCrimson  = new THREE.Color('#ff0a36'); // Đỏ tươi ruby ấm nồng
@@ -498,8 +533,8 @@ export class Heart3DViewer {
         uTime: { value: 0.0 },
         uBPM: { value: this.currentBPM },
         uExcitement: { value: 0.0 },
-        uGlow: { value: HEART_CONFIG.glowMultiplier },
-        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
+        uGlow: { value: this.config.glowMultiplier },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, this.config.maxDPR) },
         uPointScale: { value: this.pointScale }
       },
       transparent: true,
@@ -512,7 +547,7 @@ export class Heart3DViewer {
   }
 
   createStardustMesh() {
-    const count = HEART_CONFIG.stardustParticles;
+    const count = this.config.stardustParticles;
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
     const sizes = new Float32Array(count);
@@ -558,8 +593,8 @@ export class Heart3DViewer {
       fragmentShader: StardustShader.fragmentShader,
       uniforms: {
         uTime: { value: 0.0 },
-        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, 1.75) },
-        uGlow: { value: HEART_CONFIG.glowMultiplier },
+        uPixelRatio: { value: Math.min(window.devicePixelRatio || 1, this.config.maxDPR) },
+        uGlow: { value: this.config.glowMultiplier },
         uPointScale: { value: this.pointScale }
       },
       transparent: true,
@@ -601,10 +636,13 @@ export class Heart3DViewer {
 
   setBPM(bpm) {
     this.targetBPM = bpm;
+    // Cập nhật nhịp đập đèn nền qua CSS Custom Property (GPU Composited)
+    const dur = (60.0 / Math.max(30, bpm)).toFixed(2);
+    document.documentElement.style.setProperty('--pulse-glow-duration', `${dur}s`);
+
     // Đồng bộ tốc độ đập cho cả Trái tim 2D dự phòng nếu đang ở chế độ Fallback
     const fallbackSvg = document.querySelector('.fallback-heart-svg');
     if (fallbackSvg) {
-      const dur = (60.0 / Math.max(30, bpm)).toFixed(2);
       fallbackSvg.style.animationDuration = `${dur}s`;
     }
   }
@@ -628,22 +666,22 @@ export class Heart3DViewer {
   triggerHeartThrill() {
     this.extraExcitement = 1.0;
 
-    // Hiệu ứng đèn nền nhịp đập rực rỡ
+    // Hiệu ứng đèn nền nhịp đập rực rỡ qua CSS Class (không can thiệp inline style 60fps)
     if (this.bgGlowElement) {
-      this.bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.3)';
-      this.bgGlowElement.style.opacity = '0.95';
-      setTimeout(() => {
+      this.bgGlowElement.classList.add('thrill');
+      clearTimeout(this._thrillTimer);
+      this._thrillTimer = setTimeout(() => {
         if (this.bgGlowElement) {
-          this.bgGlowElement.style.transform = 'translate(-50%, -50%) scale(1.0)';
-          this.bgGlowElement.style.opacity = '0.65';
+          this.bgGlowElement.classList.remove('thrill');
         }
-      }, 320);
+      }, 360);
     }
 
-    // Hiệu ứng cánh hoa / confetti lấp lánh
+    // Hiệu ứng cánh hoa / confetti lấp lánh (nhẹ nhàng hơn trên mobile)
     if (window.confetti) {
+      const pCount = this.config?.isMobile ? 18 : 32;
       window.confetti({
-        particleCount: 30,
+        particleCount: pCount,
         spread: 60,
         origin: { y: 0.5 },
         colors: ['#ff0a36', '#ff2282', '#ff4d9e', '#8518cf', '#ffffff']
@@ -660,14 +698,17 @@ export class Heart3DViewer {
 
     const aspect = width / height;
     this.camera.aspect = aspect;
+    this.camera.fov = aspect < 1 ? 50 : 45;
     this.camera.updateProjectionMatrix();
 
     this.renderer.setSize(width, height);
-    const pRatio = Math.min(window.devicePixelRatio || 1, 1.75);
+    const pRatio = Math.min(window.devicePixelRatio || 1, this.config.maxDPR);
     this.renderer.setPixelRatio(pRatio);
 
-    const targetDist = aspect < 1 ? Math.max(5.0, 4.4 / (0.85 * aspect)) : 5.4;
-    this.pointScale = targetDist / 4.8;
+    const targetDist = aspect < 1 
+      ? Math.min(7.2, Math.max(5.2, 4.4 / (1.05 * aspect))) 
+      : 5.4;
+    this.pointScale = Math.min(1.5, targetDist / 4.8);
 
     if (this.heartMaterial) {
       this.heartMaterial.uniforms.uPixelRatio.value = pRatio;
@@ -711,20 +752,6 @@ export class Heart3DViewer {
 
     if (this.stardustMaterial) {
       this.stardustMaterial.uniforms.uTime.value = elapsedTime;
-    }
-
-    // Cập nhật hiệu ứng đèn nền nhấp nháy theo nhịp tim sinh học
-    if (this.bgGlowElement) {
-      const period = 60.0 / this.currentBPM;
-      const phase = (elapsedTime % period) / period;
-      const b1 = Math.exp(-Math.pow(phase - 0.06, 2) / 0.0045);
-      const b2 = 0.45 * Math.exp(-Math.pow(phase - 0.23, 2) / 0.0055);
-      const pulseVal = Math.max(0.0, b1 + b2) + this.extraExcitement * 0.5;
-
-      const scaleVal = 1.0 + pulseVal * 0.12;
-      const opacityVal = 0.55 + pulseVal * 0.35;
-      this.bgGlowElement.style.transform = `translate(-50%, -50%) scale(${scaleVal})`;
-      this.bgGlowElement.style.opacity = opacityVal;
     }
 
     // Cập nhật OrbitControls

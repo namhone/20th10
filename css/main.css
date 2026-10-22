@@ -32,7 +32,9 @@ body {
   transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease;
 }
 
+/* Hỗ trợ iOS Safe Area (Notch / Dynamic Island) */
 header {
+  padding-top: env(safe-area-inset-top, 0px);
   transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.4s ease;
 }
 
@@ -63,10 +65,11 @@ body.theme-dark-heart .nav-tab-btn.active {
   overscroll-behavior: none;
 }
 
-/* Ngăn cuộn trôi trang nền khi đọc thư */
+/* Ngăn cuộn trôi trang nền khi đọc thư & mượt mà cảm ứng */
 .letter-paper {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 /* Custom Scrollbar */
@@ -93,6 +96,17 @@ body.theme-dark-heart .nav-tab-btn.active {
   height: 100%;
   pointer-events: none;
   z-index: 1;
+}
+
+/* Nút hành động nổi tương thích iOS Home Bar */
+.mobile-fab-container {
+  bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)) !important;
+  right: calc(1rem + env(safe-area-inset-right, 0px)) !important;
+}
+
+/* Footer an toàn trên thiết bị có thanh điều hướng đáy */
+footer {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 /* Floating Hearts Click Feedback */
