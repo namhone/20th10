@@ -149,6 +149,12 @@
       "rawInput": "Huyền Trân ❤️",
       "verifiedAt": "2026-10-22T13:51:41.908Z",
       "ip": "::1"
+    },
+    {
+      "name": "Huyền Trân",
+      "rawInput": "Huyền Trân ❤️",
+      "verifiedAt": "2026-10-22T14:47:47.827Z",
+      "ip": "::1"
     }
   ],
   "savedState": {
@@ -163,7 +169,7 @@
       "signature": "Cậu bạn 17 tuổi của Huyền Trân ♡",
       "customNote": ""
     },
-    "updatedAt": "2026-10-22T13:51:54.631Z"
+    "updatedAt": "2026-10-22T14:47:58.761Z"
   },
   "dateVouchers": [
     {
@@ -205,6 +211,11 @@
       "recipient": "Huyền Trân",
       "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
       "timestamp": "2026-10-22T13:51:49.934Z"
+    },
+    {
+      "recipient": "Huyền Trân",
+      "activity": "Cùng đi dạo hóng gió, nghe Trân trút hết mọi ấm ức trong lòng",
+      "timestamp": "2026-10-22T14:47:54.822Z"
     }
   ],
   "messages": [
@@ -287,6 +298,19 @@
       "sender": "Huyền Trân",
       "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
       "time": "2026-10-22T13:51:51.176Z"
+    },
+    {
+      "id": 1792680474228,
+      "type": "vitamin",
+      "sender": "Huyền Trân",
+      "detail": "🧋 [Liều sạc pin ngọt ngào]: Gửi cho Trân một ly trà sữa ngọt ngào qua tâm trí! Cố lên nhé, rồi tớ sẽ sớm dắt cậu đi date ngoài đời thực để bù đắp hết những ngày mệt mỏi này nha.",
+      "time": "2026-10-22T14:47:54.225Z"
+    },
+    {
+      "id": 1792680476023,
+      "sender": "Huyền Trân",
+      "content": "Em nhận được quà rồi, cảm ơn anh nhiều lắm ♡",
+      "time": "2026-10-22T14:47:56.021Z"
     }
   ]
 }

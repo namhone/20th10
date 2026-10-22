@@ -198,16 +198,30 @@ class AppController {
     window.addEventListener('pointerdown', handleFirstGesture, { passive: true });
     window.addEventListener('touchstart', handleFirstGesture, { passive: true });
 
+    const audioContainer = document.getElementById('audio-player-container');
     audioPlayer.onStateChange = (isPlaying, track) => {
       const current = track || audioPlayer.getCurrentTrack();
       if (isPlaying) {
-        if (audioIcon) audioIcon.textContent = '🎶';
+        if (audioIcon) {
+          audioIcon.textContent = '🎶';
+          audioIcon.classList.add('animate-bounce-subtle');
+        }
         if (audioText) audioText.textContent = current.title;
-        if (audioBtn) audioBtn.classList.add('bg-brand-200', 'text-brand-700', 'font-bold');
+        if (audioContainer) audioContainer.classList.add('is-playing');
+        if (audioBtn) {
+          audioBtn.classList.remove('bg-brand-200');
+          audioBtn.classList.add('is-playing', 'text-brand-700', 'font-bold');
+        }
       } else {
-        if (audioIcon) audioIcon.textContent = '🎵';
+        if (audioIcon) {
+          audioIcon.textContent = '🎵';
+          audioIcon.classList.remove('animate-bounce-subtle');
+        }
         if (audioText) audioText.textContent = 'Nhạc tình yêu';
-        if (audioBtn) audioBtn.classList.remove('bg-brand-200', 'text-brand-700', 'font-bold');
+        if (audioContainer) audioContainer.classList.remove('is-playing');
+        if (audioBtn) {
+          audioBtn.classList.remove('bg-brand-200', 'is-playing', 'text-brand-700', 'font-bold');
+        }
       }
     };
 
