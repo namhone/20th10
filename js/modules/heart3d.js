@@ -394,10 +394,18 @@ export class Heart3DViewer {
       // Gán nút preset BPM nếu có trên giao diện
       this.setupBpmButtons();
 
-      this.isInitialized = true;
-      // Chỉ chạy animation loop nếu không bị chặn bởi Auth Modal
-      const hasAuthModal = document.querySelector('#auth-modal:not(.hidden)');
-      if (!hasAuthModal) {
+            this.isInitialized = true;
+
+      // Luôn kết xuất trước 1 khung hình tĩnh để tránh màn hình đen chớp nháy
+      if (this.renderer && this.scene && this.camera) {
+        this.renderer.render(this.scene, this.camera);
+      }
+
+      // Chỉ chạy animation loop nếu không bị chặn bởi các Modal
+      const hasOpenModal = document.querySelector(
+        '#auth-modal:not(.hidden), #letter-modal:not(.hidden), #special-letter-modal:not(.hidden), #config-modal:not(.hidden)'
+      );
+      if (!hasOpenModal) {
         this.isActive = true;
         this.animate();
       } else {
@@ -765,11 +773,17 @@ export class Heart3DViewer {
     }
   }
 
-  start() {
-    this.isActive = true;
+    start() {
     if (!this.isInitialized) {
       this.init();
-    } else {
+    }
+
+    const hasOpenModal = document.querySelector(
+      '#auth-modal:not(.hidden), #letter-modal:not(.hidden), #special-letter-modal:not(.hidden), #config-modal:not(.hidden)'
+    );
+
+    if (!hasOpenModal) {
+      this.isActive = true;
       if (this.animationFrameId) {
         cancelAnimationFrame(this.animationFrameId);
         this.animationFrameId = null;
@@ -778,6 +792,8 @@ export class Heart3DViewer {
         this.onWindowResize();
         this.animate();
       });
+    } else {
+      this.isActive = false;
     }
   }
 

@@ -89,6 +89,11 @@ class AppController {
     });
 
     // Thông báo chào mừng
+    // Kích hoạt ngay Trái tim 3D nếu đang ở Tab 1
+    if (this.currentTab === 'heart3d' && this.heartViewer) {
+      this.heartViewer.start();
+    }
+
     this.lettersManager.showToast(`Chào mừng ${this.recipientName} đến với không gian yêu thương! ♡`, '🌸');
   }
 
@@ -103,6 +108,12 @@ class AppController {
   }
 
   switchTab(tabId) {
+    if (this.currentTab === tabId) {
+      if (tabId === 'heart3d' && this.heartViewer && !this.heartViewer.isActive) {
+        this.heartViewer.start();
+      }
+      return;
+    }
     this.currentTab = tabId;
 
     // Cập nhật trạng thái active chỉ của nút Tab trên Header Nav (tránh ảnh hưởng các nút CTA trong trang)

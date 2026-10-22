@@ -208,6 +208,9 @@ export function initAuthGate(onSuccessCallback) {
               modal.classList.add('hidden');
               document.body.classList.remove('overflow-hidden');
               window.scrollTo(0, 0);
+              if (window.__APP__?.currentTab === 'heart3d') {
+                window.__APP__?.heartViewer?.start();
+              }
             }, 400);
           }
 
